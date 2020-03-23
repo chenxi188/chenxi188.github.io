@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django（九）模型：dj查询数据库的函数（方法）">
+<meta property="og:url" content="http://yoursite.com/2020/01/07/Django%EF%BC%88%E4%B9%9D%EF%BC%89%E6%A8%A1%E5%9E%8B%EF%BC%9Adj%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%88%E6%96%B9%E6%B3%95%EF%BC%89/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200107102028857.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-01-07T03:29:03.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.107Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200107102028857.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/07/Django%EF%BC%88%E4%B9%9D%EF%BC%89%E6%A8%A1%E5%9E%8B%EF%BC%9Adj%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%88%E6%96%B9%E6%B3%95%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Django（九）模型：dj查询数据库的函数（方法） | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/07/Django%EF%BC%88%E4%B9%9D%EF%BC%89%E6%A8%A1%E5%9E%8B%EF%BC%9Adj%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%88%E6%96%B9%E6%B3%95%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Django（九）模型：dj查询数据库的函数（方法）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-07 11:29:03" itemprop="dateCreated datePublished" datetime="2020-01-07T11:29:03+08:00">2020-01-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、查询函数"><a href="#一、查询函数" class="headerlink" title="一、查询函数"></a>一、查询函数</h1><ul>
+<li>通过模型类.objects属性可以调用如下函数，实现对模型类对应的数据表的查询。<h3 id="函数表"><a href="#函数表" class="headerlink" title="函数表"></a>函数表</h3>函数名 | 功能 | 返回值 | 说明<br>|:——–|:————-|:——–|:————-|<br>get |    返回表中满足条件的一条且只能有一条数据。|    返回值是一个模型类对象。|    参数中写查询条件。<br/>1)如果查到多条数据，则抛异常MultipleObjectsReturned。<br/>2)查询不到数据，则抛异常：DoesNotExist。<br>all |    返回模型类对应表格中的所有数据。|    返回值是QuerySet类型 |    查询集<br>filter |    返回满足条件的数据。|    返回值是QuerySet类型 |    参数写查询条件。<br>exclude |    返回不满足条件的数据。 |    返回值是QuerySet类型 |    参数写查询条件。<br>order_by |    对查询结果进行排序。 |    返回值是QuerySet类型 |    参数中写根据哪些字段进行排序。</li>
+</ul>
+<h2 id="函数查寻实例"><a href="#函数查寻实例" class="headerlink" title="函数查寻实例"></a>函数查寻实例</h2><h3 id="首先进入环境，方便测试"><a href="#首先进入环境，方便测试" class="headerlink" title="首先进入环境，方便测试"></a>首先进入环境，方便测试</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">py manage.py shell</span><br></pre></td></tr></table></figure>
+<h3 id="然后，查寻前先要导入对应的models-py"><a href="#然后，查寻前先要导入对应的models-py" class="headerlink" title="然后，查寻前先要导入对应的models.py"></a>然后，查寻前先要导入对应的models.py</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo</span><br></pre></td></tr></table></figure>
+
+<h3 id="get示例："><a href="#get示例：" class="headerlink" title="get示例："></a>get示例：</h3><p>例：查询图书id为3的图书信息。</p>
+<h3 id="all方法示例："><a href="#all方法示例：" class="headerlink" title="all方法示例："></a>all方法示例：</h3><p>例：查询图书所有信息。</p>
+<h3 id="filter方法示例："><a href="#filter方法示例：" class="headerlink" title="filter方法示例："></a>filter方法示例：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">条件格式（注意是双下划线）：</span><br><span class="line">	模型类属性名__条件名=值</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询图书评论量为34的图书的信息："><a href="#查询图书评论量为34的图书的信息：" class="headerlink" title="查询图书评论量为34的图书的信息："></a>查询图书评论量为34的图书的信息：</h3><h4 id="a-判等-条件名-exact。"><a href="#a-判等-条件名-exact。" class="headerlink" title="a)判等 条件名:exact。"></a>a)判等 条件名:exact。</h4><ul>
+<li>例：查询编号为1的图书。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.get(id=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="b-模糊查询contains"><a href="#b-模糊查询contains" class="headerlink" title="b)模糊查询contains"></a>b)模糊查询contains</h4><ul>
+<li>例：查询书名包含’传’的图书。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(btitle__contains=<span class="string">'传'</span>)</span><br><span class="line">BookInfo.objects.get(btitle__contains=<span class="string">'传'</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>例：查询书名以’部’结尾的图书 endswith 开头:startswith</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(btitle__endswith=<span class="string">'部'</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="c-空查询-isnull"><a href="#c-空查询-isnull" class="headerlink" title="c)空查询 isnull"></a>c)空查询 isnull</h4><ul>
+<li>例：查询书名不为空的图书。isnull </li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select * <span class="keyword">from</span> booktest_bookinfo where btitle <span class="keyword">is</span> <span class="keyword">not</span> null;</span><br><span class="line">BookInfo.objects.filter(btitle__isnull=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="d-范围查询-in"><a href="#d-范围查询-in" class="headerlink" title="d)范围查询 in"></a>d)范围查询 in</h4><ul>
+<li>例：查询id为1或3或5的图书。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select * <span class="keyword">from</span> booktest_bookinfo where id <span class="keyword">in</span> (<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>);</span><br><span class="line">BookInfo.objects.filter(id__in = [<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+
+<h4 id="e-比较查询-gt-greate-than-lt-less-than-gte-equal-大于等于lte-小于等于"><a href="#e-比较查询-gt-greate-than-lt-less-than-gte-equal-大于等于lte-小于等于" class="headerlink" title="e)比较查询 gt(greate than) lt(less  than) gte(equal) 大于等于lte 小于等于"></a>e)比较查询 gt(greate than) lt(less  than) gte(equal) 大于等于lte 小于等于</h4><ul>
+<li>例：查询id大于3的图书。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Select * <span class="keyword">from</span> booktest_bookinfo where id&gt;<span class="number">3</span>;</span><br><span class="line">BookInfo.objects.filter(id__gt=<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="f-日期查询"><a href="#f-日期查询" class="headerlink" title="f)日期查询"></a>f)日期查询</h4><p>例：查询1980年发表的图书。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(bpub_date__year=<span class="number">1980</span>)</span><br><span class="line"></span><br><span class="line">BookInfo.objects.filter(bpub_date__mouth=<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<p>例：查询1980年1月1日后发表的图书。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> date</span><br><span class="line">BookInfo.objects.filter(bpub_date__gt=date(<span class="number">1980</span>,<span class="number">1</span>,<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+
+<h5 id="exclude方法（不满足条件）示例："><a href="#exclude方法（不满足条件）示例：" class="headerlink" title="exclude方法（不满足条件）示例："></a>exclude方法（不满足条件）示例：</h5><p>例：查询id不为3的图书信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.exclude(id=<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="order-by方法（排序查询）示例："><a href="#order-by方法（排序查询）示例：" class="headerlink" title="order_by方法（排序查询）示例："></a>order_by方法（排序查询）示例：</h5><ul>
+<li>作用：进行查询结果进行排序。</li>
+<li>例：查询所有图书的信息，按照id从小到大进行排序。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.all().order_by(<span class="string">'id'</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>例：查询所有图书的信息，按照id从大到小进行排序。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.all().order_by(<span class="string">'-id'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>例：把id大于3的图书信息按阅读量从大到小排序显示。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(id__gt=<span class="number">3</span>).order_by(<span class="string">'-bread'</span>)</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、对象（F、Q对象）"><a href="#二、对象（F、Q对象）" class="headerlink" title="二、对象（F、Q对象）"></a>二、对象（F、Q对象）</h1><h2 id="1）F对象（比较查询）"><a href="#1）F对象（比较查询）" class="headerlink" title="1）F对象（比较查询）"></a>1）F对象（比较查询）</h2><ul>
+<li>作用：用于类属性之间的比较。</li>
+<li>使用之前需要先导入：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> F</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>例：查询图书阅读量大于评论量图书信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(bread__gt=F(<span class="string">'bcomment'</span>))</span><br></pre></td></tr></table></figure>
+
+<p>例：查询图书阅读量大于2倍评论量图书信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(bread__gt=F(<span class="string">'bcomment'</span>)*<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2）Q对象（not-and-or查询）"><a href="#2）Q对象（not-and-or查询）" class="headerlink" title="2）Q对象（not and or查询）"></a>2）Q对象（not and or查询）</h2><ul>
+<li>作用：用于查询时条件之间的逻辑关系。【not and or】，可以对Q对象进行【&amp; | ~】操作。</li>
+<li>使用之前需要先导入：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> Q</span><br></pre></td></tr></table></figure>
+
+<p>例：查询id大于3且（且）阅读量大于30的图书的信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(id__gt=<span class="number">3</span>, bread__gt=<span class="number">30</span>)</span><br><span class="line">BookInfo.objects.filter(Q(id__gt=<span class="number">3</span>)&amp;Q(bread__gt=<span class="number">30</span>))</span><br></pre></td></tr></table></figure>
+
+<p>例：查询id大于3或者（或）阅读量大于30的图书的信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(Q(id__gt=<span class="number">3</span>)|Q(bread__gt=<span class="number">30</span>))</span><br></pre></td></tr></table></figure>
+
+<p>例：查询id不等于（非）3图书的信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(~Q(id=<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+<h1 id="三、聚合函数"><a href="#三、聚合函数" class="headerlink" title="三、聚合函数"></a>三、聚合函数</h1><p>【参考】<a href="https://docs.djangoproject.com/zh-hans/3.0/topics/db/aggregation/" target="_blank" rel="noopener">https://docs.djangoproject.com/zh-hans/3.0/topics/db/aggregation/</a></p>
+<ul>
+<li>作用：对查询结果进行聚合操作。</li>
+<li>sum count（统计） avg（求平均） max min<h4 id="1-aggregate：调用这个函数来使用聚合。-返回值是一个字典"><a href="#1-aggregate：调用这个函数来使用聚合。-返回值是一个字典" class="headerlink" title="1) aggregate：调用这个函数来使用聚合。 返回值是一个字典"></a>1) <font color='red' >aggregate：调用这个函数来使用聚合。 返回值是一个字典</font></h4></li>
+</ul>
+<p>【1】使用前需先导入聚合类： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> Sum,Count,Max,Min,Avg</span><br></pre></td></tr></table></figure>
+
+<p> 例：查询所有图书的数目。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.all().aggregate(Count(<span class="string">'id'</span>)) <span class="comment">#.all()可省略</span></span><br><span class="line">&#123;<span class="string">'id__count'</span>: <span class="number">5</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例：查询所有图书阅读量的总和。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.aggregate(Sum(<span class="string">'bread'</span>))</span><br><span class="line">&#123;<span class="string">'bread__sum'</span>: <span class="number">126</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-count函数-返回值是一个数字"><a href="#2-count函数-返回值是一个数字" class="headerlink" title="2) count函数 返回值是一个数字"></a>2) <font color='red' >count函数 返回值是一个数字</font></h4><ul>
+<li><p>作用：统计满足条件数据的数目。</p>
+<p>例：统计所有图书的数目。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.all().count()</span><br><span class="line">BookInfo.objects.count()</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>例：统计id大于3的所有图书的数目。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(id__gt=<span class="number">3</span>).count()</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结:"></a>小结:</h2><h3 id="查询相关函数"><a href="#查询相关函数" class="headerlink" title="查询相关函数"></a>查询相关函数</h3><ul>
+<li>get,返回一条且只能有一条数据，返回值是- -个对象，参数可以写查询条件。</li>
+<li>all:返回模型类对应表的所有数据，返回值是QuerySet。</li>
+<li>filter:返回满足条件的数据，返回值是QuerySet, 参数可以写查询条件。</li>
+<li>exclude:返回不满足条件的数据，返回值是QuerySet,参数可以写查询条件。</li>
+<li>order_ by:对查询结果进行排序,返回值是QuerySet, 参数中写排序的字段。<h3 id="注意"><a href="#注意" class="headerlink" title="注意:"></a>注意:</h3></li>
+</ul>
+<ol>
+<li>get, filter,exclude函数中可以写查询条件，如果传多个参数，条件之间代表且的关系。</li>
+<li>all, filter, exclude, order_ by函数的返回值是QuerySet类的实例对象，叫做查询集。</li>
+</ol>
+<p><code>from diango.db.models import F,Q,Sum,Count,.Avg.Max.Min</code></p>
+<ol>
+<li>F对象:用于类属性之间的比较。</li>
+<li>Q对象:用于条件之间的逻辑关系。<br>aggregate:进行聚合操作，返回值是一个字典，进行聚合的时候需要先导入聚合类。<br>count:返回结果集中数据的数目，返回值是-个数字。</li>
+</ol>
+<ul>
+<li>注意:对一个QuerySet实例对象，可以继续调用上面的所有函数。<h1 id="四、查询集"><a href="#四、查询集" class="headerlink" title="四、查询集"></a>四、查询集</h1>all, filter, exclude, order_by调用这些函数会产生一个查询集，QuerySet类对象可以继续调用上面的所有函数。<h2 id="4-1查询集特性"><a href="#4-1查询集特性" class="headerlink" title="4.1查询集特性"></a>4.1查询集特性</h2>1）惰性查询：只有在实际使用查询集中的数据的时候才会发生对数据库的真正查询。<br>2）缓存：当使用的是同一个查询集时，第一次使用的时候会发生实际数据库的查询，然后把结果缓存起来，之后再使用这个查询集时，使用的是缓存中的结果。<h2 id="4-2-限制查询集"><a href="#4-2-限制查询集" class="headerlink" title="4.2 限制查询集"></a>4.2 限制查询集</h2></li>
+<li>可以对一个查询集进行取下标或者切片操作来限制查询集的结果。</li>
+<li>对一个查询集进行切片操作会产生一个新的查询集，下标不允许为负数。</li>
+</ul>
+<h3 id="取出查询集第一条数据的两种方式"><a href="#取出查询集第一条数据的两种方式" class="headerlink" title="取出查询集第一条数据的两种方式:"></a>取出查询集第一条数据的两种方式:</h3><p>方式 | 说明<br>|—|—|<br>b[0] | 如果b[0]不存在，会抛出IndexError异常<br>b[0:1].get() | 如果b[0:1].get()不存在，会抛出DoesNotExist异常。<br>注：exists: 判断一个查询集中是否有数据。True False</p>
+<h1 id="五、模型类关系（模型关联-API-）"><a href="#五、模型类关系（模型关联-API-）" class="headerlink" title="五、模型类关系（模型关联 API ）"></a>五、模型类关系（模型关联 API ）</h1><p>【参考】<a href="https://docs.djangoproject.com/zh-hans/3.0/topics/db/examples/" target="_blank" rel="noopener">https://docs.djangoproject.com/zh-hans/3.0/topics/db/examples/</a></p>
+<h3 id="1）一对多关系"><a href="#1）一对多关系" class="headerlink" title="1）一对多关系"></a>1）一对多关系</h3><p>例：图书类-英雄类<br><code>models.ForeignKey()</code> 定义在多的类中。<br>【关系属性】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line"><span class="comment"># 一类</span></span><br><span class="line"><span class="comment"># booktest2_bookinfo</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BookInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">'''图书模型类'''</span></span><br><span class="line">    <span class="comment"># 图书名称</span></span><br><span class="line">    btitle = models.CharField(max_length=<span class="number">20</span>, db_column=<span class="string">'title'</span>)</span><br><span class="line">    <span class="comment"># 图书名字唯一</span></span><br><span class="line">    <span class="comment"># btitle = models.CharField(max_length=20, unique=True, db_index=True)</span></span><br><span class="line">    <span class="comment"># 价格,最大位数为10,小数为2</span></span><br><span class="line">    <span class="comment"># bprice = models.DecimalField(max_digits=10, decimal_places=2)</span></span><br><span class="line">    <span class="comment"># 出版日期</span></span><br><span class="line">    bpub_date = models.DateField()</span><br><span class="line">    <span class="comment"># bpub_date = models.DateField(auto_now_add=True) # 创建时间</span></span><br><span class="line">    <span class="comment"># bpub_date = models.DateField(auto_now=True) # 更新时间</span></span><br><span class="line">    <span class="comment"># 阅读量</span></span><br><span class="line">    bread = models.IntegerField(default=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 评论量</span></span><br><span class="line">    bcomment = models.IntegerField(default=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 删除标记</span></span><br><span class="line">    isDelete = models.BooleanField(default=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 多类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HeroInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">'''英雄人物模型类'''</span></span><br><span class="line">    <span class="comment"># 英雄名</span></span><br><span class="line">    hname = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    <span class="comment"># 性别</span></span><br><span class="line">    hgender = models.BooleanField(default=<span class="literal">False</span>)</span><br><span class="line">    <span class="comment"># 备注</span></span><br><span class="line">    hcomment = models.CharField(max_length=<span class="number">200</span>, null=<span class="literal">True</span>, blank=<span class="literal">False</span>)</span><br><span class="line">    <span class="comment">#　【关系属性】</span></span><br><span class="line">    hbook = models.ForeignKey(<span class="string">'BookInfo'</span>)</span><br><span class="line">    <span class="comment"># 删除标记</span></span><br><span class="line">    isDelete = models.BooleanField(default=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="2）多对多关系"><a href="#2）多对多关系" class="headerlink" title="2）多对多关系"></a>2）多对多关系</h3><p>例：新闻类-新闻类型类：（体育新闻 国际新闻）<br><code>models.ManyToManyField()</code> 定义在哪个类中都可以。<br>app1/models.py【关系属性】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line"><span class="comment"># 新闻类型类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NewsType</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="comment"># 类型名</span></span><br><span class="line">    type_name = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    <span class="comment"># 关系属性，代表类型下面的信息</span></span><br><span class="line">    type_news = models.ManyToManyField(<span class="string">'NewsInfo'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 新闻类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NewsInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="comment"># 新闻标题</span></span><br><span class="line">    title = models.CharField(max_length=<span class="number">128</span>)</span><br><span class="line">    <span class="comment"># 发布时间</span></span><br><span class="line">    pub_date = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line">    <span class="comment"># 信息内容</span></span><br><span class="line">    content = models.TextField()</span><br><span class="line">    <span class="comment"># 【关系属性】, 代表信息所属的类型</span></span><br><span class="line">    <span class="comment"># news_type = models.ManyToManyField('NewsType')</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3）一对一关系"><a href="#3）一对一关系" class="headerlink" title="3）一对一关系"></a>3）一对一关系</h3><p>例：员工基本信息类-员工详细信息类. 员工工号<br><code>models.OneToOneField</code> 定义在哪个类中都可以。<br>app1/models.py【关系属性】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line"><span class="comment"># 员工基本信息类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EmployeeBasicInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="comment"># 姓名</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    <span class="comment"># 性别</span></span><br><span class="line">    gender = models.BooleanField(default=<span class="literal">False</span>)</span><br><span class="line">    <span class="comment"># 年龄</span></span><br><span class="line">    age = models.IntegerField()</span><br><span class="line">    <span class="comment"># 关系属性,代表员工的详细信息</span></span><br><span class="line">    employee_detail = models.OneToOneField(<span class="string">'EmployeeDetailInfo'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 员工详细信息类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EmployeeDetailInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="comment"># 联系地址</span></span><br><span class="line">    addr = models.CharField(max_length=<span class="number">256</span>)</span><br><span class="line">    <span class="comment"># 教育经历</span></span><br><span class="line">    <span class="comment"># 【关系属性】，代表员工基本信息</span></span><br><span class="line">    <span class="comment"># employee_basic = models.OneToOneField('EmployeeBasicInfo')</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="六、关联查询（一对多）"><a href="#六、关联查询（一对多）" class="headerlink" title="六、关联查询（一对多）"></a><font color='red'>六、关联查询（一对多）</font></h1><h2 id="6-1查询和对象关联的数据"><a href="#6-1查询和对象关联的数据" class="headerlink" title="6.1查询和对象关联的数据"></a>6.1查询和对象关联的数据</h2><ul>
+<li>在一对多关系中，一对应的类我们把它叫做一类，多对应的那个类我们把它叫做多类，我们把多类中定义的建立关联的类属性叫做【关联属性】。</li>
+</ul>
+<h4 id="例1：查询id为1的图书关联的英雄的信息。"><a href="#例1：查询id为1的图书关联的英雄的信息。" class="headerlink" title="例1：查询id为1的图书关联的英雄的信息。"></a>例1：查询id为1的图书关联的英雄的信息。</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> app1.moldels <span class="keyword">import</span> BookInfo,HeroInfo</span><br><span class="line">b=BookInfo.objects.get(id=<span class="number">1</span>)</span><br><span class="line">b.heroinfo_set.all()</span><br></pre></td></tr></table></figure>
+<p><font color='red' size=4>例1通过模型类查询：</font></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HeroInfo.objects.filter(hbook__id=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="例2：查询id为1的英雄关联的图书信息。"><a href="#例2：查询id为1的英雄关联的图书信息。" class="headerlink" title="例2：查询id为1的英雄关联的图书信息。"></a>例2：查询id为1的英雄关联的图书信息。</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> app1.moldels <span class="keyword">import</span> BookInfo,HeroInfo</span><br><span class="line">h = HeroInfo.objects.get(id=<span class="number">1</span>)</span><br><span class="line">h.hbook</span><br></pre></td></tr></table></figure>
+<p><font color='red' size=4>例2通过模型类查询：</font></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BookInfo.objects.filter(heroinfo__id=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="格式："><a href="#格式：" class="headerlink" title="格式："></a>格式：</h3><p><img src="https://img-blog.csdnimg.cn/20200107102028857.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="6-2-1-由一类的对象查询多类的时候："><a href="#6-2-1-由一类的对象查询多类的时候：" class="headerlink" title="6.2.1 由一类的对象查询多类的时候："></a>6.2.1 由一类的对象查询多类的时候：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一类的对象.多类名小写_set.all() <span class="comment">#查询所用数据</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-2-由多类的对象查询一类的时候："><a href="#6-2-2-由多类的对象查询一类的时候：" class="headerlink" title="6.2.2 由多类的对象查询一类的时候："></a>6.2.2 由多类的对象查询一类的时候：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">多类的对象.关联属性  <span class="comment">#查询多类的对象对应的一类的对象</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-3由多类的对象查询一类对象的id时候："><a href="#6-2-3由多类的对象查询一类对象的id时候：" class="headerlink" title="6.2.3由多类的对象查询一类对象的id时候："></a>6.2.3由多类的对象查询一类对象的id时候：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">多类的对象. 关联属性_id</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-3-通过模型类实现关联查询"><a href="#6-3-通过模型类实现关联查询" class="headerlink" title="6.3 通过模型类实现关联查询"></a>6.3 通过模型类实现关联查询</h2><p>参考：<a href="https://docs.djangoproject.com/zh-hans/3.0/topics/db/examples/" target="_blank" rel="noopener">https://docs.djangoproject.com/zh-hans/3.0/topics/db/examples/</a></p>
+<h3 id="6-3-1关联查询"><a href="#6-3-1关联查询" class="headerlink" title="6.3.1关联查询"></a>6.3.1关联查询</h3><p><strong>注意:</strong></p>
+<ol>
+<li>通过模型类实现关联查询时，要查哪个表中的数据，就需要通过哪个类来查。</li>
+<li>写关联查询条件的时候，如果类中没有关系属性，条件需要些对应类的名,如果类中有关系属性，直接写关系属性。</li>
+</ol>
+<ul>
+<li><p>例1：查询图书信息，要求图书关联的英雄的描述包含’八’。<br><code>BookInfo.objects.filter(heroinfo__hcomment__contains=&#39;八&#39;)</code></p>
+</li>
+<li><p>例2：查询图书信息，要求图书中的英雄的id大于3.<br><code>BookInfo.objects.filter(heroinfo__id__gt=3)</code></p>
+</li>
+<li><p>例3：查询书名为“天龙八部”的所有英雄。<br><code>HeroInfo.objects.filter(hbook__btitle=&#39;天龙八部&#39;)</code></p>
+</li>
+</ul>
+<h3 id="6-3-2通过多类的条件查询一类的数据："><a href="#6-3-2通过多类的条件查询一类的数据：" class="headerlink" title="6.3.2通过多类的条件查询一类的数据："></a>6.3.2通过多类的条件查询一类的数据：</h3><p><code>一类名.objects.filter(多类名小写__多类属性名__条件名)</code></p>
+<h3 id="6-3-3通过一类的条件查询多类的数据："><a href="#6-3-3通过一类的条件查询多类的数据：" class="headerlink" title="6.3.3通过一类的条件查询多类的数据："></a>6.3.3通过一类的条件查询多类的数据：</h3><p><code>多类名.objects.filter(关联属性__一类属性名__条件名)</code></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/07/VS%20code%E7%9A%84%E5%B8%B8%E7%94%A8python%E6%8F%92%E4%BB%B6%E6%8E%A8%E8%8D%90/" rel="prev" title="VS code的常用python插件推荐">
+      <i class="fa fa-chevron-left"></i> VS code的常用python插件推荐
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/07/Django%EF%BC%88%E5%8D%81%EF%BC%89%E6%A8%A1%E5%9E%8B%EF%BC%9Adjango%E6%A8%A1%E5%9E%8B%E7%B1%BB%E5%AF%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%EF%BC%9A%E5%A2%9E!%E5%88%A0!%E6%94%B9!%E6%9F%A5%E3%80%81%E8%87%AA%E5%85%B3%E8%81%94%E3%80%81%E7%AE%A1%E7%90%86%E5%99%A8%E3%80%81%E5%85%83%E9%80%89%E9%A1%B9%EF%BC%88%E6%8C%87%E5%AE%9A%E8%A1%A8%E5%90%8D%EF%BC%89/" rel="next" title="Django（十）模型：django模型类对数据库的：增/删/改/查、自关联、管理器、元选项（指定表名）">
+      Django（十）模型：django模型类对数据库的：增/删/改/查、自关联、管理器、元选项（指定表名） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、查询函数"><span class="nav-number">1.</span> <span class="nav-text">一、查询函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数表"><span class="nav-number">1.0.1.</span> <span class="nav-text">函数表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数查寻实例"><span class="nav-number">1.1.</span> <span class="nav-text">函数查寻实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先进入环境，方便测试"><span class="nav-number">1.1.1.</span> <span class="nav-text">首先进入环境，方便测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#然后，查寻前先要导入对应的models-py"><span class="nav-number">1.1.2.</span> <span class="nav-text">然后，查寻前先要导入对应的models.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get示例："><span class="nav-number">1.1.3.</span> <span class="nav-text">get示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#all方法示例："><span class="nav-number">1.1.4.</span> <span class="nav-text">all方法示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filter方法示例："><span class="nav-number">1.1.5.</span> <span class="nav-text">filter方法示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询图书评论量为34的图书的信息："><span class="nav-number">1.1.6.</span> <span class="nav-text">查询图书评论量为34的图书的信息：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-判等-条件名-exact。"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">a)判等 条件名:exact。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-模糊查询contains"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">b)模糊查询contains</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-空查询-isnull"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">c)空查询 isnull</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-范围查询-in"><span class="nav-number">1.1.6.4.</span> <span class="nav-text">d)范围查询 in</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#e-比较查询-gt-greate-than-lt-less-than-gte-equal-大于等于lte-小于等于"><span class="nav-number">1.1.6.5.</span> <span class="nav-text">e)比较查询 gt(greate than) lt(less  than) gte(equal) 大于等于lte 小于等于</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#f-日期查询"><span class="nav-number">1.1.6.6.</span> <span class="nav-text">f)日期查询</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#exclude方法（不满足条件）示例："><span class="nav-number">1.1.6.6.1.</span> <span class="nav-text">exclude方法（不满足条件）示例：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#order-by方法（排序查询）示例："><span class="nav-number">1.1.6.6.2.</span> <span class="nav-text">order_by方法（排序查询）示例：</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、对象（F、Q对象）"><span class="nav-number">2.</span> <span class="nav-text">二、对象（F、Q对象）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1）F对象（比较查询）"><span class="nav-number">2.1.</span> <span class="nav-text">1）F对象（比较查询）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2）Q对象（not-and-or查询）"><span class="nav-number">2.2.</span> <span class="nav-text">2）Q对象（not and or查询）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、聚合函数"><span class="nav-number">3.</span> <span class="nav-text">三、聚合函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-aggregate：调用这个函数来使用聚合。-返回值是一个字典"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">1) aggregate：调用这个函数来使用聚合。 返回值是一个字典</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-count函数-返回值是一个数字"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">2) count函数 返回值是一个数字</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">3.1.</span> <span class="nav-text">小结:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查询相关函数"><span class="nav-number">3.1.1.</span> <span class="nav-text">查询相关函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意"><span class="nav-number">3.1.2.</span> <span class="nav-text">注意:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、查询集"><span class="nav-number">4.</span> <span class="nav-text">四、查询集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1查询集特性"><span class="nav-number">4.1.</span> <span class="nav-text">4.1查询集特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-限制查询集"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 限制查询集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#取出查询集第一条数据的两种方式"><span class="nav-number">4.2.1.</span> <span class="nav-text">取出查询集第一条数据的两种方式:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、模型类关系（模型关联-API-）"><span class="nav-number">5.</span> <span class="nav-text">五、模型类关系（模型关联 API ）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1）一对多关系"><span class="nav-number">5.0.1.</span> <span class="nav-text">1）一对多关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2）多对多关系"><span class="nav-number">5.0.2.</span> <span class="nav-text">2）多对多关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3）一对一关系"><span class="nav-number">5.0.3.</span> <span class="nav-text">3）一对一关系</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、关联查询（一对多）"><span class="nav-number">6.</span> <span class="nav-text">六、关联查询（一对多）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1查询和对象关联的数据"><span class="nav-number">6.1.</span> <span class="nav-text">6.1查询和对象关联的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例1：查询id为1的图书关联的英雄的信息。"><span class="nav-number">6.1.0.1.</span> <span class="nav-text">例1：查询id为1的图书关联的英雄的信息。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例2：查询id为1的英雄关联的图书信息。"><span class="nav-number">6.1.0.2.</span> <span class="nav-text">例2：查询id为1的英雄关联的图书信息。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#格式："><span class="nav-number">6.1.1.</span> <span class="nav-text">格式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-1-由一类的对象查询多类的时候："><span class="nav-number">6.1.2.</span> <span class="nav-text">6.2.1 由一类的对象查询多类的时候：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-2-由多类的对象查询一类的时候："><span class="nav-number">6.1.3.</span> <span class="nav-text">6.2.2 由多类的对象查询一类的时候：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-3由多类的对象查询一类对象的id时候："><span class="nav-number">6.1.4.</span> <span class="nav-text">6.2.3由多类的对象查询一类对象的id时候：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-通过模型类实现关联查询"><span class="nav-number">6.2.</span> <span class="nav-text">6.3 通过模型类实现关联查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-1关联查询"><span class="nav-number">6.2.1.</span> <span class="nav-text">6.3.1关联查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-2通过多类的条件查询一类的数据："><span class="nav-number">6.2.2.</span> <span class="nav-text">6.3.2通过多类的条件查询一类的数据：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-3通过一类的条件查询多类的数据："><span class="nav-number">6.2.3.</span> <span class="nav-text">6.3.3通过一类的条件查询多类的数据：</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

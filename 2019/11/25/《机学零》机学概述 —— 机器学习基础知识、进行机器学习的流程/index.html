@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、基础概述1、机器学习开发流程2、机器学习模型是什么3、机器学习算法分类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《机学零》机学概述 —— 机器学习基础知识、进行机器学习的流程">
+<meta property="og:url" content="http://yoursite.com/2019/11/25/%E3%80%8A%E6%9C%BA%E5%AD%A6%E9%9B%B6%E3%80%8B%E6%9C%BA%E5%AD%A6%E6%A6%82%E8%BF%B0%20%E2%80%94%E2%80%94%20%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E3%80%81%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="一、基础概述1、机器学习开发流程2、机器学习模型是什么3、机器学习算法分类">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191127103702667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191125101951894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191125102334146.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-11-25T02:35:51.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:19.782Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191127103702667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/25/%E3%80%8A%E6%9C%BA%E5%AD%A6%E9%9B%B6%E3%80%8B%E6%9C%BA%E5%AD%A6%E6%A6%82%E8%BF%B0%20%E2%80%94%E2%80%94%20%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E3%80%81%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%B5%81%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《机学零》机学概述 —— 机器学习基础知识、进行机器学习的流程 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/25/%E3%80%8A%E6%9C%BA%E5%AD%A6%E9%9B%B6%E3%80%8B%E6%9C%BA%E5%AD%A6%E6%A6%82%E8%BF%B0%20%E2%80%94%E2%80%94%20%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E3%80%81%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《机学零》机学概述 —— 机器学习基础知识、进行机器学习的流程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-25 10:35:51" itemprop="dateCreated datePublished" datetime="2019-11-25T10:35:51+08:00">2019-11-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:19" itemprop="dateModified" datetime="2020-03-23T11:01:19+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、基础概述"><a href="#一、基础概述" class="headerlink" title="一、基础概述"></a>一、基础概述</h1><p>1、机器学习开发流程<br>2、机器学习模型是什么<br>3、机器学习算法分类</p>
+<a id="more"></a>
+<h1 id="二、需明确问题"><a href="#二、需明确问题" class="headerlink" title="二、需明确问题"></a>二、需明确问题</h1><p>（1）算法是核心，数据和计算是基础<br>（2）找准定位：</p>
+<pre><code>大部分复杂模型的算法设计都是算法工程师在做，而我们要做的是：
+1.分析很多的数据
+2.分析具体的业务
+3.应用常见的算法
+4.特征工程、调参数、优化</code></pre><h1 id="三、具体要怎样做"><a href="#三、具体要怎样做" class="headerlink" title="三、具体要怎样做"></a>三、具体要怎样做</h1><ol>
+<li>学会分析问题，使用机器学习算法的目的，想要算法完成何种任务</li>
+<li>掌握算法基本思想，学会对问题用相应的算法解决</li>
+<li>学会利用库或者框架解决问题</li>
+</ol>
+<h1 id="四、机器学习开发流程"><a href="#四、机器学习开发流程" class="headerlink" title="四、机器学习开发流程"></a>四、机器学习开发流程</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">flowchat</span><br><span class="line">st&#x3D;&gt;start: 1.原始数据</span><br><span class="line">e&#x3D;&gt;end: 6.模型应用（上线）</span><br><span class="line">op&#x3D;&gt;operation: 2.数据特征工程</span><br><span class="line">（训练数据和测试数据）</span><br><span class="line">op2&#x3D;&gt;operation: 3.算法用数据进行学习</span><br><span class="line">op3&#x3D;&gt;operation: 4.模型</span><br><span class="line">op4&#x3D;&gt;operation: </span><br><span class="line">cond&#x3D;&gt;condition: 5.模型评估（测试数据）</span><br><span class="line">模型选择：判断模型是否合格？</span><br><span class="line"></span><br><span class="line">st-&gt;op-&gt;op2-&gt;op3-&gt;cond</span><br><span class="line">cond(yes)-&gt;e</span><br><span class="line">cond(no)-&gt;op2</span><br></pre></td></tr></table></figure>
+<h2 id="流程解释"><a href="#流程解释" class="headerlink" title="流程解释"></a>流程解释</h2><p> 拿到数据：公司固有的数据（包括爬虫得来）、合作得来数据、购买得来</p>
+<ol>
+<li>确立模型：根据数据类型划分应用种类（据：原始数据、要解决啥问题、确立）</li>
+<li>数据的基本处理： pd去处理数据（缺失值，合并表。。。。。）</li>
+<li>特征工程 （特征进行处理）</li>
+<li>找到合适算法去进行预测：分类、回归</li>
+<li>模型的评估（判定预测效果）：准确率高，进行6步。不高——第4步换算法——还不行，第3步再处理</li>
+<li>上线使用（以Api形式提供）</li>
+</ol>
+<h2 id="4-1机器学习-模型-是什么？"><a href="#4-1机器学习-模型-是什么？" class="headerlink" title="4.1机器学习[模型]是什么？"></a>4.1机器学习[模型]是什么？</h2><p>【定义】：通过一种映射关系将输入值到输出值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">A[1.学习特征值 及 目标值] -- 输入 --&gt; B&#123;0.模型&#125;</span><br><span class="line">C[2.被预测特征值] --输入--&gt; B</span><br><span class="line">B --预测--&gt; D(3.输出值)</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<ol>
+<li>输入猫、狗、图片，判断它是啥</li>
+<li>输入 文章，判断它是科技类、还是体育类</li>
+<li>输入月票房数据，预测下月票房数据</li>
+</ol>
+<h1 id="五、机器学习算法分类"><a href="#五、机器学习算法分类" class="headerlink" title="五、机器学习算法分类"></a>五、机器学习算法分类</h1><h2 id="5-0-机学两种数据类型（用什么算法的主要判别依据）"><a href="#5-0-机学两种数据类型（用什么算法的主要判别依据）" class="headerlink" title="5.0 机学两种数据类型（用什么算法的主要判别依据）"></a>5.0 机学两种数据类型（用什么算法的主要判别依据）</h2><p>数据的类型将是机器学习模型不同问题不同处理的依据<br>【思考】下图两组数据区别<br><img src="https://img-blog.csdnimg.cn/20191127103702667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="离散型数据："><a href="#离散型数据：" class="headerlink" title="离散型数据："></a>离散型数据：</h3><p>由记录不同类别个体的数目所得到的数据，又称计数数据，所有这些数据全部都是整数，而且不能再细分，也不能进一步提高他们的精确度</p>
+<h3 id="连续型数据："><a href="#连续型数据：" class="headerlink" title="连续型数据："></a>连续型数据：</h3><p>变量可以在某个范围内取任一数，即变量的取值可以是连续的，如，长度、时间、质量值等，这类整数通常是非整数，含有小数部分。</p>
+<h3 id="总结-怎样看是用分类还是回归学习算法？"><a href="#总结-怎样看是用分类还是回归学习算法？" class="headerlink" title="总结:怎样看是用分类还是回归学习算法？"></a>总结:怎样看是用分类还是回归学习算法？</h3><p><font color='red' size=5>只要记住一点，离散型是区间内不可分，连续型是区间内可分<br>【怎样看是用分类还是回归学习算法？】：<br>目标值是：离散型——分类<br>目标值是：连续型——回归<br></font></p>
+<h2 id="5-1监督学习"><a href="#5-1监督学习" class="headerlink" title="5.1监督学习"></a><font color='red'>5.1监督学习</font></h2><ul>
+<li>【分类】k-近邻算法、贝叶斯分类、决策树与随机森林、逻辑回归、神经网络</li>
+<li>【回归】 线性回归、岭回归</li>
+<li>【标注】 隐马尔可夫模型     (不做要求)</li>
+</ul>
+<p>【监督学习】（Supervised learning），可以由输入数据中学到或建立一个模型，并依此模式推测新的结果。输入数据是由输入特征值和目标值所组成。<br>函数的输出可以是一个连续的值【称为回归】。<br>或是输出是有限个离散值【称作分类】。</p>
+<h3 id="【监督学习特点】"><a href="#【监督学习特点】" class="headerlink" title="【监督学习特点】"></a>【监督学习特点】</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">【监督学习】---(分类、回归)→ 【输入数据有特征有标签，即有标准答案】</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-1-1分类问题"><a href="#5-1-1分类问题" class="headerlink" title="5.1.1分类问题"></a>5.1.1分类问题</h3><p>概念：【分类】是监督学习的一个核心问题，在监督学习中，当输出变量取有限个离散值时，预测问题变成为分类问题。最基础的便是二分类问题，即判断是非，从两个类别中选择一个作为预测结果；<br>分类问题：<br><img src="https://img-blog.csdnimg.cn/20191125101951894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="5-1-2分类学习应用："><a href="#5-1-2分类学习应用：" class="headerlink" title="5.1.2分类学习应用："></a>5.1.2分类学习应用：</h3><p><strong>分类在于根据其特性将数据“分门别类”，所以在许多领域都有广泛的应用：</strong></p>
+<ul>
+<li>在银行业务中，构建一个客户分类模型，按客户按照贷款风险的大小进行分类</li>
+<li>图像处理中，分类可以用来检测图像中是否有人脸出现，动物类别等</li>
+<li>手写识别中，分类可以用于识别手写的数字</li>
+<li>文本分类，这里的文本可以是新闻报道、网页、电子邮件、学术论文<br>…<h3 id="5-1-3-回归问题"><a href="#5-1-3-回归问题" class="headerlink" title="5.1.3 回归问题"></a>5.1.3 回归问题</h3><img src="https://img-blog.csdnimg.cn/20191125102334146.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>概念：【回归】是监督学习的另一个重要问题。回归用于预测输入变量和输出变量之间的关系，输出是连续型的值。<h3 id="5-1-4回归应用"><a href="#5-1-4回归应用" class="headerlink" title="5.1.4回归应用"></a>5.1.4回归应用</h3></li>
+</ul>
+<p><strong>回归在多领域也有广泛的应用：</strong></p>
+<ul>
+<li>房价预测，根据某地历史房价数据，进行一个预测</li>
+<li>金融信息，每日股票走向<br>…</li>
+</ul>
+<h2 id="5-2无监督学习"><a href="#5-2无监督学习" class="headerlink" title="5.2无监督学习"></a><font color='red'>5.2无监督学习</font></h2><ul>
+<li>【聚类】k-means</li>
+</ul>
+<p>【无监督学习】（Supervised learning），可以由输入数据中学到或建立一个模型，并依此模式推测新的结果。输入数据是由输入特征值所组成。</p>
+<h3 id="【无监督学习特点】"><a href="#【无监督学习特点】" class="headerlink" title="【无监督学习特点】"></a>【无监督学习特点】</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">【无监督学习】---(聚类)→ 【输入数据有特征无标签，即无标准答案】</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-3习题"><a href="#5-3习题" class="headerlink" title="5.3习题"></a>5.3习题</h2><p><strong>说一下它们具体问题类别：</strong><br>1、预测明天的气温是多少度？ ——回归<br>2、预测明天是阴、晴还是雨？——分类<br>3、人脸年龄预测？——回归（多重多元回归）<br>4、人脸识别？——分类</p>
+<h1 id="六、★★★机器学习步骤："><a href="#六、★★★机器学习步骤：" class="headerlink" title="六、★★★机器学习步骤："></a>六、★★★机器学习步骤：</h1><ol>
+<li>收集数据<ul>
+<li>用爬虫</li>
+<li>从RSS反馈或者API</li>
+<li>设备发送过来的实测数据（风速、血糖等）</li>
+</ul>
+</li>
+<li>准备输入数据<ul>
+<li>得到数据之后，还必须确保数据格式符合要求，本书用的是python的list类型数据</li>
+<li>这种标准数据格式可以融合算法和数据源，方便匹配操作</li>
+<li>还需要为机器学习算法准备特定的数据格式<br>  如某些算法要求特征值使用特定的格式；<br>  一些算法要求目标变量和特征值是字符串类型，而另一些算法则可能要求是整数类型；</li>
+</ul>
+</li>
+<li>分析输入数据<ul>
+<li>目的：此步骤主要是人工分析以前得到的数据，主要作用是确保数据集中没有垃圾数据    为了确保前两步有效，最简单的方法是用文本编辑器打开数据文件，查看得到的数据是否为空值</li>
+<li>还可以进一步浏览数据，分析是否可以识别出模式</li>
+<li>数据中是否存在明显的异常值，如某些数据点与数据集中的其他值存在明显的差异。</li>
+<li>通过一维、二维或三维图形展示数据也是不错的方法，<br>（然而大多数时候我们得到数据的特征值都不会低于三个，无法一次图形化展示所有特征）</li>
+<li>注：如果是在产品化系统中使用机器学习算法并且算法可以处理系统产生的数据格式，或者我们信任数据来源，可以直接跳过第3步。此步骤需要人工干预，如果在自动化系统中还需要人工干预，显然就降低了系统的价值。</li>
+</ul>
+</li>
+<li>训练算法</li>
+<li>测试算法</li>
+<li>使用算法</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/21/%E5%8D%81%E4%BA%94%E3%80%81React%EF%BC%9A%E7%AE%80%E5%8D%95%E7%82%B9%E9%A4%90%E5%AE%9E%E4%BE%8B%EF%BC%9A%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%8Chtml%E8%A7%A3%E6%9E%90%E5%86%99%E6%B3%95/" rel="prev" title="十五、React：简单点餐实例：知识点，html解析写法">
+      <i class="fa fa-chevron-left"></i> 十五、React：简单点餐实例：知识点，html解析写法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/27/%E3%80%8A%E6%9C%BA%E5%AD%A6%E5%9B%9B%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B4%20%E2%80%94%E2%80%94%20%E6%95%B0%E6%8D%AE%E5%88%92%E5%88%86%E3%80%81%E8%BD%AC%E6%8D%A2%E5%99%A8%E4%B8%8E%E4%BC%B0%E8%AE%A1%E5%99%A8%E3%80%81%E6%80%BB%E7%BB%93%EF%BC%88%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%89%E5%A4%A7%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93%EF%BC%89/" rel="next" title="《机学四》特征工程4 —— 数据划分、转换器与估计器、总结（特征工程三大部分总结）">
+      《机学四》特征工程4 —— 数据划分、转换器与估计器、总结（特征工程三大部分总结） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、基础概述"><span class="nav-number">1.</span> <span class="nav-text">一、基础概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、需明确问题"><span class="nav-number">2.</span> <span class="nav-text">二、需明确问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、具体要怎样做"><span class="nav-number">3.</span> <span class="nav-text">三、具体要怎样做</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、机器学习开发流程"><span class="nav-number">4.</span> <span class="nav-text">四、机器学习开发流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#流程解释"><span class="nav-number">4.1.</span> <span class="nav-text">流程解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1机器学习-模型-是什么？"><span class="nav-number">4.2.</span> <span class="nav-text">4.1机器学习[模型]是什么？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、机器学习算法分类"><span class="nav-number">5.</span> <span class="nav-text">五、机器学习算法分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-0-机学两种数据类型（用什么算法的主要判别依据）"><span class="nav-number">5.1.</span> <span class="nav-text">5.0 机学两种数据类型（用什么算法的主要判别依据）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#离散型数据："><span class="nav-number">5.1.1.</span> <span class="nav-text">离散型数据：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连续型数据："><span class="nav-number">5.1.2.</span> <span class="nav-text">连续型数据：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-怎样看是用分类还是回归学习算法？"><span class="nav-number">5.1.3.</span> <span class="nav-text">总结:怎样看是用分类还是回归学习算法？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1监督学习"><span class="nav-number">5.2.</span> <span class="nav-text">5.1监督学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#【监督学习特点】"><span class="nav-number">5.2.1.</span> <span class="nav-text">【监督学习特点】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-1分类问题"><span class="nav-number">5.2.2.</span> <span class="nav-text">5.1.1分类问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-2分类学习应用："><span class="nav-number">5.2.3.</span> <span class="nav-text">5.1.2分类学习应用：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-3-回归问题"><span class="nav-number">5.2.4.</span> <span class="nav-text">5.1.3 回归问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-4回归应用"><span class="nav-number">5.2.5.</span> <span class="nav-text">5.1.4回归应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2无监督学习"><span class="nav-number">5.3.</span> <span class="nav-text">5.2无监督学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#【无监督学习特点】"><span class="nav-number">5.3.1.</span> <span class="nav-text">【无监督学习特点】</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3习题"><span class="nav-number">5.4.</span> <span class="nav-text">5.3习题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、★★★机器学习步骤："><span class="nav-number">6.</span> <span class="nav-text">六、★★★机器学习步骤：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

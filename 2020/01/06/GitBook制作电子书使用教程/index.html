@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitBook制作电子书使用教程">
+<meta property="og:url" content="http://yoursite.com/2020/01/06/GitBook%E5%88%B6%E4%BD%9C%E7%94%B5%E5%AD%90%E4%B9%A6%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200106082529814.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200106082844807.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200106083028545.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-01-06T01:38:35.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:13:34.683Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200106082529814.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/06/GitBook%E5%88%B6%E4%BD%9C%E7%94%B5%E5%AD%90%E4%B9%A6%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GitBook制作电子书使用教程 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/06/GitBook%E5%88%B6%E4%BD%9C%E7%94%B5%E5%AD%90%E4%B9%A6%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GitBook制作电子书使用教程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-06 09:38:35" itemprop="dateCreated datePublished" datetime="2020-01-06T09:38:35+08:00">2020-01-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:13:34" itemprop="dateModified" datetime="2020-03-23T10:13:34+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>【官网】<a href="https://www.gitbook.com/" target="_blank" rel="noopener">https://www.gitbook.com/</a><br>参考：<a href="https://chrisniael.gitbooks.io/gitbook-documentation/content/build/ebookconvert.html" target="_blank" rel="noopener">https://chrisniael.gitbooks.io/gitbook-documentation/content/build/ebookconvert.html</a><br>GitBook 是一个基于 Node.js 的命令行工具，支持 Markdown 和 AsciiDoc 两种语法格式，可以输出 HTML、PDF、eBook 等格式的电子书。所以我更喜欢把 GitBook 定义为文档格式转换工具。</p>
+<p>GitBook 又与 Markdown 和 Git 息息相关，因为只有将它们结合起来使用，才能将它们的威力发挥到极致！因此，通常我们会选择合适的 Markdown 编辑工具以获得飞一般的写作体验；使用 GitBook 管理文档，预览、制作电子书；同时通过 Git 管理书籍内容的变更，并将其托管到云端（比如 GitHub、GitLab、码云，或者是自己搭建的 Git 服务器），实现多人协作。</p>
+<p>实际上，GitBook Editor 对于新手来说是个不错的选择，它集成了 GitBook、Git、Markdown 等功能，还支持将书籍同步到 gitbook.com 网站，使我们可以很方便地编辑和管理书籍。但是不幸的是，GitBook Editor 的注册和登录需要翻墙，即便注册成功了也可能登录不上，似乎是因为网站最近在升级。</p>
+<ul>
+<li>目前建议使用的搭配是 <code>GitBook + Typora + Git</code></li>
+<li>安装慢解决：<br><code>npm config set registry=http://registry.npm.taobao.org -g</code><h1 id="二、安装"><a href="#二、安装" class="headerlink" title="二、安装"></a>二、安装</h1><h2 id="1-首先需要安装-Node-js（下载地址：https-nodejs-org-en-download-）。"><a href="#1-首先需要安装-Node-js（下载地址：https-nodejs-org-en-download-）。" class="headerlink" title="1. 首先需要安装 Node.js（下载地址：https://nodejs.org/en/download/）。"></a>1. 首先需要安装 Node.js（下载地址：<a href="https://nodejs.org/en/download/）。" target="_blank" rel="noopener">https://nodejs.org/en/download/）。</a></h2><h2 id="2-执行以下命令全局（-g）安装-GitBook，安装完之后，就会多了一个-gitbook-命令。"><a href="#2-执行以下命令全局（-g）安装-GitBook，安装完之后，就会多了一个-gitbook-命令。" class="headerlink" title="2. 执行以下命令全局（-g）安装 GitBook，安装完之后，就会多了一个 gitbook 命令。"></a>2. 执行以下命令全局（-g）安装 GitBook，安装完之后，就会多了一个 gitbook 命令。</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install -g gitbook-cli</span><br><span class="line"><span class="comment">#或</span></span><br><span class="line"><span class="comment">#cnpm i gitbook -g</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>1.2安装PDF等格式输出支持【无用步骤】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install ebook-convert -g</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-安装markdown，git（Typora-Git）"><a href="#3-安装markdown，git（Typora-Git）" class="headerlink" title="3. 安装markdown，git（Typora + Git）"></a>3. 安装markdown，git（Typora + Git）</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Typora 下载地址：https://typora.io/</span><br><span class="line">Git 下载地址：https://git-scm.com/downloads</span><br></pre></td></tr></table></figure>
+<h1 id="三、使用"><a href="#三、使用" class="headerlink" title="三、使用"></a>三、使用</h1><h2 id="1-建立mybook-文件夹，并在内执行以下cmd命令："><a href="#1-建立mybook-文件夹，并在内执行以下cmd命令：" class="headerlink" title="1.建立mybook 文件夹，并在内执行以下cmd命令："></a>1.建立mybook 文件夹，并在内执行以下cmd命令：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook init</span><br></pre></td></tr></table></figure>
+<p>执行完后，你会看到多了两个文件 —— README.md 和 SUMMARY.md，它们的作用如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">README.md —— 书籍的介绍写在这个文件里</span><br><span class="line">SUMMARY.md —— 书籍的目录结构在这里配置</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-启动-Typora-来编辑这两个文件"><a href="#2-启动-Typora-来编辑这两个文件" class="headerlink" title="2. 启动 Typora 来编辑这两个文件"></a>2. 启动 Typora 来编辑这两个文件</h2><p><img src="https://img-blog.csdnimg.cn/20200106082529814.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="编辑-SUMMARY-md-文件，内容修改为："><a href="#编辑-SUMMARY-md-文件，内容修改为：" class="headerlink" title="编辑 SUMMARY.md 文件，内容修改为："></a>编辑 SUMMARY.md 文件，内容修改为：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 目录</span></span><br><span class="line"></span><br><span class="line">* [前言](README.md)</span><br><span class="line">* [第一章](Chapter1/README.md)</span><br><span class="line">  * [第<span class="number">1</span>节：衣](Chapter1/衣.md)</span><br><span class="line">  * [第<span class="number">2</span>节：食](Chapter1/食.md)</span><br><span class="line">  * [第<span class="number">3</span>节：住](Chapter1/住.md)</span><br><span class="line">  * [第<span class="number">4</span>节：行](Chapter1/行.md)</span><br><span class="line">* [第二章](Chapter2/README.md)</span><br><span class="line">* [第三章](Chapter3/README.md)</span><br><span class="line">* [第四章](Chapter4/README.md)</span><br></pre></td></tr></table></figure>
+<h2 id="3-再次执行-gitbook-init-命令"><a href="#3-再次执行-gitbook-init-命令" class="headerlink" title="3. 再次执行 gitbook init 命令"></a>3. 再次执行 gitbook init 命令</h2><p>回到命令行，在 mybook 文件夹中再次执行 <code>gitbook init</code> 命令。GitBook 会查找 SUMMARY.md 文件中描述的目录和文件，如果没有则会将其创建。</p>
+<ul>
+<li>Typora 是所见即所得（实时渲染）的 Markdown 编辑器，这时候它是这样的：<br><img src="https://img-blog.csdnimg.cn/20200106082844807.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h2 id="4-预览这本书"><a href="#4-预览这本书" class="headerlink" title="4. 预览这本书"></a>4. 预览这本书</h2>执行 <code>gitbook serve</code> 来预览这本书籍，执行命令后会对 Markdown 格式的文档进行转换，默认转换为 html 格式，最后提示 “Serving book on <a href="http://localhost:4000”。嗯，打开浏览器看一下吧：">http://localhost:4000”。嗯，打开浏览器看一下吧：</a><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook serve</span><br></pre></td></tr></table></figure>
+<a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a><br><img src="https://img-blog.csdnimg.cn/20200106083028545.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h2 id="5-构建书籍"><a href="#5-构建书籍" class="headerlink" title="5.构建书籍"></a>5.构建书籍</h2>执行 gitbook build 命令构建书籍:默认将生成的静态网站输出到 _book 目录。实际上，这一步也包含在 gitbook serve 里面，因为它们是 HTML，所以 GitBook 通过 Node.js 给你提供服务了。<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gitbook build</span><br><span class="line"></span><br><span class="line">建议用老版生成，新版出现不能跳转问题：</span><br><span class="line">gitbook build --gitbook=<span class="number">2.6</span><span class="number">.7</span></span><br></pre></td></tr></table></figure>
+<h2 id="6-相关命令"><a href="#6-相关命令" class="headerlink" title="6.相关命令"></a>6.相关命令</h2><h3 id="当然，build-命令可以指定路径："><a href="#当然，build-命令可以指定路径：" class="headerlink" title="当然，build 命令可以指定路径："></a>当然，build 命令可以指定路径：</h3></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook build [书籍路径] [输出路径]</span><br></pre></td></tr></table></figure>
+
+<h3 id="serve-命令也可以指定端口："><a href="#serve-命令也可以指定端口：" class="headerlink" title="serve 命令也可以指定端口："></a>serve 命令也可以指定端口：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook serve --port <span class="number">2333</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="你还可以生成-PDF-格式的电子书："><a href="#你还可以生成-PDF-格式的电子书：" class="headerlink" title="你还可以生成 PDF 格式的电子书："></a>你还可以生成 PDF 格式的电子书：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook pdf ./ ./mybook.pdf</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成-epub-格式的电子书："><a href="#生成-epub-格式的电子书：" class="headerlink" title="生成 epub 格式的电子书："></a>生成 epub 格式的电子书：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook epub ./ ./mybook.epub</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成-mobi-格式的电子书："><a href="#生成-mobi-格式的电子书：" class="headerlink" title="生成 mobi 格式的电子书："></a>生成 mobi 格式的电子书：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook mobi ./ ./mybook.mobi</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>如果生成不了，你可能还需要安装一些工具，比如 ebook-convert。或者在 Typora 中安装 Pandoc 进行导出。</p>
+</li>
+<li><p>除此之外，别忘了还可以用 Git 做版本管理呀！在 mybook 目录下执行 git init 初始化仓库，执行 git remote add 添加远程仓库（你得先在远端建好）。接着就可以愉快地 commit，push，pull … 啦！</p>
+</li>
+<li><p>不是程序员的小伙伴可能不太喜欢用命令行，那其实版本管理这部分可以下载安装 Git 或 GitHub 这些客户端程序，在图形界面上操作也是可以完成工作的。</p>
+</li>
+</ul>
+<h2 id="7-导出pdf等格式，问题："><a href="#7-导出pdf等格式，问题：" class="headerlink" title="7. 导出pdf等格式，问题："></a>7. 导出pdf等格式，问题：</h2><ul>
+<li><p>如果是要导出PDF，ePub或者mobi格式的电子书时，需要安装Calibre电子书阅读/管理器和命令行工具，不然可能会报错“EbookError: Error during ebook generation: ‘ebook-convert’”。</p>
+</li>
+<li><p>【calibre下载】<a href="https://pc.qq.com/detail/16/detail_1916.html" target="_blank" rel="noopener">https://pc.qq.com/detail/16/detail_1916.html</a><br><a href="https://calibre-ebook.com/download_windows64" target="_blank" rel="noopener">https://calibre-ebook.com/download_windows64</a> </p>
+</li>
+<li><p>下载完成后要配置环境变量,然后再<code>gitbook pdf</code>；</p>
+</li>
+</ul>
+<h2 id="8-生成的html不能跳转问题："><a href="#8-生成的html不能跳转问题：" class="headerlink" title="8.生成的html不能跳转问题："></a>8.生成的html不能跳转问题：</h2><h3 id="可能原因"><a href="#可能原因" class="headerlink" title="可能原因"></a>可能原因</h3><p>新版本的gitbook不支持了这个功能</p>
+<h3 id="具体原因"><a href="#具体原因" class="headerlink" title="具体原因"></a>具体原因</h3><p>由于点击事件被js代码禁用，所以点击没有反应，但是如果右键，在新窗口/新标签页打开的话是可以跳转的</p>
+<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><p>找到book_book\gitbook\theme.js代码，并修改</p>
+<ol>
+<li>找到项目目录gitbook</li>
+<li>找到目录下的theme.js文件</li>
+<li>找到下面的代码</li>
+<li>将if(m)改成if(false)</li>
+<li>由于代码是压缩后的，会没有空格，搜索的时候可以直接搜索： <code>if(m)for(n.handler&amp;&amp;</code></li>
+<li>修改完成后，再刷新即可。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (m)</span><br><span class="line">    <span class="keyword">for</span> (n.handler &amp;&amp; (i = n,</span><br><span class="line">    n = i.handler,</span><br><span class="line">    o = i.selector),</span><br><span class="line">    o &amp;&amp; de.find.matchesSelector(Ye, o),</span><br><span class="line">    n.guid || (n.guid = de.guid++),</span><br><span class="line">    (u = m.events) || (u = m.events = &#123;&#125;),</span><br><span class="line">    (a = m.handle) || (a = m.handle = <span class="function"><span class="keyword">function</span>(<span class="params">t</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"undefined"</span> != <span class="keyword">typeof</span> de &amp;&amp; de.event.triggered !== t.type ? de.event.dispatch.apply(e, <span class="built_in">arguments</span>) : <span class="keyword">void</span> <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">    ),</span><br><span class="line">    t = (t || <span class="string">""</span>).match(qe) || [<span class="string">""</span>],</span><br><span class="line">    l = t.length; l--; )</span><br><span class="line">        s = Ze.exec(t[l]) || [],</span><br><span class="line">        h = g = s[<span class="number">1</span>],</span><br><span class="line">        d = (s[<span class="number">2</span>] || <span class="string">""</span>).split(<span class="string">"."</span>).sort(),</span><br><span class="line">        h &amp;&amp; (f = de.event.special[h] || &#123;&#125;,</span><br><span class="line">        h = (o ? f.delegateType : f.bindType) || h,</span><br><span class="line">        f = de.event.special[h] || &#123;&#125;,</span><br><span class="line">        c = de.extend(&#123;</span><br><span class="line">            type: h,</span><br><span class="line">            origType: g,</span><br><span class="line">            data: r,</span><br><span class="line">            handler: n,</span><br><span class="line">            guid: n.guid,</span><br><span class="line">            selector: o,</span><br><span class="line">            needsContext: o &amp;&amp; de.expr.match.needsContext.test(o),</span><br><span class="line">            namespace: d.join(<span class="string">"."</span>)</span><br><span class="line">        &#125;, i),</span><br><span class="line">        (p = u[h]) || (p = u[h] = [],</span><br><span class="line">        p.delegateCount = <span class="number">0</span>,</span><br><span class="line">        f.setup &amp;&amp; f.setup.call(e, r, d, a) !== !<span class="number">1</span> || e.addEventListener &amp;&amp; e.addEventListener(h, a)),</span><br><span class="line">        f.add &amp;&amp; (f.add.call(e, c),</span><br><span class="line">        c.handler.guid || (c.handler.guid = n.guid)),</span><br><span class="line">        o ? p.splice(p.delegateCount++, <span class="number">0</span>, c) : p.push(c),</span><br><span class="line">        de.event.global[h] = !<span class="number">0</span>)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="永久解决生成的书不能跳转："><a href="#永久解决生成的书不能跳转：" class="headerlink" title="永久解决生成的书不能跳转："></a>永久解决生成的书不能跳转：</h2><h3 id="1卸载最新版本"><a href="#1卸载最新版本" class="headerlink" title="1卸载最新版本"></a>1卸载最新版本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook uninstall <span class="number">3.2</span><span class="number">.3</span></span><br></pre></td></tr></table></figure>
+<h3 id="2）安装老版本"><a href="#2）安装老版本" class="headerlink" title="2）安装老版本"></a>2）安装老版本</h3><p>指定用老版2.6.7本生成</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook build --gitbook=<span class="number">2.6</span><span class="number">.7</span></span><br></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitbook fetch <span class="number">2.6</span><span class="number">.7</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3）再安装新版本"><a href="#3）再安装新版本" class="headerlink" title="3）再安装新版本"></a>3）再安装新版本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在这里插入代码片</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/04/Django%EF%BC%88%E4%BA%94%EF%BC%891%20-%204%E7%AB%A0%E5%AE%9E%E6%88%98%EF%BC%9A%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E5%9B%BE%E4%B9%A6%E5%88%97%E8%A1%A8%E5%B9%B6%E6%B8%B2%E6%9F%93%E5%87%BA%E6%9D%A5%E3%80%81%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82urls.py%20path,re_path%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82%E8%AE%BE%E7%BD%AE%E3%80%81%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95/" rel="prev" title="Django（五）1 - 4章实战：从数据库读取图书列表并渲染出来、通过url传参urls.py path,re_path通过url传参设置、模板语法">
+      <i class="fa fa-chevron-left"></i> Django（五）1 - 4章实战：从数据库读取图书列表并渲染出来、通过url传参urls.py path,re_path通过url传参设置、模板语法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/06/Django%EF%BC%88%E5%85%AD%EF%BC%89%E5%AE%9E%E6%88%982%EF%BC%9A%E5%90%91%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B7%BB%E5%8A%A0%EF%BC%8C%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E3%80%81%E9%87%8D%E5%AE%9A%E5%90%91%E5%86%99%E6%B3%95%E3%80%81%E9%87%8D%E5%AE%9A%E5%90%91%E7%AE%80%E5%86%99/" rel="next" title="Django（六）实战2：向数据库添加，删除数据、重定向写法、重定向简写">
+      Django（六）实战2：向数据库添加，删除数据、重定向写法、重定向简写 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概述"><span class="nav-number">1.</span> <span class="nav-text">一、概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、安装"><span class="nav-number">2.</span> <span class="nav-text">二、安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-首先需要安装-Node-js（下载地址：https-nodejs-org-en-download-）。"><span class="nav-number">2.1.</span> <span class="nav-text">1. 首先需要安装 Node.js（下载地址：https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F;download&#x2F;）。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-执行以下命令全局（-g）安装-GitBook，安装完之后，就会多了一个-gitbook-命令。"><span class="nav-number">2.2.</span> <span class="nav-text">2. 执行以下命令全局（-g）安装 GitBook，安装完之后，就会多了一个 gitbook 命令。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-安装markdown，git（Typora-Git）"><span class="nav-number">2.3.</span> <span class="nav-text">3. 安装markdown，git（Typora + Git）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、使用"><span class="nav-number">3.</span> <span class="nav-text">三、使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-建立mybook-文件夹，并在内执行以下cmd命令："><span class="nav-number">3.1.</span> <span class="nav-text">1.建立mybook 文件夹，并在内执行以下cmd命令：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-启动-Typora-来编辑这两个文件"><span class="nav-number">3.2.</span> <span class="nav-text">2. 启动 Typora 来编辑这两个文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑-SUMMARY-md-文件，内容修改为："><span class="nav-number">3.2.1.</span> <span class="nav-text">编辑 SUMMARY.md 文件，内容修改为：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-再次执行-gitbook-init-命令"><span class="nav-number">3.3.</span> <span class="nav-text">3. 再次执行 gitbook init 命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-预览这本书"><span class="nav-number">3.4.</span> <span class="nav-text">4. 预览这本书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-构建书籍"><span class="nav-number">3.5.</span> <span class="nav-text">5.构建书籍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-相关命令"><span class="nav-number">3.6.</span> <span class="nav-text">6.相关命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#当然，build-命令可以指定路径："><span class="nav-number">3.6.1.</span> <span class="nav-text">当然，build 命令可以指定路径：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#serve-命令也可以指定端口："><span class="nav-number">3.6.2.</span> <span class="nav-text">serve 命令也可以指定端口：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#你还可以生成-PDF-格式的电子书："><span class="nav-number">3.6.3.</span> <span class="nav-text">你还可以生成 PDF 格式的电子书：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成-epub-格式的电子书："><span class="nav-number">3.6.4.</span> <span class="nav-text">生成 epub 格式的电子书：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成-mobi-格式的电子书："><span class="nav-number">3.6.5.</span> <span class="nav-text">生成 mobi 格式的电子书：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-导出pdf等格式，问题："><span class="nav-number">3.7.</span> <span class="nav-text">7. 导出pdf等格式，问题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-生成的html不能跳转问题："><span class="nav-number">3.8.</span> <span class="nav-text">8.生成的html不能跳转问题：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可能原因"><span class="nav-number">3.8.1.</span> <span class="nav-text">可能原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体原因"><span class="nav-number">3.8.2.</span> <span class="nav-text">具体原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决办法"><span class="nav-number">3.8.3.</span> <span class="nav-text">解决办法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#永久解决生成的书不能跳转："><span class="nav-number">3.9.</span> <span class="nav-text">永久解决生成的书不能跳转：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1卸载最新版本"><span class="nav-number">3.9.1.</span> <span class="nav-text">1卸载最新版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2）安装老版本"><span class="nav-number">3.9.2.</span> <span class="nav-text">2）安装老版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3）再安装新版本"><span class="nav-number">3.9.3.</span> <span class="nav-text">3）再安装新版本</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

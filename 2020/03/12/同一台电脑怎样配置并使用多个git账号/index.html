@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="同一台电脑怎样配置并使用多个git账号">
+<meta property="og:url" content="http://yoursite.com/2020/03/12/%E5%90%8C%E4%B8%80%E5%8F%B0%E7%94%B5%E8%84%91%E6%80%8E%E6%A0%B7%E9%85%8D%E7%BD%AE%E5%B9%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAgit%E8%B4%A6%E5%8F%B7/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200312190447109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200312201351318.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-03-12T12:02:55.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:13:37.720Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200312190447109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/12/%E5%90%8C%E4%B8%80%E5%8F%B0%E7%94%B5%E8%84%91%E6%80%8E%E6%A0%B7%E9%85%8D%E7%BD%AE%E5%B9%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAgit%E8%B4%A6%E5%8F%B7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>同一台电脑怎样配置并使用多个git账号 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/12/%E5%90%8C%E4%B8%80%E5%8F%B0%E7%94%B5%E8%84%91%E6%80%8E%E6%A0%B7%E9%85%8D%E7%BD%AE%E5%B9%B6%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAgit%E8%B4%A6%E5%8F%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          同一台电脑怎样配置并使用多个git账号
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-12 20:02:55" itemprop="dateCreated datePublished" datetime="2020-03-12T20:02:55+08:00">2020-03-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:13:37" itemprop="dateModified" datetime="2020-03-23T10:13:37+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<p>@<a href="文章目录：">TOC</a></p>
+<h1 id="一、基础设置"><a href="#一、基础设置" class="headerlink" title="一、基础设置"></a>一、基础设置</h1><h2 id="1-生成账号1密钥"><a href="#1-生成账号1密钥" class="headerlink" title="1.生成账号1密钥"></a>1.生成账号1密钥</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">"one@qq.com"</span></span><br><span class="line"><span class="comment">//接下来回车两次</span></span><br><span class="line"><span class="comment">/*第一次其实是让输生成密钥的名字，生成后放后你git命令所在的目录</span></span><br><span class="line"><span class="comment">效果同2.生成密钥</span></span><br><span class="line"><span class="comment">第二次是让输入密码，因为并不机密所以可以空着直接回车就好</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-生成账号2密钥"><a href="#2-生成账号2密钥" class="headerlink" title="2.生成账号2密钥"></a>2.生成账号2密钥</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">"two@qq.com"</span> -f /c/Users/Administrator/.ssh/id_rsa_two</span><br></pre></td></tr></table></figure>
+<h2 id="3-会在文件夹-C-Users-Administrator-ssh-看到对应四个文件："><a href="#3-会在文件夹-C-Users-Administrator-ssh-看到对应四个文件：" class="headerlink" title="3.会在文件夹(C:\Users\Administrator.ssh)看到对应四个文件："></a>3.会在文件夹(C:\Users\Administrator.ssh)看到对应四个文件：</h2><p>.pub的是公钥，其它两个是私钥不能泄漏给他人</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">id_rsa</span><br><span class="line">id_rsa.pub</span><br><span class="line">id_rsa_two</span><br><span class="line">id_rsa_two.pub</span><br></pre></td></tr></table></figure>
+<h2 id="4-把公钥放到对应的账号上"><a href="#4-把公钥放到对应的账号上" class="headerlink" title="4.把公钥放到对应的账号上"></a>4.把公钥放到对应的账号上</h2><h3 id="1-把id-rsa-two-pub加到你的第2个账号上"><a href="#1-把id-rsa-two-pub加到你的第2个账号上" class="headerlink" title="1.把id_rsa_two.pub加到你的第2个账号上"></a>1.把id_rsa_two.pub加到你的第2个账号上</h3><h3 id="2-把id-rsa-pub放到你的第1个git账号上"><a href="#2-把id-rsa-pub放到你的第1个git账号上" class="headerlink" title="2.把id_rsa.pub放到你的第1个git账号上"></a>2.把id_rsa.pub放到你的第1个git账号上</h3><h3 id="3-在git上右上图标setting—ssh—new-ssh-key"><a href="#3-在git上右上图标setting—ssh—new-ssh-key" class="headerlink" title="3.在git上右上图标setting—ssh—new ssh key"></a>3.在git上右上图标setting—ssh—new ssh key</h3><p><img src="https://img-blog.csdnimg.cn/20200312190447109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="5-把该key加到ssh-agent上。"><a href="#5-把该key加到ssh-agent上。" class="headerlink" title="5.把该key加到ssh agent上。"></a>5.把该key加到ssh agent上。</h2><h3 id="1-由于不是使用默认的-ssh-id-rsa，所以你需要显示告诉ssh-agent你的新key的位置"><a href="#1-由于不是使用默认的-ssh-id-rsa，所以你需要显示告诉ssh-agent你的新key的位置" class="headerlink" title="1.由于不是使用默认的.ssh/id_rsa，所以你需要显示告诉ssh agent你的新key的位置"></a>1.由于不是使用默认的.ssh/id_rsa，所以你需要显示告诉ssh agent你的新key的位置</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ssh-agent bash <span class="comment">//如果不能执行以下两句</span></span><br><span class="line"></span><br><span class="line">ssh-add ~<span class="regexp">/.ssh/i</span>d_rsa_tow <span class="comment">//linux用这个</span></span><br><span class="line"></span><br><span class="line">ssh-add id_rsa_two <span class="comment">//windows用这个</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//显示：</span></span><br><span class="line"><span class="comment">//Identity added: id_rsa_two (two@qq.com)</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-可以通过ssh-add-l来确认结果"><a href="#2-可以通过ssh-add-l来确认结果" class="headerlink" title="2. 可以通过ssh-add -l来确认结果"></a>2. 可以通过<code>ssh-add -l</code>来确认结果</h3><h2 id="6-新建并配置-ssh-config"><a href="#6-新建并配置-ssh-config" class="headerlink" title="6.新建并配置.ssh/config"></a>6.新建并配置.ssh/config</h2><h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">说明:</span><br><span class="line"># 注释</span><br><span class="line">Host 为域名别名</span><br><span class="line">Hostname:真实地址</span><br><span class="line">User:用户名</span><br><span class="line">IdentityFile:rsa存放地址</span><br></pre></td></tr></table></figure>
+<h3 id="a-windows实际内容"><a href="#a-windows实际内容" class="headerlink" title="a) windows实际内容"></a>a) windows实际内容</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认github账号</span></span><br><span class="line">Host github</span><br><span class="line">  HostName github.com</span><br><span class="line">  IdentityFile C:\Users\Administrator\.ssh\id_rsa</span><br><span class="line"></span><br><span class="line"><span class="comment"># github账号2</span></span><br><span class="line">Host github_two</span><br><span class="line">  HostName github.com</span><br><span class="line">  IdentityFile C:\Users\Administrator\.ssh\id_rsa_two</span><br></pre></td></tr></table></figure>
+
+<h3 id="b-linux实际内容"><a href="#b-linux实际内容" class="headerlink" title="b) linux实际内容"></a>b) linux实际内容</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#默认github账号</span></span><br><span class="line">Host github.com</span><br><span class="line">  HostName github.com</span><br><span class="line">  IdentityFile ~/.ssh/id_rsa</span><br><span class="line"></span><br><span class="line"><span class="comment"># github账号2</span></span><br><span class="line">Host github_two</span><br><span class="line">  HostName github.com</span><br><span class="line">  IdentityFile ~/.ssh/id_rsa_two</span><br></pre></td></tr></table></figure>
+<h2 id="7-测试配置是否生效"><a href="#7-测试配置是否生效" class="headerlink" title="7.测试配置是否生效"></a>7.测试配置是否生效</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github</span><br><span class="line"><span class="comment"># Hi sky! You've successfully authenticated, but GitHub does not provide shell access.</span></span><br><span class="line"></span><br><span class="line">$ ssh -T git@github_two</span><br><span class="line"><span class="comment"># Hi sky_two! You've successfully authenticated, but GitHub does not provide shell access.</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="8-这样，你就可以通过使用github-com别名github-two"><a href="#8-这样，你就可以通过使用github-com别名github-two" class="headerlink" title="8.这样，你就可以通过使用github.com别名github_two"></a>8.这样，你就可以通过使用github.com别名github_two</h2><h3 id="来明确说你要是使用id-rsa-two的SSH-key来连接github，即使用工作账号进行操作"><a href="#来明确说你要是使用id-rsa-two的SSH-key来连接github，即使用工作账号进行操作" class="headerlink" title="来明确说你要是使用id_rsa_two的SSH key来连接github，即使用工作账号进行操作"></a>来明确说你要是使用id_rsa_two的SSH key来连接github，即使用工作账号进行操作</h3><p>命令：<code>git remote add origin git@github_two:xxxx/test.git</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#本地建库</span><br><span class="line">$ git init</span><br><span class="line">$ git commit -am <span class="string">"first commit'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">#push到github上去</span></span><br><span class="line"><span class="string">$ git remote add origin git@github_two:xxxx/test.git</span></span><br><span class="line"><span class="string">$ git push origin master</span></span><br></pre></td></tr></table></figure>
+<h1 id="二、进阶：8步也可以如下设置"><a href="#二、进阶：8步也可以如下设置" class="headerlink" title="二、进阶：8步也可以如下设置"></a>二、进阶：8步也可以如下设置</h1><h2 id="1-清除git的全局设置-2-3二选一"><a href="#1-清除git的全局设置-2-3二选一" class="headerlink" title="1.清除git的全局设置(2.3二选一)"></a>1.清除git的全局设置(2.3二选一)</h2><p>使用 <code>git config --list</code> 查看当前配置。<br>如果你之前在设置本地仓库和github连接的时候设置过user.name和user.email，那么你必须首先清除掉该设置，因为不清除掉该设置，两个账号在提交资料的时候，验证肯定冲突。<br>只能设置一个全局的user.name和user.email，而你现在有两个账号。<br>【清除全局】：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global --unset user.name</span><br><span class="line">$ git config --global --unset user.email</span><br></pre></td></tr></table></figure>
+<h2 id="2-当前项目设置用户名邮箱（如选此步，3略过）"><a href="#2-当前项目设置用户名邮箱（如选此步，3略过）" class="headerlink" title="2.当前项目设置用户名邮箱（如选此步，3略过）"></a>2.当前项目设置用户名邮箱（如选此步，3略过）</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ git config user.name <span class="string">'sky_two'</span></span><br><span class="line">$ git config user.email <span class="string">'sky_two@qq.com'</span></span><br><span class="line"></span><br><span class="line">git remote add origin git@github_two:xxxx/test.git</span><br><span class="line"></span><br><span class="line">之后操作和一个账号就一样了</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-设置每个项目repo自己的user-email-ab二选一"><a href="#3-设置每个项目repo自己的user-email-ab二选一" class="headerlink" title="3. 设置每个项目repo自己的user.email(ab二选一)"></a>3. 设置每个项目repo自己的user.email(ab二选一)</h2><p><img src="https://img-blog.csdnimg.cn/20200312201351318.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>GitHub提供了两种方法来保护我们的邮箱隐私：使用GitHub专用的替代邮箱</strong></p>
+<h3 id="a-添加隐私邮箱"><a href="#a-添加隐私邮箱" class="headerlink" title="a) 添加隐私邮箱"></a>a) 添加隐私邮箱</h3><p><strong>如果勾选第1项，且不勾选第2项，要push成功，git这样设置：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ git config user.email <span class="string">"sky_one@gmail.com"</span></span><br><span class="line">$ git config user.name <span class="string">"sky_one"</span></span><br><span class="line"></span><br><span class="line">$ git config user.email <span class="string">"sky_two@126.com"</span></span><br><span class="line">$ git config user.name <span class="string">"sky_two"</span></span><br></pre></td></tr></table></figure>
+<p>git设置的邮箱尽量和github的邮箱保持一致</p>
+<h3 id="b-在推送时发现隐私邮箱则阻止推送"><a href="#b-在推送时发现隐私邮箱则阻止推送" class="headerlink" title="b) 在推送时发现隐私邮箱则阻止推送"></a>b) 在推送时发现隐私邮箱则阻止推送</h3><p><strong>如果勾选第2项，要push成功，要么去掉第一项勾选，要么把修改git设置：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ git config user.email <span class="string">"sky_one@users.noreply.github.com"</span></span><br><span class="line">$ git config user.name <span class="string">"sky_one"</span></span><br><span class="line"></span><br><span class="line">$ git config user.email <span class="string">"sky_two@users.noreply.github.com"</span></span><br><span class="line">$ git config user.name <span class="string">"sky_two"</span></span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/10/%E3%80%8AReact%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98%EF%BC%9A%E4%BA%94%E3%80%8B%E4%BA%A7%E5%93%81%E7%AE%A1%E7%90%86%EF%BC%88%E4%BA%94%EF%BC%89%E6%8F%90%E4%BA%A4!%E4%BF%AE%E6%94%B9%20%E5%95%86%E5%93%81%EF%BC%8C%E5%8F%8A%E8%B7%B3%E8%BD%AC%E5%9B%9E%E5%95%86%E5%93%81%E5%88%97%E8%A1%A8%E9%A1%B5%E9%9D%A2------%E5%95%86%E5%93%81%E7%AE%A1%E7%90%86%E5%AE%8C%E7%BB%93/" rel="prev" title="《React后台管理系统实战：五》产品管理（五）提交/修改 商品，及跳转回商品列表页面------商品管理完结">
+      <i class="fa fa-chevron-left"></i> 《React后台管理系统实战：五》产品管理（五）提交/修改 商品，及跳转回商品列表页面------商品管理完结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/13/git%20%E8%AE%BE%E7%BD%AE%E5%AE%8Cgitignore%E4%B8%8D%E8%B5%B7%E4%BD%9C%E7%94%A8%E8%A7%A3%E5%86%B3/" rel="next" title="git 设置完gitignore不起作用解决">
+      git 设置完gitignore不起作用解决 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、基础设置"><span class="nav-number">1.</span> <span class="nav-text">一、基础设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-生成账号1密钥"><span class="nav-number">1.1.</span> <span class="nav-text">1.生成账号1密钥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-生成账号2密钥"><span class="nav-number">1.2.</span> <span class="nav-text">2.生成账号2密钥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-会在文件夹-C-Users-Administrator-ssh-看到对应四个文件："><span class="nav-number">1.3.</span> <span class="nav-text">3.会在文件夹(C:\Users\Administrator.ssh)看到对应四个文件：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-把公钥放到对应的账号上"><span class="nav-number">1.4.</span> <span class="nav-text">4.把公钥放到对应的账号上</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-把id-rsa-two-pub加到你的第2个账号上"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.把id_rsa_two.pub加到你的第2个账号上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-把id-rsa-pub放到你的第1个git账号上"><span class="nav-number">1.4.2.</span> <span class="nav-text">2.把id_rsa.pub放到你的第1个git账号上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-在git上右上图标setting—ssh—new-ssh-key"><span class="nav-number">1.4.3.</span> <span class="nav-text">3.在git上右上图标setting—ssh—new ssh key</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-把该key加到ssh-agent上。"><span class="nav-number">1.5.</span> <span class="nav-text">5.把该key加到ssh agent上。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-由于不是使用默认的-ssh-id-rsa，所以你需要显示告诉ssh-agent你的新key的位置"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.由于不是使用默认的.ssh&#x2F;id_rsa，所以你需要显示告诉ssh agent你的新key的位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-可以通过ssh-add-l来确认结果"><span class="nav-number">1.5.2.</span> <span class="nav-text">2. 可以通过ssh-add -l来确认结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-新建并配置-ssh-config"><span class="nav-number">1.6.</span> <span class="nav-text">6.新建并配置.ssh&#x2F;config</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#说明"><span class="nav-number">1.6.0.1.</span> <span class="nav-text">说明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-windows实际内容"><span class="nav-number">1.6.1.</span> <span class="nav-text">a) windows实际内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-linux实际内容"><span class="nav-number">1.6.2.</span> <span class="nav-text">b) linux实际内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-测试配置是否生效"><span class="nav-number">1.7.</span> <span class="nav-text">7.测试配置是否生效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-这样，你就可以通过使用github-com别名github-two"><span class="nav-number">1.8.</span> <span class="nav-text">8.这样，你就可以通过使用github.com别名github_two</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#来明确说你要是使用id-rsa-two的SSH-key来连接github，即使用工作账号进行操作"><span class="nav-number">1.8.1.</span> <span class="nav-text">来明确说你要是使用id_rsa_two的SSH key来连接github，即使用工作账号进行操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、进阶：8步也可以如下设置"><span class="nav-number">2.</span> <span class="nav-text">二、进阶：8步也可以如下设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-清除git的全局设置-2-3二选一"><span class="nav-number">2.1.</span> <span class="nav-text">1.清除git的全局设置(2.3二选一)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-当前项目设置用户名邮箱（如选此步，3略过）"><span class="nav-number">2.2.</span> <span class="nav-text">2.当前项目设置用户名邮箱（如选此步，3略过）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-设置每个项目repo自己的user-email-ab二选一"><span class="nav-number">2.3.</span> <span class="nav-text">3. 设置每个项目repo自己的user.email(ab二选一)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-添加隐私邮箱"><span class="nav-number">2.3.1.</span> <span class="nav-text">a) 添加隐私邮箱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-在推送时发现隐私邮箱则阻止推送"><span class="nav-number">2.3.2.</span> <span class="nav-text">b) 在推送时发现隐私邮箱则阻止推送</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

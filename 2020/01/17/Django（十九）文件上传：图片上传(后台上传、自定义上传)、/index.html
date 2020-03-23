@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、基本设置参考：https:&#x2F;&#x2F;docs.djangoproject.com&#x2F;zh-hans&#x2F;3.0&#x2F;topics&#x2F;http&#x2F;file-uploads&#x2F; 1）配置project1&#x2F;settings.py因为图片也属于静态文件，所以保存到static目录下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django（十九）文件上传：图片上传(后台上传、自定义上传)、">
+<meta property="og:url" content="http://yoursite.com/2020/01/17/Django%EF%BC%88%E5%8D%81%E4%B9%9D%EF%BC%89%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%EF%BC%9A%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0(%E5%90%8E%E5%8F%B0%E4%B8%8A%E4%BC%A0%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%8A%E4%BC%A0)%E3%80%81/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="一、基本设置参考：https:&#x2F;&#x2F;docs.djangoproject.com&#x2F;zh-hans&#x2F;3.0&#x2F;topics&#x2F;http&#x2F;file-uploads&#x2F; 1）配置project1&#x2F;settings.py因为图片也属于静态文件，所以保存到static目录下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200117162224559.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-01-17T10:27:58.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.398Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200117162224559.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/17/Django%EF%BC%88%E5%8D%81%E4%B9%9D%EF%BC%89%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%EF%BC%9A%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0(%E5%90%8E%E5%8F%B0%E4%B8%8A%E4%BC%A0%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%8A%E4%BC%A0)%E3%80%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Django（十九）文件上传：图片上传(后台上传、自定义上传)、 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/17/Django%EF%BC%88%E5%8D%81%E4%B9%9D%EF%BC%89%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%EF%BC%9A%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0(%E5%90%8E%E5%8F%B0%E4%B8%8A%E4%BC%A0%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%8A%E4%BC%A0)%E3%80%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Django（十九）文件上传：图片上传(后台上传、自定义上传)、
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-17 18:27:58" itemprop="dateCreated datePublished" datetime="2020-01-17T18:27:58+08:00">2020-01-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、基本设置"><a href="#一、基本设置" class="headerlink" title="一、基本设置"></a>一、基本设置</h1><p>参考：<a href="https://docs.djangoproject.com/zh-hans/3.0/topics/http/file-uploads/" target="_blank" rel="noopener">https://docs.djangoproject.com/zh-hans/3.0/topics/http/file-uploads/</a></p>
+<h2 id="1）配置project1-settings-py"><a href="#1）配置project1-settings-py" class="headerlink" title="1）配置project1/settings.py"></a>1）配置project1/settings.py</h2><p>因为图片也属于静态文件，所以保存到static目录下。</p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MEDIA_ROOT=os.path.join(BASE_DIR,<span class="string">"static/media"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="2）在static目录下创建media目录，再创建应用名称的目录，此例为app1"><a href="#2）在static目录下创建media目录，再创建应用名称的目录，此例为app1" class="headerlink" title="2）在static目录下创建media目录，再创建应用名称的目录，此例为app1"></a>2）在static目录下创建media目录，再创建应用名称的目录，此例为app1</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">F:\Test\django-demo\project1&gt;tree /f</span><br><span class="line">F:.</span><br><span class="line">│  db.sqlite3</span><br><span class="line">│  manage.py</span><br><span class="line">│</span><br><span class="line">├─app1</span><br><span class="line">│  │  admin.py</span><br><span class="line">│  │  apps.py</span><br><span class="line">│  │  models.py</span><br><span class="line">│  │  tests.py</span><br><span class="line">│  │  urls.py</span><br><span class="line">│  │  views.py</span><br><span class="line">│  │  __init__.py</span><br><span class="line">│  │</span><br><span class="line">│  ├─migrations</span><br><span class="line">│  │  │  __init__.py</span><br><span class="line">│  │  │</span><br><span class="line">│  │  └─__pycache__</span><br><span class="line">│  │          __init__.cpython<span class="number">-37.</span>pyc</span><br><span class="line">│  └─</span><br><span class="line">│</span><br><span class="line">├─project1</span><br><span class="line">│  │  asgi.py</span><br><span class="line">│  │  settings.py</span><br><span class="line">│  │  urls.py</span><br><span class="line">│  │  wsgi.py</span><br><span class="line">│  │  __init__.py</span><br><span class="line">│  │</span><br><span class="line">│  └─</span><br><span class="line">│</span><br><span class="line">├─static</span><br><span class="line">│  ├─css</span><br><span class="line">│  ├─images</span><br><span class="line">│  ├─js</span><br><span class="line">│  └─media</span><br><span class="line">│      └─app1</span><br><span class="line">└─templates</span><br><span class="line">    └─app1</span><br><span class="line">            index.html</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、上传图片"><a href="#二、上传图片" class="headerlink" title="二、上传图片"></a>二、上传图片</h1><h2 id="模型知识回顾："><a href="#模型知识回顾：" class="headerlink" title="模型知识回顾："></a>模型知识回顾：</h2><p>在七章<a href="https://blog.csdn.net/u010132177/article/details/103855700" target="_blank" rel="noopener">https://blog.csdn.net/u010132177/article/details/103855700</a></p>
+<h3 id="字段类型里有两个类型："><a href="#字段类型里有两个类型：" class="headerlink" title="字段类型里有两个类型："></a>字段类型里有两个类型：</h3><ol>
+<li>FileField：上传文件字段。</li>
+<li>ImageField：继承于FileField，对上传的内容进行校验，确保是有效的图片。<h3 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h3><h4 id="1）执行迁移"><a href="#1）执行迁移" class="headerlink" title="1）执行迁移"></a>1）执行迁移</h4></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br></pre></td></tr></table></figure>
+<h4 id="2）执行迁移-如果第1次不执行则3提示不存在auth表"><a href="#2）执行迁移-如果第1次不执行则3提示不存在auth表" class="headerlink" title="2）执行迁移(如果第1次不执行则3提示不存在auth表)"></a>2）执行迁移(如果第1次不执行则3提示不存在auth表)</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+<h4 id="3）创建管理员用户"><a href="#3）创建管理员用户" class="headerlink" title="3）创建管理员用户"></a>3）创建管理员用户</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py createsuperuser</span><br></pre></td></tr></table></figure>
+<h4 id="4）如果第2次执行迁移提示没有更改项"><a href="#4）如果第2次执行迁移提示没有更改项" class="headerlink" title="4）如果第2次执行迁移提示没有更改项"></a>4）如果第2次执行迁移提示没有更改项</h4><p>可修改migrations文件夹下的0001_initial.py文件名，或删除数据库里的migrations表的对应0001_initial那条</p>
+<h4 id="5）相关详细操作见全栈视频10图片上传第1节"><a href="#5）相关详细操作见全栈视频10图片上传第1节" class="headerlink" title="5）相关详细操作见全栈视频10图片上传第1节"></a>5）相关详细操作见全栈视频10图片上传第1节</h4><h4 id="6）在python中进行图片操作，需要安装包PIL。"><a href="#6）在python中进行图片操作，需要安装包PIL。" class="headerlink" title="6）在python中进行图片操作，需要安装包PIL。"></a>6）在python中进行图片操作，需要安装包PIL。</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install Pillow==<span class="number">3.4</span><span class="number">.1</span></span><br></pre></td></tr></table></figure>
+<h2 id="1-后台管理admin页面上传"><a href="#1-后台管理admin页面上传" class="headerlink" title="1. 后台管理admin页面上传"></a>1. 后台管理admin页面上传</h2><h3 id="0）创建包含图片的模型类"><a href="#0）创建包含图片的模型类" class="headerlink" title="0）创建包含图片的模型类"></a>0）创建包含图片的模型类</h3><p>将模型类的属性定义成models.ImageField类型。</p>
+<h3 id="1）打开app1-models-py文件，定义模型类PicTest。"><a href="#1）打开app1-models-py文件，定义模型类PicTest。" class="headerlink" title="1）打开app1/models.py文件，定义模型类PicTest。"></a>1）打开app1/models.py文件，定义模型类PicTest。</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PicTest</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    pic = models.ImageField(upload_to=<span class="string">'booktest/'</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="2）回到命令行中，生成迁移。"><a href="#2）回到命令行中，生成迁移。" class="headerlink" title="2）回到命令行中，生成迁移。"></a>2）回到命令行中，生成迁移。</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br></pre></td></tr></table></figure>
+<h3 id="3）打开booktest-migrations-0001-initial-py文件，删除AreaInfo部分，因为这个表已经存在。"><a href="#3）打开booktest-migrations-0001-initial-py文件，删除AreaInfo部分，因为这个表已经存在。" class="headerlink" title="3）打开booktest/migrations/0001_initial.py文件，删除AreaInfo部分，因为这个表已经存在。"></a>3）打开booktest/migrations/0001_initial.py文件，删除AreaInfo部分，因为这个表已经存在。</h3><p><img src="https://img-blog.csdnimg.cn/20200117162224559.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="4）回到命令行中，执行迁移。"><a href="#4）回到命令行中，执行迁移。" class="headerlink" title="4）回到命令行中，执行迁移。"></a>4）回到命令行中，执行迁移。</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+
+<p>如果之前有操作过图书类、英雄类模型创建过数据表，又因为当前没有定义图书、英雄模型类，会提示“是否删除”，输入“no”后回车，表示不删除。</p>
+<h3 id="5）注册1步写的模型类"><a href="#5）注册1步写的模型类" class="headerlink" title="5）注册1步写的模型类"></a>5）注册1步写的模型类</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> PicTest <span class="comment"># 【1】导入app1目录下的models文件内的PicTest模型类</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Register your models here.</span></span><br><span class="line"></span><br><span class="line">admin.site.register(PicTest) <span class="comment"># 【2】注册模型类</span></span><br></pre></td></tr></table></figure>
+<h3 id="6）运行项目登录后台：http-127-0-0-1-8000-admin"><a href="#6）运行项目登录后台：http-127-0-0-1-8000-admin" class="headerlink" title="6）运行项目登录后台：http://127.0.0.1:8000/admin"></a>6）运行项目登录后台：<a href="http://127.0.0.1:8000/admin" target="_blank" rel="noopener">http://127.0.0.1:8000/admin</a></h3><p>运行项目：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">py manage.py runserver</span><br></pre></td></tr></table></figure>
+<ul>
+<li>依次点进去即可看到上传图片按键：首页 › App1 › Pic tests › 增加 pic test</li>
+<li>上传一个图片即可在static/media/app1下看到刚上传的图片</li>
+<li>如果上传非有效图片，系统会自动帮检测，并给出提示</li>
+</ul>
+<h2 id="2-自定义上传页面"><a href="#2-自定义上传页面" class="headerlink" title=" 2.自定义上传页面"></a><font color='red'> 2.自定义上传页面</font></h2><h3 id="1-创建模板templates-upload-pic-html"><a href="#1-创建模板templates-upload-pic-html" class="headerlink" title="1)创建模板templates/upload_pic.html"></a>1)创建模板templates/upload_pic.html</h3><p>【1】图片上传必须要设置enctype=”multipart/form-data”，后台才能接收到数据<br>【2】post上传别忘记带上验证标识<code>{ % csrf_token % }</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>自定义图片上传<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">&lt;!-- 【1】图片上传必须要设置enctype="multipart/form-data"，</span></span><br><span class="line"><span class="comment">	后台才能接收到数据 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">'post'</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span> <span class="attr">action</span>=<span class="string">"/upload_handle/"</span>&gt;</span></span><br><span class="line">		&#123;% csrf_token %&#125; &#123;# 【2】post上传别忘记带上验证标识 #&#125;</span><br><span class="line">		<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"pic"</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"上传"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-编写视频函数app1-views-py"><a href="#2-编写视频函数app1-views-py" class="headerlink" title="2)编写视频函数app1/views.py"></a>2)编写视频函数app1/views.py</h3><p>【1-5】<br>图上上传处理,图片2种类型：</p>
+<ol>
+<li>小于2.5M放在内存中：<code>&lt;class &#39;django.core.files.uploadedfile.InMemoryUploadedFile&#39;&gt;</code></li>
+<li>大于2.5放在硬盘上：<code>&lt;class &#39;django.core.files.uploadedfile.TemporaryUploadedFile&#39;&gt;</code><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse</span><br><span class="line"><span class="keyword">from</span> project1.settings <span class="keyword">import</span> MEDIA_ROOT <span class="comment">#导入上传文件保存路径 或 from django.conf import settings</span></span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> PicTest <span class="comment">#导入图片模型类</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># /index</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> render(request,<span class="string">'app1/index.html'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># /show_upload</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_upload</span><span class="params">(request)</span>:</span></span><br><span class="line">	<span class="string">'''图片上传页'''</span></span><br><span class="line">	<span class="keyword">return</span> render(request,<span class="string">'app1/upload_pic.html'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># /upload_handle</span></span><br><span class="line"><span class="comment"># 图上上传处理,图片2种类型：</span></span><br><span class="line"><span class="comment"># 小于2.5M放在内存中：&lt;class 'django.core.files.uploadedfile.InMemoryUploadedFile'&gt;</span></span><br><span class="line"><span class="comment"># 大于2.5放在硬盘上：&lt;class 'django.core.files.uploadedfile.TemporaryUploadedFile'&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload_handle</span><span class="params">(request)</span>:</span></span><br><span class="line">	<span class="string">'''图片上传处理页'''</span></span><br><span class="line">	<span class="comment">#【1】得到图片</span></span><br><span class="line">	pic=request.FILES[<span class="string">'pic'</span>]</span><br><span class="line">	<span class="comment">#【2】拼接图片保存路径+图片名</span></span><br><span class="line">	save_path=<span class="string">"%s/app1/%s"</span>%(MEDIA_ROOT,pic.name)</span><br><span class="line">	<span class="comment">#【3】保存图片到指定路径，因为图片是2进制式，因此用wb，</span></span><br><span class="line">	<span class="keyword">with</span> open(save_path,<span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">		<span class="comment"># pic.chunks()为图片的一系列数据，它是一一段段的，所以要用for逐个读取</span></span><br><span class="line">		<span class="keyword">for</span> content <span class="keyword">in</span> pic.chunks():</span><br><span class="line">			f.write(content)</span><br><span class="line"></span><br><span class="line">	<span class="comment">#【4】保存图片路径到数据库，此处只保存其相对上传目录的路径</span></span><br><span class="line">	PicTest.objects.create(goods_pic=<span class="string">'app1/%s'</span>%pic.name)</span><br><span class="line"></span><br><span class="line">	<span class="comment">#【5】别忘记返回信息</span></span><br><span class="line">	<span class="keyword">return</span> HttpResponse(<span class="string">'上传成功，图片地址：app1/%s'</span>%pic.name)</span><br></pre></td></tr></table></figure>
+<h3 id="3-app1-urls-py配置"><a href="#3-app1-urls-py配置" class="headerlink" title="3)app1/urls.py配置"></a>3)app1/urls.py配置</h3></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""project1 URL Configuration</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">The `urlpatterns` list routes URLs to views. For more information please see:</span></span><br><span class="line"><span class="string">    https://docs.djangoproject.com/en/3.0/topics/http/urls/</span></span><br><span class="line"><span class="string">Examples:</span></span><br><span class="line"><span class="string">Function views</span></span><br><span class="line"><span class="string">    1. Add an import:  from my_app import views</span></span><br><span class="line"><span class="string">    2. Add a URL to urlpatterns:  path('', views.home, name='home')</span></span><br><span class="line"><span class="string">Class-based views</span></span><br><span class="line"><span class="string">    1. Add an import:  from other_app.views import Home</span></span><br><span class="line"><span class="string">    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')</span></span><br><span class="line"><span class="string">Including another URLconf</span></span><br><span class="line"><span class="string">    1. Import the include() function: from django.urls import include, path</span></span><br><span class="line"><span class="string">    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"><span class="keyword">from</span> app1 <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">'index/'</span>, views.index),</span><br><span class="line">    </span><br><span class="line">    path(<span class="string">'show_upload/'</span>,views.show_upload),<span class="comment"># 图片上传页</span></span><br><span class="line">    path(<span class="string">'upload_handle/'</span>,views.upload_handle),<span class="comment"># 图片上传处理页</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="效果：http-127-0-0-1-8000-show-upload"><a href="#效果：http-127-0-0-1-8000-show-upload" class="headerlink" title="效果：http://127.0.0.1:8000/show_upload/"></a>效果：<a href="http://127.0.0.1:8000/show_upload/" target="_blank" rel="noopener">http://127.0.0.1:8000/show_upload/</a></h3><p>上传图片操作后会返回上传成功，及图片地址。<br>对应目录下也会多一个刚上传的图片。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/17/Django%EF%BC%88%E5%8D%81%E5%85%AB%EF%BC%89%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%EF%BC%9A%E5%88%97%E8%A1%A8%E9%A1%B5%E9%80%89%E9%A1%B9%E3%80%81%E7%BC%96%E8%BE%91%E9%A1%B5%E9%80%89%E9%A1%B9%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%90%8E%E5%8F%B0%E9%A1%B5%E9%9D%A2/" rel="prev" title="Django（十八）后台管理-列表页选项、编辑页选项、自定义后台页面">
+      <i class="fa fa-chevron-left"></i> Django（十八）后台管理-列表页选项、编辑页选项、自定义后台页面
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/17/Mysql8.0%E5%85%8D%E5%AE%89%E8%A3%85%E5%8C%85%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95/" rel="next" title="Mysql8.0免安装包配置方法">
+      Mysql8.0免安装包配置方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、基本设置"><span class="nav-number">1.</span> <span class="nav-text">一、基本设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1）配置project1-settings-py"><span class="nav-number">1.1.</span> <span class="nav-text">1）配置project1&#x2F;settings.py</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2）在static目录下创建media目录，再创建应用名称的目录，此例为app1"><span class="nav-number">1.2.</span> <span class="nav-text">2）在static目录下创建media目录，再创建应用名称的目录，此例为app1</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、上传图片"><span class="nav-number">2.</span> <span class="nav-text">二、上传图片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模型知识回顾："><span class="nav-number">2.1.</span> <span class="nav-text">模型知识回顾：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字段类型里有两个类型："><span class="nav-number">2.1.1.</span> <span class="nav-text">字段类型里有两个类型：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作："><span class="nav-number">2.1.2.</span> <span class="nav-text">准备工作：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1）执行迁移"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">1）执行迁移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2）执行迁移-如果第1次不执行则3提示不存在auth表"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">2）执行迁移(如果第1次不执行则3提示不存在auth表)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3）创建管理员用户"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">3）创建管理员用户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4）如果第2次执行迁移提示没有更改项"><span class="nav-number">2.1.2.4.</span> <span class="nav-text">4）如果第2次执行迁移提示没有更改项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5）相关详细操作见全栈视频10图片上传第1节"><span class="nav-number">2.1.2.5.</span> <span class="nav-text">5）相关详细操作见全栈视频10图片上传第1节</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6）在python中进行图片操作，需要安装包PIL。"><span class="nav-number">2.1.2.6.</span> <span class="nav-text">6）在python中进行图片操作，需要安装包PIL。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-后台管理admin页面上传"><span class="nav-number">2.2.</span> <span class="nav-text">1. 后台管理admin页面上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0）创建包含图片的模型类"><span class="nav-number">2.2.1.</span> <span class="nav-text">0）创建包含图片的模型类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1）打开app1-models-py文件，定义模型类PicTest。"><span class="nav-number">2.2.2.</span> <span class="nav-text">1）打开app1&#x2F;models.py文件，定义模型类PicTest。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2）回到命令行中，生成迁移。"><span class="nav-number">2.2.3.</span> <span class="nav-text">2）回到命令行中，生成迁移。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3）打开booktest-migrations-0001-initial-py文件，删除AreaInfo部分，因为这个表已经存在。"><span class="nav-number">2.2.4.</span> <span class="nav-text">3）打开booktest&#x2F;migrations&#x2F;0001_initial.py文件，删除AreaInfo部分，因为这个表已经存在。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4）回到命令行中，执行迁移。"><span class="nav-number">2.2.5.</span> <span class="nav-text">4）回到命令行中，执行迁移。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5）注册1步写的模型类"><span class="nav-number">2.2.6.</span> <span class="nav-text">5）注册1步写的模型类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6）运行项目登录后台：http-127-0-0-1-8000-admin"><span class="nav-number">2.2.7.</span> <span class="nav-text">6）运行项目登录后台：http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;admin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-自定义上传页面"><span class="nav-number">2.3.</span> <span class="nav-text"> 2.自定义上传页面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-创建模板templates-upload-pic-html"><span class="nav-number">2.3.1.</span> <span class="nav-text">1)创建模板templates&#x2F;upload_pic.html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-编写视频函数app1-views-py"><span class="nav-number">2.3.2.</span> <span class="nav-text">2)编写视频函数app1&#x2F;views.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-app1-urls-py配置"><span class="nav-number">2.3.3.</span> <span class="nav-text">3)app1&#x2F;urls.py配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：http-127-0-0-1-8000-show-upload"><span class="nav-number">2.3.4.</span> <span class="nav-text">效果：http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;show_upload&#x2F;</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

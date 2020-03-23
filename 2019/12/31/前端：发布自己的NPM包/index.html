@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端：发布自己的NPM包">
+<meta property="og:url" content="http://yoursite.com/2019/12/31/%E5%89%8D%E7%AB%AF%EF%BC%9A%E5%8F%91%E5%B8%83%E8%87%AA%E5%B7%B1%E7%9A%84NPM%E5%8C%85/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231125835773.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231130008768.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231130844566.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231125001687.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231125021359.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231131041876.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231125121740.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231131123375.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231131444402.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231131518556.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231131610694.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231131629835.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231131643407.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-12-31T04:57:04.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:13:37.045Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191231125835773.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/31/%E5%89%8D%E7%AB%AF%EF%BC%9A%E5%8F%91%E5%B8%83%E8%87%AA%E5%B7%B1%E7%9A%84NPM%E5%8C%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>前端：发布自己的NPM包 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/31/%E5%89%8D%E7%AB%AF%EF%BC%9A%E5%8F%91%E5%B8%83%E8%87%AA%E5%B7%B1%E7%9A%84NPM%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端：发布自己的NPM包
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-31 12:57:04" itemprop="dateCreated datePublished" datetime="2019-12-31T12:57:04+08:00">2019-12-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:13:37" itemprop="dateModified" datetime="2020-03-23T10:13:37+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.jianshu.com/p/ea64fd01679c" target="_blank" rel="noopener">https://www.jianshu.com/p/ea64fd01679c</a><br><a href="https://www.jianshu.com/p/7bba18925fbf" target="_blank" rel="noopener">https://www.jianshu.com/p/7bba18925fbf</a></p>
+<h2 id="1-到官网注册："><a href="#1-到官网注册：" class="headerlink" title="1.到官网注册："></a>1.到官网注册：</h2><p><a href="https://www.npmjs.com" target="_blank" rel="noopener">https://www.npmjs.com</a></p>
+<ol>
+<li>注册后一定要进行邮箱验证，否则后面进行组件包发布时候会提示403错误。</li>
+<li>去npm仓库中输入一下“我们即将要起的包名”，看是否可以查找到；<br><img src="https://img-blog.csdnimg.cn/20191231125835773.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>2 直接使用npm install <packagename>，如果能够下载下来，那么说明这个包名在npm仓库是存在的，也就是不可使用的。</li>
+<li>3 这样提前验证一下，能够避免一些发布(npm publish)时会出现的这个错误<br><img src="https://img-blog.csdnimg.cn/20191231130008768.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这个错误就是说，npm仓库中已经存在这个包名的库了，我没有权限去发布。<h2 id="2、在本地新建一个项目，在cmd里输入命令进入项目文件夹；"><a href="#2、在本地新建一个项目，在cmd里输入命令进入项目文件夹；" class="headerlink" title="2、在本地新建一个项目，在cmd里输入命令进入项目文件夹；"></a>2、在本地新建一个项目，在cmd里输入命令进入项目文件夹；</h2></li>
+</ol>
+<h2 id="3、使用npm-init-命令初始化当前项目信息，需要填写的信息是："><a href="#3、使用npm-init-命令初始化当前项目信息，需要填写的信息是：" class="headerlink" title="3、使用npm init 命令初始化当前项目信息，需要填写的信息是："></a>3、使用npm init 命令初始化当前项目信息，需要填写的信息是：</h2><p>配置项：</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>意义</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name</td>
+<td>填写你这个包的名字    默认是你这个文件夹的名字    不过这里要着重说一下，最好先去npm上找一下有没有同名的包。最好的测试方式就是，在命令行里面输入npm install 你要取的名字，如果报错，那么很好，npm上没有跟你同名的包，你可以放心大胆地把包发布出去。如果成功下载下来了。。。那么很不幸，改名字吧。。。</td>
+<td></td>
+</tr>
+<tr>
+<td>version</td>
+<td>你这个包的版本</td>
+<td>默认是1.0.0</td>
+</tr>
+<tr>
+<td>description</td>
+<td>项目描述</td>
+<td></td>
+</tr>
+<tr>
+<td>entry point</td>
+<td>入口文件</td>
+<td>默认是Index.js    你也可以自己填写你自己的文件名</td>
+</tr>
+<tr>
+<td>test command</td>
+<td>测试命令</td>
+<td></td>
+</tr>
+<tr>
+<td>git repository</td>
+<td>这个是git仓库地址        如果你的包是先放到github上或者其他git仓库里，这时候你的文件夹里面会存在一个隐藏的.git目录，npm会读到这个目录作为这一项的默认值。如果没有的话，直接回车继续。</td>
+<td></td>
+</tr>
+<tr>
+<td>keyword</td>
+<td>这个是一个重点，这个关系到有多少人会搜到你的npm包。尽量使用贴切的关键字作为这个包的索引。</td>
+<td></td>
+</tr>
+<tr>
+<td>author</td>
+<td>作者    -    写你的账号或者你的github账号吧</td>
+<td></td>
+</tr>
+<tr>
+<td>license</td>
+<td>执照-    这个直接回车，开源文件来着。。。</td>
+<td></td>
+</tr>
+<tr>
+<td>成功</td>
+<td>然后它就会问你Are you ok?</td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">"name": "my-app",             //包的名称  </span><br><span class="line">"version": "1.0.0",        //版本号  </span><br><span class="line">"description": "仅供测试，别下载",    //包的描述  </span><br><span class="line">"main": "index.js",                    //文件入口，默认是index.js，可修改  </span><br><span class="line">"scripts": &#123;  </span><br><span class="line">  "test": "echo \"Error: no test specified\" &amp;&amp; exit 1"    //测试命令，可以不填直接回车  </span><br><span class="line">&#125;,  </span><br><span class="line">"keywords": [  </span><br><span class="line">  <span class="string">"测试"</span>                                        <span class="comment">//项目关键词，供搜索  </span></span><br><span class="line">],  </span><br><span class="line">"author": "###",                            //作者名称  </span><br><span class="line">"license": "ISC",                            //包遵循的开源协议，默认是ISC  </span><br><span class="line">"dependencies": &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以添加完项目名称和版本号后一路回车，知道出现，is this OK？回车后回到文件夹，会多出来一个package.json，里面就是刚才填写的信息。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"jsutils-100"</span>,</span><br><span class="line">  <span class="string">"version"</span>: <span class="string">"1.0.1-alpha.2"</span>,</span><br><span class="line">  <span class="string">"author"</span>: <span class="string">"spring.hehe.v5"</span>,</span><br><span class="line">  <span class="string">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"lodash"</span>: <span class="string">"^4.17.10"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"test"</span>: <span class="string">"jest"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"jest"</span>: <span class="string">"^23.5.0"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"description"</span>: <span class="string">"在 lodash 基础上扩展的一些 jsUtils"</span>,</span><br><span class="line">  <span class="string">"main"</span>: <span class="string">"index.js"</span>,</span><br><span class="line">  <span class="string">"repository"</span>: &#123;</span><br><span class="line">    <span class="string">"type"</span>: <span class="string">"git"</span>,</span><br><span class="line">    <span class="string">"url"</span>: <span class="string">"git+https://github.com/springHyc/jsUtils.git"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"keywords"</span>: [</span><br><span class="line">    <span class="string">"jsUtils"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"license"</span>: <span class="string">"ISC"</span>,</span><br><span class="line">  <span class="string">"bugs"</span>: &#123;</span><br><span class="line">    <span class="string">"url"</span>: <span class="string">"https://github.com/springHyc/jsUtils/issues"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"homepage"</span>: <span class="string">"https://github.com/springHyc/jsUtils#readme"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20191231130844566.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>CommonJS标准</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">我们看到上面代码中使用CommonJS标准。</span><br><span class="line">一个单独的文件就是一个模块，模块内将需要对外暴露的变量放到exports对象里，</span><br><span class="line">可以是任意对象，函数，数组等，未放到exports对象里的都是私有的。用<span class="built_in">require</span>方法加载模块，</span><br><span class="line">即读取模块文件获得exports对象。</span><br><span class="line">这里出现的<span class="built_in">module</span>，exports，<span class="built_in">require</span>是JS的新语法吗？不是新语法，只是CommonJS的语法糖。</span><br></pre></td></tr></table></figure>
+
+<p>路径的引用：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Hi = <span class="built_in">require</span>(<span class="string">'./hi'</span>);这种是用<span class="built_in">require</span>加载时写的是相对路径，让Nodejs去指定路径下加载模块。</span><br><span class="line">如果省略相对路径，默认就会在node_modules文件夹下找hi模块，那很可能因为找不到而报错。</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="4、npm-账号登录，用户名，邮箱，密码"><a href="#4、npm-账号登录，用户名，邮箱，密码" class="headerlink" title="4、npm 账号登录，用户名，邮箱，密码"></a>4、npm 账号登录，用户名，邮箱，密码</h2><p><img src="https://img-blog.csdnimg.cn/20191231125001687.png" alt="在这里插入图片描述"></p>
+<h2 id="5、使用npm-publish发布组件包，发布成功后，会显示"><a href="#5、使用npm-publish发布组件包，发布成功后，会显示" class="headerlink" title="5、使用npm  publish发布组件包，发布成功后，会显示"></a>5、使用npm  publish发布组件包，发布成功后，会显示</h2><p><img src="https://img-blog.csdnimg.cn/20191231125021359.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20191231131041876.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>  发布后可以在官网搜索项目名称（如vue_cherry）</p>
+<h2 id="6、测试已经发布的包，新建文件夹，通过命令npm-install-chrry-test安装组件包，打开文件后如下"><a href="#6、测试已经发布的包，新建文件夹，通过命令npm-install-chrry-test安装组件包，打开文件后如下" class="headerlink" title="6、测试已经发布的包，新建文件夹，通过命令npm install chrry_test安装组件包，打开文件后如下"></a>6、测试已经发布的包，新建文件夹，通过命令npm install chrry_test安装组件包，打开文件后如下</h2><p><img src="https://img-blog.csdnimg.cn/20191231125121740.png" alt="在这里插入图片描述"><br>至此，组件包确认上传成功</p>
+<h2 id="7-更新npm发布后的包"><a href="#7-更新npm发布后的包" class="headerlink" title="7 更新npm发布后的包"></a>7 更新npm发布后的包</h2><p>更新npm包也是使用npm publish命令发布，不过必须更改npm包的版本号，也就是package.json中的version字段，否则会报错，like:<img src="https://img-blog.csdnimg.cn/20191231131123375.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="8npm的版本控制"><a href="#8npm的版本控制" class="headerlink" title="8npm的版本控制"></a>8npm的版本控制</h2><p>在我们的package.json里面有一个version字段。那么，怎么在项目不断构建的过程中调整版本呢？<br>npm有一套自己的版本控制标准——Semantic versioning（语义化版本）</p>
+<p>具体体现为：</p>
+<p>版本格式：主版本号.次版本号.修订号，版本号递增规则如下：</p>
+<ul>
+<li>主版本号：当你做了不兼容的 API 修改，</li>
+<li>次版本号：当你做了向下兼容的功能性新增，</li>
+<li>修订号：当你做了向下兼容的问题修正。</li>
+</ul>
+<p>例如：我原本的项目是1.0.0版本的话</p>
+<ul>
+<li>若是1中情况，变为1.0.1</li>
+<li>若是2中情况，变为1.1.0</li>
+<li>若是3中情况，变为2.0.0</li>
+</ul>
+<p>通过npm version <update_type>自动改变版本<br>update_type为patch, minor, or major其中之一，分别表示补丁，小改，大改。</p>
+<p>备注<br>语义化版本号可以在这里详细学习<br><a href="https://semver.org/lang/zh-CN/" target="_blank" rel="noopener">https://semver.org/lang/zh-CN/</a></p>
+<h2 id="9-利用npm撤销发布包"><a href="#9-利用npm撤销发布包" class="headerlink" title="9 利用npm撤销发布包"></a>9 利用npm撤销发布包</h2><p>这里要说一点，取消发布包可能并不像你想象得那么容易，这种操作是受到诸多限制的，撤销发布的包被认为是一种不好的行为<br>（试想一下你撤销了发布的包[假设它已经在社区内有了一定程度的影响]，这对那些已经深度使用并依赖你发布的包的团队是件多么崩溃的事情！）</p>
+<p>如果发现已经发布的版本有问题，可以进行撤销操作：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm unpublish &lt;packagename&gt;@&lt;version&gt;。</span><br></pre></td></tr></table></figure>
+<p>如果有权限问题，撤销不了，可以添加–force。</p>
+<p>撤销还是有诸多限制的：</p>
+<ul>
+<li>根据规范，只有在发包的24小时内才允许撤销发布的包（ unpublish is only allowed with versions published in the last 24 hours）</li>
+<li>即使你撤销了发布的包，发包的时候也不能再和被撤销的包的名称和版本重复了（即不能名称相同，版本相同，因为这两者构成的唯一标识已经被“占用”了）</li>
+</ul>
+<p>like:刚刚发布的<a href="mailto:jsutils-100@1.0.1-beta.4">jsutils-100@1.0.1-beta.4</a>其实是我用来测试的，里面并没有修改任何code,现在进行一下撤销。like<br><img src="https://img-blog.csdnimg.cn/20191231131444402.png" alt="在这里插入图片描述"><br>现在我准备再重新发布<a href="mailto:jsutils-100@1.0.1-beta.4">jsutils-100@1.0.1-beta.4</a>这个版本你的包，like:<br><img src="https://img-blog.csdnimg.cn/20191231131518556.png" alt="在这里插入图片描述"></p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>由于我采用的es6的语法，直接发布没问题，但是应用到项目中，项目打包发布时就会出现语法错误。</p>
+<p><img src="https://img-blog.csdnimg.cn/20191231131610694.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="image.png"><br>出错的地方就就是es6的…目前不能用到对象中。like this:</p>
+<p><img src="https://img-blog.csdnimg.cn/20191231131629835.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="image.png"><br>所以需要引入babel来将es6转化一下，一开始只用的babel-preset-es2015这个的转化还是不行，仍然是报错，最终使用的转化强度更大的babel-preset-stage-0来能够彻底转化。</p>
+<p>like:<br><img src="https://img-blog.csdnimg.cn/20191231131643407.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/31/NPM%E6%A6%82%E8%BF%B0%E5%8F%8A%E4%BD%BF%E7%94%A8%E7%AE%80%E4%BB%8B/" rel="prev" title="NPM概述及使用简介">
+      <i class="fa fa-chevron-left"></i> NPM概述及使用简介
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/31/Django%EF%BC%88%E4%B8%80%EF%BC%89%E5%9F%BA%E7%A1%80%EF%BC%9A%E5%AE%89%E8%A3%85%E7%8E%AF%E5%A2%83%E3%80%81%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE%E3%80%81%E8%A7%86%E5%9B%BE%E3%80%81%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%BA%94%E7%94%A8%EF%BC%88app%EF%BC%89/" rel="next" title="Django（一）基础：安装环境、创建项目、视图、创建一个项目的应用（app）">
+      Django（一）基础：安装环境、创建项目、视图、创建一个项目的应用（app） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-到官网注册："><span class="nav-number">2.</span> <span class="nav-text">1.到官网注册：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、在本地新建一个项目，在cmd里输入命令进入项目文件夹；"><span class="nav-number">3.</span> <span class="nav-text">2、在本地新建一个项目，在cmd里输入命令进入项目文件夹；</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、使用npm-init-命令初始化当前项目信息，需要填写的信息是："><span class="nav-number">4.</span> <span class="nav-text">3、使用npm init 命令初始化当前项目信息，需要填写的信息是：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、npm-账号登录，用户名，邮箱，密码"><span class="nav-number">5.</span> <span class="nav-text">4、npm 账号登录，用户名，邮箱，密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、使用npm-publish发布组件包，发布成功后，会显示"><span class="nav-number">6.</span> <span class="nav-text">5、使用npm  publish发布组件包，发布成功后，会显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、测试已经发布的包，新建文件夹，通过命令npm-install-chrry-test安装组件包，打开文件后如下"><span class="nav-number">7.</span> <span class="nav-text">6、测试已经发布的包，新建文件夹，通过命令npm install chrry_test安装组件包，打开文件后如下</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-更新npm发布后的包"><span class="nav-number">8.</span> <span class="nav-text">7 更新npm发布后的包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8npm的版本控制"><span class="nav-number">9.</span> <span class="nav-text">8npm的版本控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-利用npm撤销发布包"><span class="nav-number">10.</span> <span class="nav-text">9 利用npm撤销发布包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遇到的问题"><span class="nav-number">11.</span> <span class="nav-text">遇到的问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

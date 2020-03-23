@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《机学四》特征工程4 —— 数据划分、转换器与估计器、总结（特征工程三大部分总结）">
+<meta property="og:url" content="http://yoursite.com/2019/11/27/%E3%80%8A%E6%9C%BA%E5%AD%A6%E5%9B%9B%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B4%20%E2%80%94%E2%80%94%20%E6%95%B0%E6%8D%AE%E5%88%92%E5%88%86%E3%80%81%E8%BD%AC%E6%8D%A2%E5%99%A8%E4%B8%8E%E4%BC%B0%E8%AE%A1%E5%99%A8%E3%80%81%E6%80%BB%E7%BB%93%EF%BC%88%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%89%E5%A4%A7%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93%EF%BC%89/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191125113117604.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191125113216163.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191126145938478.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191126145948448.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191127093109244.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191127094228514.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-11-27T02:12:44.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.881Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191125113117604.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/27/%E3%80%8A%E6%9C%BA%E5%AD%A6%E5%9B%9B%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B4%20%E2%80%94%E2%80%94%20%E6%95%B0%E6%8D%AE%E5%88%92%E5%88%86%E3%80%81%E8%BD%AC%E6%8D%A2%E5%99%A8%E4%B8%8E%E4%BC%B0%E8%AE%A1%E5%99%A8%E3%80%81%E6%80%BB%E7%BB%93%EF%BC%88%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%89%E5%A4%A7%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《机学四》特征工程4 —— 数据划分、转换器与估计器、总结（特征工程三大部分总结） | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/27/%E3%80%8A%E6%9C%BA%E5%AD%A6%E5%9B%9B%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B4%20%E2%80%94%E2%80%94%20%E6%95%B0%E6%8D%AE%E5%88%92%E5%88%86%E3%80%81%E8%BD%AC%E6%8D%A2%E5%99%A8%E4%B8%8E%E4%BC%B0%E8%AE%A1%E5%99%A8%E3%80%81%E6%80%BB%E7%BB%93%EF%BC%88%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%89%E5%A4%A7%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《机学四》特征工程4 —— 数据划分、转换器与估计器、总结（特征工程三大部分总结）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-27 10:12:44" itemprop="dateCreated datePublished" datetime="2019-11-27T10:12:44+08:00">2019-11-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><h3 id="主要学习纲要："><a href="#主要学习纲要：" class="headerlink" title="主要学习纲要："></a>主要学习纲要：</h3><p>1、sklearn数据集与估计器<br>2、分类算法-k近邻算法<br>3、k-近邻算法实例<br>4、分类模型的评估<br>5、分类算法-朴素贝叶斯算法<br>6、朴素贝叶斯算法实例<br>7、模型的选择与调优<br>8、决策树与随机森林</p>
+<h3 id="★★★机器学习步骤："><a href="#★★★机器学习步骤：" class="headerlink" title="★★★机器学习步骤："></a>★★★机器学习步骤：</h3><ol>
+<li>收集数据</li>
+<li>准备输入数据</li>
+<li>分析输入数据</li>
+<li>训练算法</li>
+<li>测试算法</li>
+<li>使用算法</li>
+</ol>
+<p>机器学习步骤详见：《机学零》——第六节：<a href="https://blog.csdn.net/u010132177/article/details/103232316" target="_blank" rel="noopener">https://blog.csdn.net/u010132177/article/details/103232316</a></p>
+<h1 id="二、数据划分（第2步：准备数据）"><a href="#二、数据划分（第2步：准备数据）" class="headerlink" title="二、数据划分（第2步：准备数据）"></a>二、数据划分（第2步：准备数据）</h1><p>数据一般要分成两类：</p>
+<ol>
+<li>【训练集】用于训练模型（建立模型） ：一般占总数据比例：<strong>75%</strong></li>
+<li>【测试集】用于测试模型（评估模型） ：一般占总数据比例：<strong>25%</strong></li>
+</ol>
+<h2 id="2-1-sklearn数据集"><a href="#2-1-sklearn数据集" class="headerlink" title="2.1 sklearn数据集"></a>2.1 sklearn数据集</h2><p>1、数据集划分<br>2、sklearn数据集接口介绍<br>3、sklearn分类数据集<br>4、sklearn回归数据集</p>
+<h3 id="2-1-1-数据集划分Api"><a href="#2-1-1-数据集划分Api" class="headerlink" title="2.1.1 数据集划分Api"></a>2.1.1 数据集划分Api</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.model_selection.train_test_split</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-2-sklearn数据集接口"><a href="#2-1-2-sklearn数据集接口" class="headerlink" title="2.1.2 sklearn数据集接口"></a>2.1.2 sklearn数据集接口</h3><p>【为什么要用sklearn数据集】：自己的准备的数据集不一定准确，不一定真实，而且费时费力，所以学习中可以使用sklearn现成的数据集；</p>
+<p><font color='red' size='5'><strong>sklearn.datasets：</strong></font></p>
+<ul>
+<li>用于加载获取流行数据集</li>
+<li>datasets.load_*()：获取小规模数据集，数据已包含在datasets里</li>
+</ul>
+<p><font color='red' size='5'><strong>datasets.fetch_*(data_home=None)：</strong></font></p>
+<ul>
+<li>获取大规模数据集，需要从网络上下载，函数的第一个参数是data_home，表示数据集下载的目录,默认是 ~/scikit_learn_data/</li>
+</ul>
+<h3 id="2-1-2-获取数据集返回的类型"><a href="#2-1-2-获取数据集返回的类型" class="headerlink" title="2.1.2 获取数据集返回的类型"></a>2.1.2 获取数据集返回的类型</h3><p><font color='red' size='5'>load* 和 <font color='red'>fetch* </font></p>
+<ol>
+<li><p>返回的数据类型：datasets.base.Bunch(即字典格式)</p>
+</li>
+<li><p>data：特征数据数组，是 [n_samples * n_features] 的二维numpy.ndarray 数组</p>
+</li>
+<li><p>target：标签数组，是 n_samples 的一维 numpy.ndarray 数组</p>
+</li>
+<li><p>DESCR：数据描述</p>
+</li>
+<li><p>feature_names：特征名,新闻数据，手写数字、回归数据集没有</p>
+</li>
+<li><p>target_names：标签名,回归数据集没有</p>
+</li>
+</ol>
+<h4 id="2-1-2-1-其中分类相关的数据集"><a href="#2-1-2-1-其中分类相关的数据集" class="headerlink" title="2.1.2-1 其中分类相关的数据集"></a>2.1.2-1 其中分类相关的数据集</h4><p>1.<font color='red' size='5'>sklearn.datasets.load_iris()</font></p>
+<ul>
+<li>加载并返回鸢尾花数据集<br><img src="https://img-blog.csdnimg.cn/20191125113117604.png" alt="在这里插入图片描述"></li>
+</ul>
+<p>2.<font color='red' size='5'>sklearn.datasets.load_digits()</font></p>
+<ul>
+<li>加载并返回数字数据集<br><img src="https://img-blog.csdnimg.cn/20191125113216163.png" alt="在这里插入图片描述"></li>
+</ul>
+<h3 id="【调用自带数据集代码实例】——分类型数据集："><a href="#【调用自带数据集代码实例】——分类型数据集：" class="headerlink" title="【调用自带数据集代码实例】——分类型数据集："></a>【调用自带数据集代码实例】——分类型数据集：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span>  sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"></span><br><span class="line">li=load_iris() <span class="comment">#实例化鸢尾花数据集</span></span><br><span class="line">print(<span class="string">'特征值：'</span>,li.data)</span><br><span class="line">print(<span class="string">'目标值：'</span>,li.target)</span><br><span class="line">print(<span class="string">'特征名：'</span>,li.feature_names)</span><br><span class="line">print(<span class="string">'数据描述：'</span>,li.DESCR)</span><br><span class="line"></span><br><span class="line"><span class="string">'''结果：</span></span><br><span class="line"><span class="string">特征值：共150行特征</span></span><br><span class="line"><span class="string"> [[5.1 3.5 1.4 0.2]</span></span><br><span class="line"><span class="string"> ...</span></span><br><span class="line"><span class="string"> [6.2 3.4 5.4 2.3]</span></span><br><span class="line"><span class="string"> [5.9 3.  5.1 1.8]]</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">目标值：共3类，150个目标数值</span></span><br><span class="line"><span class="string"> [0 0 0...1 1 1...2 2 2]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">特征名：4种特征名</span></span><br><span class="line"><span class="string"> ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">数据描述：英文，主要描述数据的特征，目标，详细信息，略过</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-2-数据集分割"><a href="#2-2-数据集分割" class="headerlink" title="2.2 数据集分割"></a>2.2 数据集分割</h2><p><font color='red' size='5'>sklearn.model_selection.train_test_split(<em>arrays, *</em>options)</font></p>
+<ul>
+<li><p>【x】：           数据集的特征值</p>
+</li>
+<li><p>【y】：       数据集的标签值</p>
+</li>
+<li><p>【test_size】：      测试集的大小，一般为float</p>
+</li>
+<li><p>【random_state】：        随机数种子,不同的种子会造成不同的随机采样结果。相同的种子采样结果相同。</p>
+</li>
+<li><p>【return】：  训练集特征值，测试集特征值，训练标签，测试标签(默认随机取)    </p>
+<h3 id="2-2-1【分割数据集代码示例】"><a href="#2-2-1【分割数据集代码示例】" class="headerlink" title="2.2.1【分割数据集代码示例】"></a>2.2.1【分割数据集代码示例】</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span>  sklearn.datasets <span class="keyword">import</span> load_iris  <span class="comment">#自带数据集模块</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split  <span class="comment">#数据集分割模块</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#【1】实例化鸢尾花数据集</span></span><br><span class="line">li=load_iris()</span><br><span class="line"></span><br><span class="line"><span class="comment">#【2】数据集分割：分成训练集（x_train    y_trian_）；测试集（x_test   y_test）；注意返回数据顺序；</span></span><br><span class="line"><span class="comment"># 2.1 test_size=0.25，即：分割成测试集占25%，则训练集占比：75%；</span></span><br><span class="line">x_train,x_test,y_trian,y_test=train_test_split(li.data,li.target,test_size=<span class="number">0.25</span>)</span><br><span class="line">print(<span class="string">'训练集是：'</span>,x_train,y_trian)</span><br><span class="line">print(<span class="string">'测试集是：'</span>,x_test,y_test)</span><br><span class="line"></span><br><span class="line"><span class="string">'''结果</span></span><br><span class="line"><span class="string">训练集是（数量占比75%）：</span></span><br><span class="line"><span class="string">		[[5.1 3.5 1.4 0.2]</span></span><br><span class="line"><span class="string">		 ...</span></span><br><span class="line"><span class="string"> 		[6.2 3.4 5.4 2.3]</span></span><br><span class="line"><span class="string"> 		[5.9 3.  5.1 1.8]]</span></span><br><span class="line"><span class="string"> 		[0 0 0...1 1 1...2 2 2]</span></span><br><span class="line"><span class="string">测试集是（数量占比25%）：略...</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-3-用于分类的大数据集"><a href="#2-3-用于分类的大数据集" class="headerlink" title="2.3 用于分类的大数据集"></a>2.3 用于分类的大数据集</h2><p><font color='red' size='5'> sklearn.datasets.fetch_20newsgroups(data_home=None,subset=‘train’) </font></p>
+</li>
+<li><p>subset: ‘train’或’test’,’all’，可选，选择要加载的数据集。训练集的“训练”，测试集的“测试”，两者的“全部”</p>
+</li>
+<li><p>data_home： 数据集下载后的存放目录</p>
+</li>
+</ul>
+<p><font color='red' size='4'> datasets.clear_data_home(data_home=None)</font></p>
+<ul>
+<li>清除目录下的数据</li>
+</ul>
+<h3 id="【大数据集调用代码例】——分类型大数据集《新闻类别》"><a href="#【大数据集调用代码例】——分类型大数据集《新闻类别》" class="headerlink" title="【大数据集调用代码例】——分类型大数据集《新闻类别》"></a>【大数据集调用代码例】——分类型大数据集《新闻类别》</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span>  sklearn.datasets <span class="keyword">import</span> fetch_20newsgroups <span class="comment">#引入自带大数据集模块</span></span><br><span class="line"></span><br><span class="line">news = fetch_20newsgroups(data_home=<span class="string">r'E:\PycharmProjects\LearnMachine1\20newsbydate'</span>,subset=<span class="string">'all'</span>)</span><br><span class="line">print(news.data)</span><br><span class="line">print(news.target)</span><br><span class="line"></span><br><span class="line">运行会发很长时间下载数据集，这是一个新闻文章分类相关的数据集，后面会讲到</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-sklearn自带的-回归数据集"><a href="#2-4-sklearn自带的-回归数据集" class="headerlink" title="2.4 sklearn自带的 回归数据集"></a>2.4 sklearn自带的 回归数据集</h2><ol>
+<li><p>sklearn.datasets.load_boston()</p>
+<pre><code>- 加载并返回波士顿房价数据集</code></pre><p><img src="https://img-blog.csdnimg.cn/20191126145938478.png" alt="在这里插入图片描述"></p>
+</li>
+<li><p>sklearn.datasets.load_diabetes()</p>
+<pre><code>-  加载和返回糖尿病数据集</code></pre><p><img src="https://img-blog.csdnimg.cn/20191126145948448.png" alt="在这里插入图片描述"></p>
+</li>
+</ol>
+<h3 id="【调用sklearn回归数据集示例】《波士顿房价》"><a href="#【调用sklearn回归数据集示例】《波士顿房价》" class="headerlink" title="【调用sklearn回归数据集示例】《波士顿房价》"></a>【调用sklearn回归数据集示例】《波士顿房价》</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_boston <span class="comment">#导入波士顿数据集包</span></span><br><span class="line"></span><br><span class="line">boston_price=load_boston() <span class="comment">#实例化</span></span><br><span class="line">print(<span class="string">'房价集特征名'</span>,boston_price.feature_names)</span><br><span class="line">print(<span class="string">'房价特征集'</span>,boston_price.data)</span><br><span class="line">print(<span class="string">'房价目标集'</span>,boston_price.target)</span><br><span class="line">print(<span class="string">'房价集描述：'</span>,boston_price.DESCR)</span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">房价集特征名 ['CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO' 'B' 'LSTAT']</span></span><br><span class="line"><span class="string">房价特征集 [[6.3200e-03 1.8000e+01 2.3100e+00 ... 1.5300e+01 3.9690e+02 4.9800e+00]...</span></span><br><span class="line"><span class="string">房价目标集 [24.  21.6 34.7 33.4 36.2 28.7 22.9 27.1 16.5 18.9 15.  18.9 21.7 20.4...</span></span><br><span class="line"><span class="string">房价集描述：(头尾略过)...</span></span><br><span class="line"><span class="string">		Attribute Information (in order):</span></span><br><span class="line"><span class="string">        - CRIM     per capita crime rate by town</span></span><br><span class="line"><span class="string">        - ZN       proportion of residential land zoned for lots over 25,000 sq.ft.</span></span><br><span class="line"><span class="string">        - INDUS    proportion of non-retail business acres per town</span></span><br><span class="line"><span class="string">        - CHAS     Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)</span></span><br><span class="line"><span class="string">        - NOX      nitric oxides concentration (parts per 10 million)</span></span><br><span class="line"><span class="string">        - RM       average number of rooms per dwelling</span></span><br><span class="line"><span class="string">        - AGE      proportion of owner-occupied units built prior to 1940</span></span><br><span class="line"><span class="string">        - DIS      weighted distances to five Boston employment centres</span></span><br><span class="line"><span class="string">        - RAD      index of accessibility to radial highways</span></span><br><span class="line"><span class="string">        - TAX      full-value property-tax rate per $10,000</span></span><br><span class="line"><span class="string">        - PTRATIO  pupil-teacher ratio by town</span></span><br><span class="line"><span class="string">        - B        1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town</span></span><br><span class="line"><span class="string">        - LSTAT    % lower status of the population</span></span><br><span class="line"><span class="string">        - MEDV     Median value of owner-occupied homes in $1000's</span></span><br><span class="line"><span class="string">      ...</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<h1 id="三、转换器"><a href="#三、转换器" class="headerlink" title="三、转换器"></a>三、转换器</h1><h2 id="3-1数据集的标准化处理"><a href="#3-1数据集的标准化处理" class="headerlink" title="3.1数据集的标准化处理"></a>3.1数据集的标准化处理</h2><p><strong>回忆之前做特征工程的步骤？</strong></p>
+<ol>
+<li>实例化 (实例化的是一个转换器类(Transformer)) </li>
+<li>调用fit_transform(对于文档建立分类词频矩阵，不能同时调用)</li>
+</ol>
+<h4 id="【标准化转换图示】"><a href="#【标准化转换图示】" class="headerlink" title="【标准化转换图示】"></a>【标准化转换图示】</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">数据集 ---fit_transform(X)--&gt; 转换后的数据集</span><br></pre></td></tr></table></figure>
+<h4 id="【相关单词】"><a href="#【相关单词】" class="headerlink" title="【相关单词】"></a>【相关单词】</h4><ul>
+<li>fit： 适合</li>
+<li>transform： 转型</li>
+<li>preprocessing： 预处理</li>
+<li>StandardScaler： 标准定标器</li>
+</ul>
+<h4 id="【标准化函数、库】"><a href="#【标准化函数、库】" class="headerlink" title="【标准化函数、库】"></a>【标准化函数、库】</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"></span><br><span class="line">单独使用：</span><br><span class="line">StandardScaler().fit_transform([[<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>],[<span class="number">2</span>,<span class="number">3</span>,<span class="number">6</span>]])</span><br><span class="line"></span><br><span class="line">以下两个为一个整体：</span><br><span class="line">fit()</span><br><span class="line">transform()</span><br></pre></td></tr></table></figure>
+
+<h4 id="【标准化代码示例】"><a href="#【标准化代码示例】" class="headerlink" title="【标准化代码示例】"></a>【标准化代码示例】</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler <span class="comment">#预处理：标准化数据集包</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#fit_transform()是fit()，和transform()的组合，只要两步即可对数据进行转型</span></span><br><span class="line">sta=StandardScaler() <span class="comment">#【1】</span></span><br><span class="line">ft=sta.fit_transform([[<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>],[<span class="number">2</span>,<span class="number">3</span>,<span class="number">6</span>]]) <span class="comment">#【2】</span></span><br><span class="line">print(<span class="string">'ft：'</span>,ft)</span><br><span class="line"></span><br><span class="line"><span class="comment">#fit()，transform()要3步都做才可对数据进行转型</span></span><br><span class="line">sta2=StandardScaler() <span class="comment">#【1】</span></span><br><span class="line">sta2.fit([[<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>],[<span class="number">2</span>,<span class="number">3</span>,<span class="number">6</span>]]) <span class="comment">#【2】此处是不能直接输出任何结果的，输出会报错，它只做处理(计算平均值，⽅差等)不返回值</span></span><br><span class="line">ft2=sta2.transform([[<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>],[<span class="number">2</span>,<span class="number">3</span>,<span class="number">6</span>]]) <span class="comment">#【3】此处才能返回值</span></span><br><span class="line">print(<span class="string">'ft2:'</span>,ft2)</span><br><span class="line"></span><br><span class="line"><span class="string">'''结果</span></span><br><span class="line"><span class="string">ft： [[-1.  0. -1.] [ 1.  0.  1.]]</span></span><br><span class="line"><span class="string">ft2: [[-1.  0. -1.] [ 1.  0.  1.]]</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<h1 id="四、估计器——sklearn机器学习算法的实现Api"><a href="#四、估计器——sklearn机器学习算法的实现Api" class="headerlink" title="四、估计器——sklearn机器学习算法的实现Api"></a>四、估计器——sklearn机器学习算法的实现Api</h1><p>在sklearn中，估计器(estimator)是一个重要的角色，分类器和回归器都属于estimator，是一类【实现了算法的API】</p>
+<ul>
+<li>在估计器中有有两个重要的方法是fit和transform（用法见三）。<ul>
+<li>fit方法用于从训练集中学习模型参数 ：</li>
+<li>transform用学习到的参数转换数据<br><img src="https://img-blog.csdnimg.cn/20191127093109244.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h2 id="4-1估计器的工作流程"><a href="#4-1估计器的工作流程" class="headerlink" title="4.1估计器的工作流程"></a>4.1估计器的工作流程</h2><img src="https://img-blog.csdnimg.cn/20191127094228514.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="估计器的工作流程"></li>
+</ul>
+</li>
+</ul>
+<p>1、调用fit：   fit(x_train, y_train)</p>
+<p>2、向预估器（estimator）输入测试集的数据</p>
+<ol>
+<li>y_predict = predict(x_test)</li>
+<li>预测的准确率： score(x_test, y_test)</li>
+</ol>
+<h2 id="4-2-用于分类的估计器："><a href="#4-2-用于分类的估计器：" class="headerlink" title="4.2 用于分类的估计器："></a>4.2 用于分类的估计器：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sklearn.neighbors	                        k-近邻算法</span><br><span class="line">sklearn.naive_bayes                         贝叶斯</span><br><span class="line">sklearn.linear_model.LogisticRegression     逻辑回归</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-3-用于回归的估计器："><a href="#4-3-用于回归的估计器：" class="headerlink" title="4.3 用于回归的估计器："></a>4.3 用于回归的估计器：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sklearn.linear_model.LinearRegression     线性回归</span><br><span class="line">sklearn.linear_model.Ridge                岭回归</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>至此特征工程三大块已经学完，下面，回忆一下</p>
+<h2 id="特征工程三大部分："><a href="#特征工程三大部分：" class="headerlink" title="特征工程三大部分："></a>特征工程三大部分：</h2><ol>
+<li>特征抽取：<a href="https://blog.csdn.net/u010132177/article/details/102911543" target="_blank" rel="noopener">https://blog.csdn.net/u010132177/article/details/102911543</a></li>
+<li>特征预处理：<a href="https://blog.csdn.net/u010132177/article/details/102967662" target="_blank" rel="noopener">https://blog.csdn.net/u010132177/article/details/102967662</a></li>
+<li>特征降维：<a href="https://blog.csdn.net/u010132177/article/details/103155379" target="_blank" rel="noopener">https://blog.csdn.net/u010132177/article/details/103155379</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/25/%E3%80%8A%E6%9C%BA%E5%AD%A6%E9%9B%B6%E3%80%8B%E6%9C%BA%E5%AD%A6%E6%A6%82%E8%BF%B0%20%E2%80%94%E2%80%94%20%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E3%80%81%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%B5%81%E7%A8%8B/" rel="prev" title="《机学零》机学概述 —— 机器学习基础知识、进行机器学习的流程">
+      <i class="fa fa-chevron-left"></i> 《机学零》机学概述 —— 机器学习基础知识、进行机器学习的流程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/27/%E5%8D%81%E5%85%AD%E3%80%81React%20%E6%B8%B2%E6%9F%93%E6%95%B0%E6%8D%AE%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%E3%80%81%E4%BB%A5%E5%8F%8Areact-router4.x%E4%B8%AD%E4%BD%BF%E7%94%A8js%E8%B7%B3%E8%BD%AC%E8%B7%AF%E7%94%B1%EF%BC%88%E7%99%BB%E5%BD%95%E6%88%90%E5%8A%9F%E8%87%AA%E5%8A%A8%E8%B7%B3%E8%BD%AC%E9%A6%96%E9%A1%B5%EF%BC%89/" rel="next" title="十六、React 渲染数据注意事项、以及react-router4.x中使用js跳转路由（登录成功自动跳转首页）">
+      十六、React 渲染数据注意事项、以及react-router4.x中使用js跳转路由（登录成功自动跳转首页） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概述"><span class="nav-number">1.</span> <span class="nav-text">一、概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要学习纲要："><span class="nav-number">1.0.1.</span> <span class="nav-text">主要学习纲要：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#★★★机器学习步骤："><span class="nav-number">1.0.2.</span> <span class="nav-text">★★★机器学习步骤：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、数据划分（第2步：准备数据）"><span class="nav-number">2.</span> <span class="nav-text">二、数据划分（第2步：准备数据）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-sklearn数据集"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 sklearn数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-数据集划分Api"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 数据集划分Api</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-sklearn数据集接口"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2 sklearn数据集接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-获取数据集返回的类型"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.2 获取数据集返回的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-1-其中分类相关的数据集"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">2.1.2-1 其中分类相关的数据集</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#【调用自带数据集代码实例】——分类型数据集："><span class="nav-number">2.1.4.</span> <span class="nav-text">【调用自带数据集代码实例】——分类型数据集：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-数据集分割"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 数据集分割</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1【分割数据集代码示例】"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1【分割数据集代码示例】</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-用于分类的大数据集"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 用于分类的大数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#【大数据集调用代码例】——分类型大数据集《新闻类别》"><span class="nav-number">2.3.1.</span> <span class="nav-text">【大数据集调用代码例】——分类型大数据集《新闻类别》</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-sklearn自带的-回归数据集"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 sklearn自带的 回归数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#【调用sklearn回归数据集示例】《波士顿房价》"><span class="nav-number">2.4.1.</span> <span class="nav-text">【调用sklearn回归数据集示例】《波士顿房价》</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、转换器"><span class="nav-number">3.</span> <span class="nav-text">三、转换器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1数据集的标准化处理"><span class="nav-number">3.1.</span> <span class="nav-text">3.1数据集的标准化处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#【标准化转换图示】"><span class="nav-number">3.1.0.1.</span> <span class="nav-text">【标准化转换图示】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#【相关单词】"><span class="nav-number">3.1.0.2.</span> <span class="nav-text">【相关单词】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#【标准化函数、库】"><span class="nav-number">3.1.0.3.</span> <span class="nav-text">【标准化函数、库】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#【标准化代码示例】"><span class="nav-number">3.1.0.4.</span> <span class="nav-text">【标准化代码示例】</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、估计器——sklearn机器学习算法的实现Api"><span class="nav-number">4.</span> <span class="nav-text">四、估计器——sklearn机器学习算法的实现Api</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1估计器的工作流程"><span class="nav-number">4.1.</span> <span class="nav-text">4.1估计器的工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-用于分类的估计器："><span class="nav-number">4.2.</span> <span class="nav-text">4.2 用于分类的估计器：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-用于回归的估计器："><span class="nav-number">4.3.</span> <span class="nav-text">4.3 用于回归的估计器：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、总结"><span class="nav-number">5.</span> <span class="nav-text">五、总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#特征工程三大部分："><span class="nav-number">5.1.</span> <span class="nav-text">特征工程三大部分：</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

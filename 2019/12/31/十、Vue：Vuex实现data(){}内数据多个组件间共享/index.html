@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="十、Vue：Vuex实现data(){}内数据多个组件间共享">
+<meta property="og:url" content="http://yoursite.com/2019/12/31/%E5%8D%81%E3%80%81Vue%EF%BC%9AVuex%E5%AE%9E%E7%8E%B0data()%7B%7D%E5%86%85%E6%95%B0%E6%8D%AE%E5%A4%9A%E4%B8%AA%E7%BB%84%E4%BB%B6%E9%97%B4%E5%85%B1%E4%BA%AB/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191228162037571.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231085052340.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191231093816249.png">
+<meta property="article:published_time" content="2019-12-31T02:02:54.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:37:02.168Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191228162037571.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/31/%E5%8D%81%E3%80%81Vue%EF%BC%9AVuex%E5%AE%9E%E7%8E%B0data()%7B%7D%E5%86%85%E6%95%B0%E6%8D%AE%E5%A4%9A%E4%B8%AA%E7%BB%84%E4%BB%B6%E9%97%B4%E5%85%B1%E4%BA%AB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>十、Vue：Vuex实现data(){}内数据多个组件间共享 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/31/%E5%8D%81%E3%80%81Vue%EF%BC%9AVuex%E5%AE%9E%E7%8E%B0data()%7B%7D%E5%86%85%E6%95%B0%E6%8D%AE%E5%A4%9A%E4%B8%AA%E7%BB%84%E4%BB%B6%E9%97%B4%E5%85%B1%E4%BA%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          十、Vue：Vuex实现data(){}内数据多个组件间共享
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-31 10:02:54" itemprop="dateCreated datePublished" datetime="2019-12-31T10:02:54+08:00">2019-12-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:37:02" itemprop="dateModified" datetime="2020-03-23T10:37:02+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>官方文档：<a href="https://vuex.vuejs.org/zh/installation.html" target="_blank" rel="noopener">https://vuex.vuejs.org/zh/installation.html</a></p>
+<h2 id="1-1vuex有什么用"><a href="#1-1vuex有什么用" class="headerlink" title="1.1vuex有什么用"></a>1.1vuex有什么用</h2><p>Vuex：实现data(){}内数据多个组件间共享一种解决方案（类似react的redux）</p>
+<h2 id="1-2什么情况下使用vuex"><a href="#1-2什么情况下使用vuex" class="headerlink" title="1.2什么情况下使用vuex"></a>1.2什么情况下使用vuex</h2><pre><code>虽然 Vuex 可以帮助我们管理共享状态，但也附带了更多的概念和框架。这需要对短期和长期效益进行权衡。
+如果您不打算开发大型单页应用，使用 Vuex 可能是繁琐冗余的。确实是如此——如果您的应用够简单，您最好不要使用 Vuex。一个简单的 global event bus 就足够您所需了。但是，如果您需要构建是一个中大型单页应用，您很可能会考虑如何更好地在组件外部管理状态，Vuex 将会成为自然而然的选择。</code></pre><h2 id="1-3Vuex状态管理"><a href="#1-3Vuex状态管理" class="headerlink" title="1.3Vuex状态管理"></a>1.3Vuex状态管理</h2><pre><code>view -&gt;(dispatch) Action -&gt;(Commit) Mutations -&gt;(Mutate) State -&gt; View
+注意：Action不是必需品，如果有异步操作才可能用到Action，否则可以不使用</code></pre><h2 id="1-4Actions："><a href="#1-4Actions：" class="headerlink" title="1.4Actions："></a>1.4Actions：</h2><pre><code>Action 提交的是 mutation，而不是直接变更状态。
+Action 可以包含任意异步操作。</code></pre><h1 id="二、安装及使用"><a href="#二、安装及使用" class="headerlink" title="二、安装及使用"></a>二、安装及使用</h1><p>官方文档：<a href="https://vuex.vuejs.org/zh/installation.html" target="_blank" rel="noopener">https://vuex.vuejs.org/zh/installation.html</a></p>
+<h3 id="安装方法1，npm"><a href="#安装方法1，npm" class="headerlink" title="安装方法1，npm"></a>安装方法1，npm</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cnpm install vuex --save</span><br><span class="line">或</span><br><span class="line">npm install vuex --save</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装方法2，cdn"><a href="#安装方法2，cdn" class="headerlink" title="安装方法2，cdn"></a>安装方法2，cdn</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"/path/to/vue.js"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;script src="/</span>path/to/vuex.js<span class="string">"&gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其它略过，见文档。</p>
+<h2 id="【使用】"><a href="#【使用】" class="headerlink" title="【使用】"></a>【使用】</h2><p>在一个模块化的打包系统中，您必须显式地通过 Vue.use() 来安装 Vuex：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> Vuex <span class="keyword">from</span> <span class="string">'vuex'</span></span><br><span class="line">Vue.use(Vuex)</span><br></pre></td></tr></table></figure>
+<p>当使用全局 script 标签引用 Vuex 时，不需要以上安装过程。</p>
+<h2 id="2-1-vuex定义共享数据和引用-state"><a href="#2-1-vuex定义共享数据和引用-state" class="headerlink" title="2.1 vuex定义共享数据和引用 state:{}"></a>2.1 vuex定义共享数据和引用 state:{}</h2><p><strong>应用场景：</strong> 例如在购物车中，你在商品详情页进行加减库存操作，而到购物车详情中时，用之前学得的data(){}内数据用法，你是得不到商品详情里的商品数量这个数据的，此时就引入了state:{}做为所有页面的共享数据，加减商品都可使用此处的数据，从而实现数据的共享。<br>代码实例<br>（多余代码为父子组件互传值复习）</p>
+<h3 id="第1步，引入vuex并创建store实例-src-main-js"><a href="#第1步，引入vuex并创建store实例-src-main-js" class="headerlink" title="第1步，引入vuex并创建store实例 src/main.js"></a>第1步，引入vuex并创建store实例 src/main.js</h3><p>[1]引入vuex<br>[2]使用vuex<br>[3]创建一个store实例（主要）<br>[4]所有组件共用数据存放处<br>[5]注入store（重要）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.vue'</span></span><br><span class="line"><span class="keyword">import</span> Vuex <span class="keyword">from</span> <span class="string">'vuex'</span> <span class="comment">//[1]引入vuex</span></span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)<span class="comment">//[2]使用vuex</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//[3]创建一个store实例</span></span><br><span class="line"><span class="keyword">const</span> store=<span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  state:&#123;<span class="comment">//[4]所有组件共用数据存放处</span></span><br><span class="line">    count:<span class="number">10</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  store,<span class="comment">//[5]注入store</span></span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="第2步，引用1步所创建的共享数据count-src-components-home-vue"><a href="#第2步，引用1步所创建的共享数据count-src-components-home-vue" class="headerlink" title="第2步，引用1步所创建的共享数据count(src/components/home.vue)"></a>第2步，引用1步所创建的共享数据count(src/components/home.vue)</h3><p>【1】获取store里的共享数据方法1直接调用（this.$store.state.count）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;Hello :title=<span class="string">'msg'</span> @msg=<span class="string">'getmsg'</span>/&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span></span><br><span class="line">    &#123;&#123;msg2&#125;&#125;&lt;br/&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">1</span>】获取store里的共享数据方法<span class="number">1</span> --&gt;</span><br><span class="line">    home:获取vuex的store共用数据：&#123;&#123;<span class="keyword">this</span>.$store.state.count&#125;&#125;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> Hello <span class="keyword">from</span> <span class="string">'./hello.vue'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'home'</span>,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        msg:<span class="string">'Home向Hello传的消息'</span>,</span><br><span class="line">        msg2:<span class="string">''</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    components:&#123;Hello&#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      getmsg(data)&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg2=data;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="第2-2步，其它组件都可以引用共享数据"><a href="#第2-2步，其它组件都可以引用共享数据" class="headerlink" title="第2.2步，其它组件都可以引用共享数据"></a>第2.2步，其它组件都可以引用共享数据</h3><p>src/components/hello.vue<br>【1】写一个函数获取vuex并返回store共享数据<br>【2】获取vuex的store共享数据方法2(在computed内写一个获取函数，再调用)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!--【<span class="number">2</span>】获取vuex的store共享数据方法<span class="number">2</span> --&gt;</span><br><span class="line">    hello子组件：&#123;&#123;getCount&#125;&#125;----&#123;&#123;title&#125;&#125;&lt;br/&gt;</span><br><span class="line">    &lt;button @click=<span class="string">"sendMsg"</span>&gt;给父组件传消息&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">export default&#123;</span></span><br><span class="line"><span class="regexp">  name:'hello',</span></span><br><span class="line"><span class="regexp">  data()&#123;</span></span><br><span class="line"><span class="regexp">    return&#123;</span></span><br><span class="line"><span class="regexp">      msg:'Hello子组件向父组件传数据'</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  props:&#123;</span></span><br><span class="line"><span class="regexp">    title:&#123;</span></span><br><span class="line"><span class="regexp">      type:String,</span></span><br><span class="line"><span class="regexp">      default:''</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  computed:&#123;</span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/【1】写一个函数获取vuex并返回store共享数据</span></span><br><span class="line"><span class="regexp">    getCount()&#123;</span></span><br><span class="line"><span class="regexp">      return this.$store.state.count</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  methods:&#123;</span></span><br><span class="line"><span class="regexp">    sendMsg()&#123;</span></span><br><span class="line"><span class="regexp">      this.$emit('msg',this.msg)</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="效果：成功获取到在mian-js内定义的count数据值"><a href="#效果：成功获取到在mian-js内定义的count数据值" class="headerlink" title="效果：成功获取到在mian.js内定义的count数据值"></a>效果：成功获取到在mian.js内定义的count数据值</h3><p>10</p>
+<h2 id="2-2-修改共享数据实例-mutaitions"><a href="#2-2-修改共享数据实例-mutaitions" class="headerlink" title="2.2 修改共享数据实例 mutaitions:{}"></a>2.2 修改共享数据实例 mutaitions:{}</h2><h3 id="第1步，定义修改共享数据的函数-main-js"><a href="#第1步，定义修改共享数据的函数-main-js" class="headerlink" title="第1步，定义修改共享数据的函数 main.js"></a>第1步，定义修改共享数据的函数 main.js</h3><p>[6]更改state里的数据在mutations里写函数操作<br>[6.1.0]自加函数,用于其它组件操作数据通过 this.$store.commit(‘increment’)<br>[6.1.1]自减函数,用于其它组件操作数据通过 this.$store.commit(‘decrement’)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.vue'</span></span><br><span class="line"><span class="keyword">import</span> Vuex <span class="keyword">from</span> <span class="string">'vuex'</span> <span class="comment">//[1]引入vuex</span></span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)<span class="comment">//[2]使用vuex</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//[3]创建一个store实例</span></span><br><span class="line"><span class="keyword">const</span> store=<span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  state:&#123;<span class="comment">//[4]所有组件共用数据存放处</span></span><br><span class="line">    count:<span class="number">10</span></span><br><span class="line">  &#125;,<span class="comment">//[6]更改state里的数据在mutations里写函数操作</span></span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;<span class="comment">//[6.1.0]自加函数,用于其它组件操作数据通过 this.$store.commit('increment')</span></span><br><span class="line">      state.count++</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement(state)&#123;<span class="comment">//[6.1.1]自减函数,用于其它组件操作数据通过 this.$store.commit('decrement')</span></span><br><span class="line">      state.count--</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  store,<span class="comment">//[5]注入store</span></span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="第2步，在组件中使用1步定义的修改共享数据函数-home-vue"><a href="#第2步，在组件中使用1步定义的修改共享数据函数-home-vue" class="headerlink" title="第2步，在组件中使用1步定义的修改共享数据函数 home.vue"></a>第2步，在组件中使用1步定义的修改共享数据函数 home.vue</h3><p>【1】使用mutations里定义好的函数进行共享数据自加操作<br>【1.1】使用mutations里定义好的函数进行共享数据自减操作<br>【2】修改共享数据自加<br>【2.1】修改共享数据自减</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;Hello :title=<span class="string">'msg'</span> @msg=<span class="string">'getmsg'</span>/&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span></span><br><span class="line">    &#123;&#123;msg2&#125;&#125;&lt;br/&gt;</span><br><span class="line">    &lt;!-- 获取store里的共享数据方法<span class="number">1</span> --&gt;</span><br><span class="line">    home:获取vuex的store共用数据：&#123;&#123;<span class="keyword">this</span>.$store.state.count&#125;&#125;&lt;br/&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span></span><br><span class="line"></span><br><span class="line">    &lt;button @click=<span class="string">'add'</span>&gt;加store.state里数据&lt;<span class="regexp">/button&gt; &lt;!-- 【2】修改共享数据自加 --&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button @click="sub"&gt;减&lt;/</span>button&gt; &lt;!-- 【<span class="number">2.1</span>】修改共享数据自减 --&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> Hello <span class="keyword">from</span> <span class="string">'./hello.vue'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'home'</span>,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        msg:<span class="string">'Home向Hello传的消息'</span>,</span><br><span class="line">        msg2:<span class="string">''</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    components:&#123;Hello&#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      add()&#123;<span class="comment">//【1】使用mutations里定义好的函数进行共享数据自加操作</span></span><br><span class="line">        <span class="keyword">this</span>.$store.commit(<span class="string">'increment'</span>)</span><br><span class="line">      &#125;,</span><br><span class="line">      sub()&#123;<span class="comment">//【1.1】使用mutations里定义好的函数进行共享数据自减操作</span></span><br><span class="line">        <span class="keyword">this</span>.$store.commit(<span class="string">'decrement'</span>)</span><br><span class="line">      &#125;,</span><br><span class="line">      getmsg(data)&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg2=data;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="hello-vue-不重要"><a href="#hello-vue-不重要" class="headerlink" title="hello.vue 不重要"></a>hello.vue 不重要</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!--获取vuex的store共享数据方法<span class="number">2</span> --&gt;</span><br><span class="line">    hello子组件：&#123;&#123;getCount&#125;&#125;----&#123;&#123;title&#125;&#125;&lt;br/&gt;</span><br><span class="line">    &lt;button @click=<span class="string">"sendMsg"</span>&gt;给父组件传消息&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">export default&#123;</span></span><br><span class="line"><span class="regexp">  name:'hello',</span></span><br><span class="line"><span class="regexp">  data()&#123;</span></span><br><span class="line"><span class="regexp">    return&#123;</span></span><br><span class="line"><span class="regexp">      msg:'Hello子组件向父组件传数据'</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  props:&#123;</span></span><br><span class="line"><span class="regexp">    title:&#123;</span></span><br><span class="line"><span class="regexp">      type:String,</span></span><br><span class="line"><span class="regexp">      default:''</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  computed:&#123;</span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/写一个函数获取vuex并返回store共享数据</span></span><br><span class="line"><span class="regexp">    getCount()&#123;</span></span><br><span class="line"><span class="regexp">      return this.$store.state.count</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  methods:&#123;</span></span><br><span class="line"><span class="regexp">    sendMsg()&#123;</span></span><br><span class="line"><span class="regexp">      this.$emit('msg',this.msg)</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="效果：点加按钮会进行共享数据自加操作，减则自减"><a href="#效果：点加按钮会进行共享数据自加操作，减则自减" class="headerlink" title="效果：点加按钮会进行共享数据自加操作，减则自减"></a>效果：点加按钮会进行共享数据自加操作，减则自减</h3><p>注意：数据变更后，所有地方数据都会自动进行变更<br><img src="https://img-blog.csdnimg.cn/20191228162037571.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="2-3-actions的使用"><a href="#2-3-actions的使用" class="headerlink" title="2.3 actions的使用"></a>2.3 actions的使用</h2><p>Actions：<br>        Action 提交的是 mutation，而不是直接变更状态。<br>        Action 可以包含任意异步操作。<br>        mutaitions内只能执行同步操作。</p>
+<h3 id="src-main-js-定义actions-内函数"><a href="#src-main-js-定义actions-内函数" class="headerlink" title="src/main.js 定义actions:{}内函数"></a>src/main.js 定义actions:{}内函数</h3><p>【1】用动作操作mutations里函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.vue'</span></span><br><span class="line"><span class="keyword">import</span> Vuex <span class="keyword">from</span> <span class="string">'vuex'</span> <span class="comment">//[1]引入vuex</span></span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)<span class="comment">//[2]使用vuex</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//[3]创建一个store实例</span></span><br><span class="line"><span class="keyword">const</span> store=<span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  state:&#123;<span class="comment">//[4]所有组件共用数据存放处</span></span><br><span class="line">    count:<span class="number">10</span></span><br><span class="line">  &#125;,<span class="comment">//[6]更改state里的数据在mutations里写函数操作</span></span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;<span class="comment">//[6.1.0]自加函数,用于其它组件操作数据通过 this.$store.commit('increment')</span></span><br><span class="line">      state.count++</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement(state)&#123;<span class="comment">//[6.1.1]自减函数,用于其它组件操作数据通过 this.$store.commit('decrement')</span></span><br><span class="line">      state.count--</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  actions:&#123;<span class="comment">//【1】用动作操作mutations里函数</span></span><br><span class="line">    increment(context)&#123;<span class="comment">//context承上启下</span></span><br><span class="line">      context.commit(<span class="string">'increment'</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement(context)&#123;</span><br><span class="line">      context.commit(<span class="string">'decrement'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  store,<span class="comment">//[5]注入store</span></span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="src-components-home-vue-调用actions内的函数"><a href="#src-components-home-vue-调用actions内的函数" class="headerlink" title="src/components/home.vue 调用actions内的函数"></a>src/components/home.vue 调用actions内的函数</h3><p>【1】使用main.js里actions里定义好的函数进行共享数据自加操作<br>【1.1】使用main.js里action里定义好的函数进行共享数据自减操作<br>this.$store.dispatch(‘decrement’)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;Hello :title=<span class="string">'msg'</span> @msg=<span class="string">'getmsg'</span>/&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span></span><br><span class="line">    &#123;&#123;msg2&#125;&#125;&lt;br/&gt;</span><br><span class="line">    &lt;!-- 获取store里的共享数据方法<span class="number">1</span> --&gt;</span><br><span class="line">    home:获取vuex的store共用数据：&#123;&#123;<span class="keyword">this</span>.$store.state.count&#125;&#125;&lt;br/&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span></span><br><span class="line"></span><br><span class="line">    &lt;button @click=<span class="string">'add'</span>&gt;加store.state里数据&lt;<span class="regexp">/button&gt; &lt;!-- 【2】修改共享数据自加 --&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button @click="sub"&gt;减&lt;/</span>button&gt; &lt;!-- 【<span class="number">2.1</span>】修改共享数据自减 --&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> Hello <span class="keyword">from</span> <span class="string">'./hello.vue'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'home'</span>,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        msg:<span class="string">'Home向Hello传的消息'</span>,</span><br><span class="line">        msg2:<span class="string">''</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    components:&#123;Hello&#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      add()&#123;<span class="comment">//【1】使用main.js里actions里定义好的函数进行共享数据自加操作</span></span><br><span class="line">        <span class="comment">// this.$store.commit('increment')</span></span><br><span class="line">        <span class="keyword">this</span>.$store.dispatch(<span class="string">'increment'</span>)</span><br><span class="line">      &#125;,</span><br><span class="line">      sub()&#123;<span class="comment">//【1.1】使用main.js里action里定义好的函数进行共享数据自减操作</span></span><br><span class="line">        <span class="comment">// this.$store.commit('decrement')</span></span><br><span class="line">        <span class="keyword">this</span>.$store.dispatch(<span class="string">'decrement'</span>)</span><br><span class="line">      &#125;,</span><br><span class="line">      getmsg(data)&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg2=data;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="效果：同上，操作共享数据，1加，2减"><a href="#效果：同上，操作共享数据，1加，2减" class="headerlink" title="效果：同上，操作共享数据，1加，2减"></a>效果：同上，操作共享数据，1加，2减</h3><p><img src="https://img-blog.csdnimg.cn/20191231085052340.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="2-3-1-actions内执行异步操作"><a href="#2-3-1-actions内执行异步操作" class="headerlink" title="2.3.1 actions内执行异步操作"></a>2.3.1 actions内执行异步操作</h2><h3 id="src-main-js-actions-内进行异步模拟"><a href="#src-main-js-actions-内进行异步模拟" class="headerlink" title="src/main.js actions:{}内进行异步模拟"></a>src/main.js actions:{}内进行异步模拟</h3><p>【异步】异步操作模拟,利用setTimeout函数延迟1秒执行自加操作</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.vue'</span></span><br><span class="line"><span class="keyword">import</span> Vuex <span class="keyword">from</span> <span class="string">'vuex'</span> <span class="comment">//[1]引入vuex</span></span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)<span class="comment">//[2]使用vuex</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//[3]创建一个store实例</span></span><br><span class="line"><span class="keyword">const</span> store=<span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  state:&#123;<span class="comment">//[4]所有组件共用数据存放处</span></span><br><span class="line">    count:<span class="number">10</span></span><br><span class="line">  &#125;,<span class="comment">//[6]更改state里的数据在mutations里写函数操作</span></span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;<span class="comment">//[6.1.0]自加函数,用于其它组件操作数据通过 this.$store.commit('increment')</span></span><br><span class="line">      state.count++</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement(state)&#123;<span class="comment">//[6.1.1]自减函数,用于其它组件操作数据通过 this.$store.commit('decrement')</span></span><br><span class="line">      state.count--</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  actions:&#123;</span><br><span class="line">    increment(context)&#123;</span><br><span class="line">      <span class="comment">// context.commit('increment');</span></span><br><span class="line">      setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="comment">//【异步】异步操作模拟,利用setTimeout函数延迟1秒执行自加操作</span></span><br><span class="line">        context.commit(<span class="string">'increment'</span>);</span><br><span class="line">      &#125;,<span class="number">1000</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement(context)&#123;</span><br><span class="line">      context.commit(<span class="string">'decrement'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  store,<span class="comment">//[5]注入store</span></span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="src-components-home-vue"><a href="#src-components-home-vue" class="headerlink" title="src/components/home.vue"></a>src/components/home.vue</h3><p>代码同上例，略过</p>
+<h3 id="效果同上例略过"><a href="#效果同上例略过" class="headerlink" title="效果同上例略过"></a>效果同上例略过</h3><h2 id="2-4-getter-的使用"><a href="#2-4-getter-的使用" class="headerlink" title="2.4 getter:{}的使用"></a>2.4 getter:{}的使用</h2><p><strong>应用场景：</strong>例如在购物车中，利用2.3例的自减减少库存，当减少到0时还可以继续减为负数，此时商家将要向用户倒找钱，这样显然不合理。因此引入getter函数；</p>
+<h3 id="src-main-js-写-getters用于控制共享数据"><a href="#src-main-js-写-getters用于控制共享数据" class="headerlink" title="src/main.js 写 getters用于控制共享数据"></a>src/main.js 写 getters用于控制共享数据</h3><p>【getter】用于控制共享数据的使用<br>如果count数据大于0则返回count,否则只返回0(小于0时只返回0)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.vue'</span></span><br><span class="line"><span class="keyword">import</span> Vuex <span class="keyword">from</span> <span class="string">'vuex'</span> <span class="comment">//[1]引入vuex</span></span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)<span class="comment">//[2]使用vuex</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//[3]创建一个store实例</span></span><br><span class="line"><span class="keyword">const</span> store=<span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  state:&#123;<span class="comment">//[4]所有组件共用数据存放处</span></span><br><span class="line">    count:<span class="number">10</span></span><br><span class="line">  &#125;,</span><br><span class="line">  getters:&#123;<span class="comment">//【getter】用于控制共享数据的使用</span></span><br><span class="line">    controlState(state)&#123; <span class="comment">//如果count数据大于0则返回count,否则只返回0(小于0时只返回0)</span></span><br><span class="line">      <span class="keyword">return</span> state.count &gt; <span class="number">0</span> ? state.count : <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">//[6]更改state里的数据在mutations里写函数操作</span></span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;<span class="comment">//[6.1.0]自加函数,用于其它组件操作数据通过 this.$store.commit('increment')</span></span><br><span class="line">      state.count++</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement(state)&#123;<span class="comment">//[6.1.1]自减函数,用于其它组件操作数据通过 this.$store.commit('decrement')</span></span><br><span class="line">      state.count--</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  actions:&#123;</span><br><span class="line">    increment(context)&#123;</span><br><span class="line">      <span class="comment">// context.commit('increment');</span></span><br><span class="line">      setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="comment">//异步操作模拟,利用setTimeout函数延迟1秒执行自加操作</span></span><br><span class="line">        context.commit(<span class="string">'increment'</span>);</span><br><span class="line">      &#125;,<span class="number">1000</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement(context)&#123;</span><br><span class="line">      context.commit(<span class="string">'decrement'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  store,<span class="comment">//[5]注入store</span></span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="src-components-home-vue-1"><a href="#src-components-home-vue-1" class="headerlink" title="src/components/home.vue"></a>src/components/home.vue</h3><p>【getters-1】通过computed写函数来获取store里的共享数据方法<br>【getters-2】通过computed写函数来显示store里的共享数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;Hello :title=<span class="string">'msg'</span> @msg=<span class="string">'getmsg'</span>/&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span></span><br><span class="line">    &#123;&#123;msg2&#125;&#125;&lt;br/&gt;</span><br><span class="line">    &lt;!-- 【getters<span class="number">-2</span>】通过computed写函数来显示store里的共享数据 --&gt;</span><br><span class="line">    home:获取vuex的store共用数据：&#123;&#123;getState&#125;&#125;&lt;br/&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span></span><br><span class="line"></span><br><span class="line">    &lt;button @click=<span class="string">'add'</span>&gt;加store.state里数据&lt;<span class="regexp">/button&gt; &lt;!--修改共享数据自加 --&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button @click="sub"&gt;减&lt;/</span>button&gt; &lt;!--修改共享数据自减 --&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> Hello <span class="keyword">from</span> <span class="string">'./hello.vue'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'home'</span>,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        msg:<span class="string">'Home向Hello传的消息'</span>,</span><br><span class="line">        msg2:<span class="string">''</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    components:&#123;Hello&#125;,</span><br><span class="line">    computed:&#123;<span class="comment">//【getters-1】通过computed写函数来获取store里的共享数据方法</span></span><br><span class="line">      getState()&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.$store.getters.controlState;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      add()&#123;<span class="comment">//使用mutations里定义好的函数进行共享数据自加操作</span></span><br><span class="line">        <span class="comment">// this.$store.commit('increment')</span></span><br><span class="line">        <span class="keyword">this</span>.$store.dispatch(<span class="string">'increment'</span>)</span><br><span class="line">      &#125;,</span><br><span class="line">      sub()&#123;<span class="comment">//使用mutations里定义好的函数进行共享数据自减操作</span></span><br><span class="line">        <span class="comment">// this.$store.commit('decrement')</span></span><br><span class="line">        <span class="keyword">this</span>.$store.dispatch(<span class="string">'decrement'</span>)</span><br><span class="line">      &#125;,</span><br><span class="line">      getmsg(data)&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg2=data;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="效果：加了用getter获取数据2处最多只能减到0，没加的，3还是会返回负数"><a href="#效果：加了用getter获取数据2处最多只能减到0，没加的，3还是会返回负数" class="headerlink" title="效果：加了用getter获取数据2处最多只能减到0，没加的，3还是会返回负数"></a>效果：加了用getter获取数据2处最多只能减到0，没加的，3还是会返回负数</h3><p><img src="https://img-blog.csdnimg.cn/20191231093816249.png" alt="在这里插入图片描述"></p>
+<h2 id="2-5-moudel模块操作"><a href="#2-5-moudel模块操作" class="headerlink" title="2.5 moudel模块操作"></a>2.5 moudel模块操作</h2><p>官方文档：<a href="https://vuex.vuejs.org/zh/guide/modules.html" target="_blank" rel="noopener">https://vuex.vuejs.org/zh/guide/modules.html</a></p>
+<p>由于使用单一状态树，应用的所有状态会集中到一个比较大的对象。当应用变得非常复杂时，store 对象就有可能变得相当臃肿。</p>
+<p>为了解决以上问题，Vuex 允许我们将 store 分割成模块（module）。每个模块拥有自己的 state、mutation、action、getter、甚至是嵌套子模块——从上至下进行同样方式的分割：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> moduleA = &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;,</span><br><span class="line">  getters: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> moduleB = &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = <span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  modules: &#123;</span><br><span class="line">    a: moduleA,</span><br><span class="line">    b: moduleB</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">store.state.a <span class="comment">// -&gt; moduleA 的状态</span></span><br><span class="line">store.state.b <span class="comment">// -&gt; moduleB 的状态</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-6-store提取为单独文件"><a href="#2-6-store提取为单独文件" class="headerlink" title="2.6 store提取为单独文件"></a>2.6 store提取为单独文件</h2><p>也可参考 router<br>具体步骤：</p>
+<ol>
+<li>新建一个src/store文件夹</li>
+<li>在建立一个文件/src/store/index.js</li>
+<li>把store提取到2步建好的文件</li>
+<li>在main.js里引入store文件<h3 id="src-store-index-js"><a href="#src-store-index-js" class="headerlink" title="/src/store/index.js"></a>/src/store/index.js</h3>【1】注意导出：创建一个store仓库<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">"vue"</span></span><br><span class="line"><span class="keyword">import</span> Vuex <span class="keyword">from</span> <span class="string">'vuex'</span></span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 【1】注意导出：创建一个store仓库</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">	state: &#123;</span><br><span class="line">		count: <span class="number">10</span></span><br><span class="line">	&#125;,</span><br><span class="line">	mutations: &#123;</span><br><span class="line">		increment(state) &#123;</span><br><span class="line">			state.count++;</span><br><span class="line">		&#125;,</span><br><span class="line">		decrement(state) &#123;</span><br><span class="line">			state.count--;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line"></span><br><span class="line">	actions: &#123;</span><br><span class="line">		<span class="comment">// context:承上启下</span></span><br><span class="line">		increment(context) &#123;</span><br><span class="line">			setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">				context.commit(<span class="string">"increment"</span>);</span><br><span class="line">			&#125;)</span><br><span class="line">		&#125;,</span><br><span class="line">		decrement(context) &#123;</span><br><span class="line">			setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">				context.commit(<span class="string">"decrement"</span>);</span><br><span class="line">			&#125;)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	getters: &#123;</span><br><span class="line">		controlState(state) &#123;</span><br><span class="line">			<span class="keyword">return</span> state.count &gt; <span class="number">0</span> ? state.count : <span class="number">0</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="main-js"><a href="#main-js" class="headerlink" title="main.js"></a>main.js</h3>【1】全局引入store文件<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.vue'</span></span><br><span class="line"><span class="keyword">import</span> store <span class="keyword">from</span> <span class="string">'./store/index.js'</span> <span class="comment">//【1】全局引入store文件</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  store,<span class="comment">//[5]注入store</span></span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="效果：同上例"><a href="#效果：同上例" class="headerlink" title="效果：同上例"></a>效果：同上例</h3></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/28/%E4%B9%9D%E3%80%81%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8F%91%EF%BC%9Arem%E5%92%8Cless%EF%BC%88%E9%80%82%E9%85%8D%E7%A7%BB%E5%8A%A8%E7%AB%AF%EF%BC%89/" rel="prev" title="九、响应式发：rem和less（适配移动端）">
+      <i class="fa fa-chevron-left"></i> 九、响应式发：rem和less（适配移动端）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/31/NPM%E6%A6%82%E8%BF%B0%E5%8F%8A%E4%BD%BF%E7%94%A8%E7%AE%80%E4%BB%8B/" rel="next" title="NPM概述及使用简介">
+      NPM概述及使用简介 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概述"><span class="nav-number">1.</span> <span class="nav-text">一、概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1vuex有什么用"><span class="nav-number">1.1.</span> <span class="nav-text">1.1vuex有什么用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2什么情况下使用vuex"><span class="nav-number">1.2.</span> <span class="nav-text">1.2什么情况下使用vuex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3Vuex状态管理"><span class="nav-number">1.3.</span> <span class="nav-text">1.3Vuex状态管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4Actions："><span class="nav-number">1.4.</span> <span class="nav-text">1.4Actions：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、安装及使用"><span class="nav-number">2.</span> <span class="nav-text">二、安装及使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装方法1，npm"><span class="nav-number">2.0.1.</span> <span class="nav-text">安装方法1，npm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装方法2，cdn"><span class="nav-number">2.0.2.</span> <span class="nav-text">安装方法2，cdn</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#【使用】"><span class="nav-number">2.1.</span> <span class="nav-text">【使用】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-vuex定义共享数据和引用-state"><span class="nav-number">2.2.</span> <span class="nav-text">2.1 vuex定义共享数据和引用 state:{}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第1步，引入vuex并创建store实例-src-main-js"><span class="nav-number">2.2.1.</span> <span class="nav-text">第1步，引入vuex并创建store实例 src&#x2F;main.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第2步，引用1步所创建的共享数据count-src-components-home-vue"><span class="nav-number">2.2.2.</span> <span class="nav-text">第2步，引用1步所创建的共享数据count(src&#x2F;components&#x2F;home.vue)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第2-2步，其它组件都可以引用共享数据"><span class="nav-number">2.2.3.</span> <span class="nav-text">第2.2步，其它组件都可以引用共享数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：成功获取到在mian-js内定义的count数据值"><span class="nav-number">2.2.4.</span> <span class="nav-text">效果：成功获取到在mian.js内定义的count数据值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-修改共享数据实例-mutaitions"><span class="nav-number">2.3.</span> <span class="nav-text">2.2 修改共享数据实例 mutaitions:{}</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第1步，定义修改共享数据的函数-main-js"><span class="nav-number">2.3.1.</span> <span class="nav-text">第1步，定义修改共享数据的函数 main.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第2步，在组件中使用1步定义的修改共享数据函数-home-vue"><span class="nav-number">2.3.2.</span> <span class="nav-text">第2步，在组件中使用1步定义的修改共享数据函数 home.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hello-vue-不重要"><span class="nav-number">2.3.3.</span> <span class="nav-text">hello.vue 不重要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：点加按钮会进行共享数据自加操作，减则自减"><span class="nav-number">2.3.4.</span> <span class="nav-text">效果：点加按钮会进行共享数据自加操作，减则自减</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-actions的使用"><span class="nav-number">2.4.</span> <span class="nav-text">2.3 actions的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-main-js-定义actions-内函数"><span class="nav-number">2.4.1.</span> <span class="nav-text">src&#x2F;main.js 定义actions:{}内函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-components-home-vue-调用actions内的函数"><span class="nav-number">2.4.2.</span> <span class="nav-text">src&#x2F;components&#x2F;home.vue 调用actions内的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：同上，操作共享数据，1加，2减"><span class="nav-number">2.4.3.</span> <span class="nav-text">效果：同上，操作共享数据，1加，2减</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-1-actions内执行异步操作"><span class="nav-number">2.5.</span> <span class="nav-text">2.3.1 actions内执行异步操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-main-js-actions-内进行异步模拟"><span class="nav-number">2.5.1.</span> <span class="nav-text">src&#x2F;main.js actions:{}内进行异步模拟</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-components-home-vue"><span class="nav-number">2.5.2.</span> <span class="nav-text">src&#x2F;components&#x2F;home.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果同上例略过"><span class="nav-number">2.5.3.</span> <span class="nav-text">效果同上例略过</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-getter-的使用"><span class="nav-number">2.6.</span> <span class="nav-text">2.4 getter:{}的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-main-js-写-getters用于控制共享数据"><span class="nav-number">2.6.1.</span> <span class="nav-text">src&#x2F;main.js 写 getters用于控制共享数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-components-home-vue-1"><span class="nav-number">2.6.2.</span> <span class="nav-text">src&#x2F;components&#x2F;home.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：加了用getter获取数据2处最多只能减到0，没加的，3还是会返回负数"><span class="nav-number">2.6.3.</span> <span class="nav-text">效果：加了用getter获取数据2处最多只能减到0，没加的，3还是会返回负数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-moudel模块操作"><span class="nav-number">2.7.</span> <span class="nav-text">2.5 moudel模块操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-store提取为单独文件"><span class="nav-number">2.8.</span> <span class="nav-text">2.6 store提取为单独文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-store-index-js"><span class="nav-number">2.8.1.</span> <span class="nav-text">&#x2F;src&#x2F;store&#x2F;index.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main-js"><span class="nav-number">2.8.2.</span> <span class="nav-text">main.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：同上例"><span class="nav-number">2.8.3.</span> <span class="nav-text">效果：同上例</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

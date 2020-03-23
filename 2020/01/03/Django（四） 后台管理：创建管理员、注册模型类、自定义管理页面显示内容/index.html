@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django（四） 后台管理：创建管理员、注册模型类、自定义管理页面显示内容">
+<meta property="og:url" content="http://yoursite.com/2020/01/03/Django%EF%BC%88%E5%9B%9B%EF%BC%89%20%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%EF%BC%9A%E5%88%9B%E5%BB%BA%E7%AE%A1%E7%90%86%E5%91%98%E3%80%81%E6%B3%A8%E5%86%8C%E6%A8%A1%E5%9E%8B%E7%B1%BB%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103085317138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103090533781.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103094728776.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103095736368.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103101439649.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103101456635.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103101550660.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103102928131.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103103455945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200103104656510.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-01-03T02:50:10.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.648Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200103085317138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/03/Django%EF%BC%88%E5%9B%9B%EF%BC%89%20%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%EF%BC%9A%E5%88%9B%E5%BB%BA%E7%AE%A1%E7%90%86%E5%91%98%E3%80%81%E6%B3%A8%E5%86%8C%E6%A8%A1%E5%9E%8B%E7%B1%BB%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Django（四） 后台管理：创建管理员、注册模型类、自定义管理页面显示内容 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/03/Django%EF%BC%88%E5%9B%9B%EF%BC%89%20%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%EF%BC%9A%E5%88%9B%E5%BB%BA%E7%AE%A1%E7%90%86%E5%91%98%E3%80%81%E6%B3%A8%E5%86%8C%E6%A8%A1%E5%9E%8B%E7%B1%BB%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Django（四） 后台管理：创建管理员、注册模型类、自定义管理页面显示内容
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-03 10:50:10" itemprop="dateCreated datePublished" datetime="2020-01-03T10:50:10+08:00">2020-01-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="后台管理"><a href="#后台管理" class="headerlink" title="后台管理"></a>后台管理</h1><h2 id="第1步、本地化：设置语言、时区"><a href="#第1步、本地化：设置语言、时区" class="headerlink" title="第1步、本地化：设置语言、时区"></a>第1步、本地化：设置语言、时区</h2><h3 id="修改project1-settings-py"><a href="#修改project1-settings-py" class="headerlink" title="修改project1/settings.py"></a>修改project1/settings.py</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#LANGUAGE_CODE = 'en-us'</span></span><br><span class="line">LANGUAGE_CODE = <span class="string">'zh-hans'</span> <span class="comment">#设置语言为中文</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># TIME_ZONE = 'UTC'</span></span><br><span class="line">TIME_ZONE = <span class="string">'Asia/Shanghai'</span> <span class="comment">#设置为中国时区</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="第2步，创建管理员"><a href="#第2步，创建管理员" class="headerlink" title="第2步，创建管理员"></a>第2步，创建管理员</h2><p>项目下打开cmd输入命令：<code>python manage.py createsuperuser</code><br>实操：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; quit() <span class="comment">#退出shell环境</span></span></span><br><span class="line"></span><br><span class="line">D:\a\django-app\project1&gt;py manage.py createsuperuser</span><br><span class="line">用户名 (leave blank to use 'administrator'): admin</span><br><span class="line">电子邮件地址: test@qq.com</span><br><span class="line">Password:</span><br><span class="line">Password (again):</span><br><span class="line">密码跟 用户名 太相似了。</span><br><span class="line">密码长度太短。密码必须包含至少 8 个字符。</span><br><span class="line">这个密码太常见了。</span><br><span class="line">Bypass password validation and create user anyway? [y/N]: y</span><br><span class="line">Superuser created successfully.</span><br><span class="line"></span><br><span class="line">py manage.py runserver</span><br></pre></td></tr></table></figure>
+<p>打开浏览器输入刚创建的用户名密码：<a href="http://127.0.0.1:8000/admin/" target="_blank" rel="noopener">http://127.0.0.1:8000/admin/</a><br><img src="https://img-blog.csdnimg.cn/20200103085317138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="第3步，注册模型类"><a href="#第3步，注册模型类" class="headerlink" title="第3步，注册模型类"></a>第3步，注册模型类</h2><p>在应用下的admin.py中注册模型类。<br>告诉djang框架根据注册的模型类来生成对应表管理页面。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">b = BookInfo()</span><br><span class="line">str(b) __str__</span><br></pre></td></tr></table></figure>
+<h3 id="1）project1-admin-py"><a href="#1）project1-admin-py" class="headerlink" title="1）project1/admin.py"></a>1）project1/admin.py</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin <span class="comment">#导入admin模块</span></span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo,HeroInfo <span class="comment">#导入模型模块</span></span><br><span class="line"><span class="comment"># Register your models here.</span></span><br><span class="line"></span><br><span class="line">admin.site.register(BookInfo) <span class="comment"># 注册模型类BookInfo</span></span><br></pre></td></tr></table></figure>
+<p>注册完成刷新页面就会展示模型类：<br><img src="https://img-blog.csdnimg.cn/20200103090533781.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="2）Book-info名字哪里来"><a href="#2）Book-info名字哪里来" class="headerlink" title="2）Book info名字哪里来"></a>2）Book info名字哪里来</h3><p><img src="https://img-blog.csdnimg.cn/20200103094728776.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="查询表【1】"><a href="#查询表【1】" class="headerlink" title="查询表【1】"></a>查询表【1】</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">D:\a\django-app\project1&gt;py manage.py shell</span><br><span class="line">Python <span class="number">3.7</span><span class="number">.1</span> (v3<span class="number">.7</span><span class="number">.1</span>:<span class="number">260</span>ec2c36a, Oct <span class="number">20</span> <span class="number">2018</span>, <span class="number">14</span>:<span class="number">57</span>:<span class="number">15</span>) [MSC v<span class="number">.1915</span> <span class="number">64</span> bit (AMD6</span><br><span class="line"><span class="number">4</span>)] on win32</span><br><span class="line">Type <span class="string">"help"</span>, <span class="string">"copyright"</span>, <span class="string">"credits"</span> <span class="keyword">or</span> <span class="string">"license"</span> <span class="keyword">for</span> more information.</span><br><span class="line">(InteractiveConsole)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b2=BookInfo.objects.all()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b2</span><br><span class="line">&lt;QuerySet [&lt;BookInfo: BookInfo object (<span class="number">3</span>)&gt;, &lt;BookInfo: BookInfo object (<span class="number">4</span>)&gt;]&gt; <span class="comment">#冒号后面的:BookInfo即是第2/3个箭头的名字由来</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="★★★改变默认显示名"><a href="#★★★改变默认显示名" class="headerlink" title="★★★改变默认显示名"></a><font color='red'>★★★改变默认显示名</font></h3><h3 id="在app1-models-py里对应的model类加入如下代码"><a href="#在app1-models-py里对应的model类加入如下代码" class="headerlink" title="在app1/models.py里对应的model类加入如下代码"></a>在app1/models.py里对应的model类加入如下代码</h3><p>【新加入的代码】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一类</span></span><br><span class="line"><span class="comment"># 图书类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BookInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">'''图书模型类'''</span></span><br><span class="line">    <span class="comment"># 图书名称，CharField说明是一个字符串，max_length指定字符串的最大长度</span></span><br><span class="line">    btitle = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    <span class="comment"># 出版日期，DateField说明是一个日期类型</span></span><br><span class="line">    bpub_date = models.DateField()</span><br><span class="line"></span><br><span class="line"><span class="comment">#【新加入的代码】</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span> <span class="comment">#重定义系统的str方法，让它返回对应图书的名字</span></span><br><span class="line">        <span class="keyword">return</span> self.btitle</span><br></pre></td></tr></table></figure>
+<h3 id="查询表【2】注意查询出的b的名称变化"><a href="#查询表【2】注意查询出的b的名称变化" class="headerlink" title="查询表【2】注意查询出的b的名称变化"></a>查询表【2】注意查询出的b的名称变化</h3><h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">b由</span><br><span class="line">&lt;QuerySet [&lt;BookInfo: BookInfo object (<span class="number">3</span>)&gt;, &lt;BookInfo: BookInfo object (<span class="number">4</span>)&gt;]&gt;</span><br><span class="line">变</span><br><span class="line">&lt;QuerySet [&lt;BookInfo: 天龙八部&gt;, &lt;BookInfo: 射雕英雄传&gt;]&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="实操"><a href="#实操" class="headerlink" title="实操"></a>实操</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>quit() <span class="comment">#退出shell，下面重新进入，让代码生效</span></span><br><span class="line"></span><br><span class="line">D:\a\django-app\project1&gt;py manage.py shell</span><br><span class="line">Python <span class="number">3.7</span><span class="number">.1</span> (v3<span class="number">.7</span><span class="number">.1</span>:<span class="number">260</span>ec2c36a, Oct <span class="number">20</span> <span class="number">2018</span>, <span class="number">14</span>:<span class="number">57</span>:<span class="number">15</span>) [MSC v<span class="number">.1915</span> <span class="number">64</span> bit (AMD6</span><br><span class="line"><span class="number">4</span>)] on win32</span><br><span class="line">Type <span class="string">"help"</span>, <span class="string">"copyright"</span>, <span class="string">"credits"</span> <span class="keyword">or</span> <span class="string">"license"</span> <span class="keyword">for</span> more information.</span><br><span class="line">(InteractiveConsole)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b=BookInfo.objects.all()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">&lt;QuerySet [&lt;BookInfo: 天龙八部&gt;, &lt;BookInfo: 射雕英雄传&gt;]&gt;</span><br></pre></td></tr></table></figure>
+<p>再看表：箭头处已经改变<br><img src="https://img-blog.csdnimg.cn/20200103095736368.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="把HeroInfo也注册到admin里，并让其显示英雄名"><a href="#把HeroInfo也注册到admin里，并让其显示英雄名" class="headerlink" title="把HeroInfo也注册到admin里，并让其显示英雄名"></a>把HeroInfo也注册到admin里，并让其显示英雄名</h3><h4 id="1-app1-admin-py"><a href="#1-app1-admin-py" class="headerlink" title="1) app1/admin.py"></a>1) app1/admin.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin <span class="comment">#导入admin模块</span></span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo,HeroInfo <span class="comment">#导入模型模块</span></span><br><span class="line"><span class="comment"># Register your models here.</span></span><br><span class="line"></span><br><span class="line">admin.site.register(BookInfo) <span class="comment"># 注册图书model类</span></span><br><span class="line">admin.site.register(HeroInfo) <span class="comment"># 注册英雄model类</span></span><br></pre></td></tr></table></figure>
+<h4 id="2-app1-models-py"><a href="#2-app1-models-py" class="headerlink" title="2) app1/models.py"></a>2) app1/models.py</h4><p>重点：<br>【返回对应图书的名字】<br>【返回英雄名】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"><span class="comment"># 设计和表对应的类，模型类</span></span><br><span class="line"><span class="comment"># Create your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 一类</span></span><br><span class="line"><span class="comment"># 图书类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BookInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">'''图书模型类'''</span></span><br><span class="line">    <span class="comment"># 图书名称，CharField说明是一个字符串，max_length指定字符串的最大长度</span></span><br><span class="line">    btitle = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    <span class="comment"># 出版日期，DateField说明是一个日期类型</span></span><br><span class="line">    bpub_date = models.DateField()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span> <span class="comment">#重定义系统的str方法，让它【返回对应图书的名字】</span></span><br><span class="line">        <span class="keyword">return</span> self.btitle</span><br><span class="line"></span><br><span class="line"><span class="comment"># 多类</span></span><br><span class="line"><span class="comment"># 英雄人物类</span></span><br><span class="line"><span class="comment"># 英雄名 hname</span></span><br><span class="line"><span class="comment"># 性别 hgender</span></span><br><span class="line"><span class="comment"># 年龄　hage</span></span><br><span class="line"><span class="comment"># 备注　hcomment</span></span><br><span class="line"><span class="comment"># 关系属性　hbook，建立图书类和英雄人物类之间的一对多关系</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HeroInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">'''英雄人物模型类'''</span></span><br><span class="line">    hname = models.CharField(max_length=<span class="number">20</span>) <span class="comment"># 英雄名称</span></span><br><span class="line">    <span class="comment"># 性别，BooleanField说明是bool类型，default指定默认值，False代表男</span></span><br><span class="line">    hgender = models.BooleanField(default=<span class="literal">False</span>)</span><br><span class="line">    <span class="comment"># 备注</span></span><br><span class="line">    hcomment = models.CharField(max_length=<span class="number">128</span>)</span><br><span class="line">    <span class="comment"># 关系属性　hbook，建立图书类和英雄人物类之间的一对多关系</span></span><br><span class="line">    <span class="comment"># 关系属性对应的表的字段名格式: 关系属性名_id</span></span><br><span class="line">    hbook = models.ForeignKey(<span class="string">'BookInfo'</span>, on_delete=models.CASCADE) <span class="comment">#对应BookInfo表的主键ID</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span> <span class="comment">#【返回英雄名】</span></span><br><span class="line">        <span class="keyword">return</span> self.hname</span><br></pre></td></tr></table></figure>
+<p>页面效果：<br><img src="https://img-blog.csdnimg.cn/20200103101439649.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200103101456635.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="3）增加个信息试试"><a href="#3）增加个信息试试" class="headerlink" title="3）增加个信息试试"></a>3）增加个信息试试</h4><p><img src="https://img-blog.csdnimg.cn/20200103101550660.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="第4步，自定义管理页面显示内容"><a href="#第4步，自定义管理页面显示内容" class="headerlink" title="第4步，自定义管理页面显示内容"></a>第4步，自定义管理页面显示内容</h2><p>自定义模型管理类。模型管理类就是告诉django在生成的管理页面上显示哪些内容。</p>
+<h3 id="0）例如book-info正常是这样显示的，我们想让它显示出图书的其它信息：ID、书标题、出版日期"><a href="#0）例如book-info正常是这样显示的，我们想让它显示出图书的其它信息：ID、书标题、出版日期" class="headerlink" title="0）例如book info正常是这样显示的，我们想让它显示出图书的其它信息：ID、书标题、出版日期"></a>0）例如book info正常是这样显示的，我们想让它显示出图书的其它信息：ID、书标题、出版日期</h3><p><img src="https://img-blog.csdnimg.cn/20200103102928131.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="1）app1-admin-py-写自定义样式控制类，并挂载到注册上"><a href="#1）app1-admin-py-写自定义样式控制类，并挂载到注册上" class="headerlink" title="1）app1/admin.py 写自定义样式控制类，并挂载到注册上"></a>1）app1/admin.py 写自定义样式控制类，并挂载到注册上</h3><p>【1】自定义类：控制页面显示内容(类名随意写)，写完之后，要在注册模型那里加上此处写的类名做为参数才能真正显示<br>【2】把自定类样式作为参数挂载到注册部分</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin <span class="comment">#导入admin模块</span></span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo,HeroInfo <span class="comment">#导入模型模块</span></span><br><span class="line"><span class="comment"># Register your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 【1】自定义类：控制页面显示内容(类名随意写)，写完之后，要在注册模型那里加上此处写的类名做为参数才能真正显示</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">control_view_Admin</span><span class="params">(admin.ModelAdmin)</span>:</span></span><br><span class="line">    <span class="string">'''自定义：图书样式管理类'''</span></span><br><span class="line">    list_display = [<span class="string">'id'</span>,<span class="string">'btitle'</span>,<span class="string">'bpub_date'</span>]  <span class="comment">#list_display为显示指定表内容的固定写法</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#注册类模型</span></span><br><span class="line">admin.site.register(BookInfo,control_view_Admin) <span class="comment">#【2】把自定类样式作为参数挂载到注册部分</span></span><br><span class="line">admin.site.register(HeroInfo)</span><br></pre></td></tr></table></figure>
+<h4 id="2）效果："><a href="#2）效果：" class="headerlink" title="2）效果："></a>2）效果：</h4><p><img src="https://img-blog.csdnimg.cn/20200103103455945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="4步扩展，把heroinfo信息也显示出来"><a href="#4步扩展，把heroinfo信息也显示出来" class="headerlink" title="4步扩展，把heroinfo信息也显示出来"></a>4步扩展，把heroinfo信息也显示出来</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin <span class="comment">#导入admin模块</span></span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo,HeroInfo <span class="comment">#导入模型模块</span></span><br><span class="line"><span class="comment"># Register your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 自定义类：控制页面显示内容(类名随意写)，写完之后，要在注册模型那里加上此处写的类名做为参数才能真正显示</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">control_bookview_admin</span><span class="params">(admin.ModelAdmin)</span>:</span></span><br><span class="line">    <span class="string">'''自定义：图书样式管理类'''</span></span><br><span class="line">    list_display = [<span class="string">'id'</span>,<span class="string">'btitle'</span>,<span class="string">'bpub_date'</span>]  <span class="comment">#list_display为显示指定表内容的固定写法</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">control_heroview_admin</span><span class="params">(admin.ModelAdmin)</span>:</span></span><br><span class="line">    list_display = [<span class="string">'id'</span>,<span class="string">'hname'</span>,<span class="string">'hgender'</span>,<span class="string">'hcomment'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#注册类模型,control_view_Admin</span></span><br><span class="line">admin.site.register(BookInfo,control_bookview_admin)</span><br><span class="line">admin.site.register(HeroInfo,control_heroview_admin)</span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="https://img-blog.csdnimg.cn/20200103104656510.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/03/Django%EF%BC%88%E4%B8%89%EF%BC%89%20%E6%A8%A1%E5%9E%8B%EF%BC%9AORM%E6%A1%86%E6%9E%B6%E3%80%81%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B%E7%B1%BB%E5%B9%B6%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AF%B9%E5%BA%94%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E3%80%81%E9%85%8D%E7%BD%AEMysql%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="prev" title="Django（三） 模型：ORM框架、定义模型类并创建一个对应的数据库、配置Mysql数据库">
+      <i class="fa fa-chevron-left"></i> Django（三） 模型：ORM框架、定义模型类并创建一个对应的数据库、配置Mysql数据库
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/04/Django%EF%BC%88%E4%BA%94%EF%BC%891%20-%204%E7%AB%A0%E5%AE%9E%E6%88%98%EF%BC%9A%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E5%9B%BE%E4%B9%A6%E5%88%97%E8%A1%A8%E5%B9%B6%E6%B8%B2%E6%9F%93%E5%87%BA%E6%9D%A5%E3%80%81%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82urls.py%20path,re_path%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82%E8%AE%BE%E7%BD%AE%E3%80%81%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95/" rel="next" title="Django（五）1 - 4章实战：从数据库读取图书列表并渲染出来、通过url传参urls.py path,re_path通过url传参设置、模板语法">
+      Django（五）1 - 4章实战：从数据库读取图书列表并渲染出来、通过url传参urls.py path,re_path通过url传参设置、模板语法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#后台管理"><span class="nav-number">1.</span> <span class="nav-text">后台管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第1步、本地化：设置语言、时区"><span class="nav-number">1.1.</span> <span class="nav-text">第1步、本地化：设置语言、时区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#修改project1-settings-py"><span class="nav-number">1.1.1.</span> <span class="nav-text">修改project1&#x2F;settings.py</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第2步，创建管理员"><span class="nav-number">1.2.</span> <span class="nav-text">第2步，创建管理员</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第3步，注册模型类"><span class="nav-number">1.3.</span> <span class="nav-text">第3步，注册模型类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1）project1-admin-py"><span class="nav-number">1.3.1.</span> <span class="nav-text">1）project1&#x2F;admin.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2）Book-info名字哪里来"><span class="nav-number">1.3.2.</span> <span class="nav-text">2）Book info名字哪里来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询表【1】"><span class="nav-number">1.3.3.</span> <span class="nav-text">查询表【1】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#★★★改变默认显示名"><span class="nav-number">1.3.4.</span> <span class="nav-text">★★★改变默认显示名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在app1-models-py里对应的model类加入如下代码"><span class="nav-number">1.3.5.</span> <span class="nav-text">在app1&#x2F;models.py里对应的model类加入如下代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询表【2】注意查询出的b的名称变化"><span class="nav-number">1.3.6.</span> <span class="nav-text">查询表【2】注意查询出的b的名称变化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#说明"><span class="nav-number">1.3.6.1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实操"><span class="nav-number">1.3.6.2.</span> <span class="nav-text">实操</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把HeroInfo也注册到admin里，并让其显示英雄名"><span class="nav-number">1.3.7.</span> <span class="nav-text">把HeroInfo也注册到admin里，并让其显示英雄名</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-app1-admin-py"><span class="nav-number">1.3.7.1.</span> <span class="nav-text">1) app1&#x2F;admin.py</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-app1-models-py"><span class="nav-number">1.3.7.2.</span> <span class="nav-text">2) app1&#x2F;models.py</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3）增加个信息试试"><span class="nav-number">1.3.7.3.</span> <span class="nav-text">3）增加个信息试试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第4步，自定义管理页面显示内容"><span class="nav-number">1.4.</span> <span class="nav-text">第4步，自定义管理页面显示内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0）例如book-info正常是这样显示的，我们想让它显示出图书的其它信息：ID、书标题、出版日期"><span class="nav-number">1.4.1.</span> <span class="nav-text">0）例如book info正常是这样显示的，我们想让它显示出图书的其它信息：ID、书标题、出版日期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1）app1-admin-py-写自定义样式控制类，并挂载到注册上"><span class="nav-number">1.4.2.</span> <span class="nav-text">1）app1&#x2F;admin.py 写自定义样式控制类，并挂载到注册上</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2）效果："><span class="nav-number">1.4.2.1.</span> <span class="nav-text">2）效果：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4步扩展，把heroinfo信息也显示出来"><span class="nav-number">1.4.3.</span> <span class="nav-text">4步扩展，把heroinfo信息也显示出来</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

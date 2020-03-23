@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django（十二）视图--利用jquery从后台发送ajax请求并处理、ajax登录案例">
+<meta property="og:url" content="http://yoursite.com/2020/01/08/Django%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E8%A7%86%E5%9B%BE--%E5%88%A9%E7%94%A8jquery%E4%BB%8E%E5%90%8E%E5%8F%B0%E5%8F%91%E9%80%81ajax%E8%AF%B7%E6%B1%82%E5%B9%B6%E5%A4%84%E7%90%86%E3%80%81ajax%E7%99%BB%E5%BD%95%E6%A1%88%E4%BE%8B/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108120131297.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020010814044788.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108140623330.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108141413121.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108154424979.png">
+<meta property="article:published_time" content="2020-01-08T07:57:24.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.426Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200108120131297.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/08/Django%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E8%A7%86%E5%9B%BE--%E5%88%A9%E7%94%A8jquery%E4%BB%8E%E5%90%8E%E5%8F%B0%E5%8F%91%E9%80%81ajax%E8%AF%B7%E6%B1%82%E5%B9%B6%E5%A4%84%E7%90%86%E3%80%81ajax%E7%99%BB%E5%BD%95%E6%A1%88%E4%BE%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Django（十二）视图--利用jquery从后台发送ajax请求并处理、ajax登录案例 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/08/Django%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E8%A7%86%E5%9B%BE--%E5%88%A9%E7%94%A8jquery%E4%BB%8E%E5%90%8E%E5%8F%B0%E5%8F%91%E9%80%81ajax%E8%AF%B7%E6%B1%82%E5%B9%B6%E5%A4%84%E7%90%86%E3%80%81ajax%E7%99%BB%E5%BD%95%E6%A1%88%E4%BE%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Django（十二）视图--利用jquery从后台发送ajax请求并处理、ajax登录案例
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-08 15:57:24" itemprop="dateCreated datePublished" datetime="2020-01-08T15:57:24+08:00">2020-01-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、Ajax基本概念"><a href="#一、Ajax基本概念" class="headerlink" title="一、Ajax基本概念"></a>一、Ajax基本概念</h1><p>【参考】：<a href="https://www.runoob.com/jquery/jquery-ajax-intro.html" target="_blank" rel="noopener">https://www.runoob.com/jquery/jquery-ajax-intro.html</a><br>异步的javascript。在不全部加载某一个页面部的情况下，对页面进行局的刷新，ajax请求都在后台。<br>图片，css文件，js文件都是静态文件。</p>
+<h2 id="1-1ajax基本用法"><a href="#1-1ajax基本用法" class="headerlink" title="1.1ajax基本用法"></a>1.1ajax基本用法</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line"><span class="string">'url'</span>:请求地址,</span><br><span class="line"><span class="string">'type'</span>:请求方式，</span><br><span class="line"><span class="string">'dataType'</span>:预期返回的数据格式</span><br><span class="line"><span class="string">'data'</span>:参数</span><br><span class="line">&#125;).success(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line"><span class="comment">//回调函数（data即返回的数据）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="1-2完整过程示意"><a href="#1-2完整过程示意" class="headerlink" title="1.2完整过程示意"></a>1.2完整过程示意</h2><p>1) 发起ajax请求：jquery发起<br>2) 执行相应的视图函数，返回json内容<br>3) 执行相应的回调函数。通过判断json内容，进行相应处理。<br><img src="https://img-blog.csdnimg.cn/20200108120131297.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="二、Ajax登录案例"><a href="#二、Ajax登录案例" class="headerlink" title="二、Ajax登录案例"></a>二、Ajax登录案例</h1><h2 id="2-1ajax测试案例"><a href="#2-1ajax测试案例" class="headerlink" title="2.1ajax测试案例"></a>2.1ajax测试案例</h2><h3 id="第1步，下载-jquery：https-jquery-com-download"><a href="#第1步，下载-jquery：https-jquery-com-download" class="headerlink" title="第1步，下载 jquery：https://jquery.com/download/"></a>第1步，下载 jquery：<a href="https://jquery.com/download/" target="_blank" rel="noopener">https://jquery.com/download/</a></h3><p>下载第2个开发，未压缩版本 <a href="https://code.jquery.com/jquery-3.4.1.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-3.4.1.js</a><br>【1】compressed, production jQuery 3.4.1- 用于实际的网站中，已被精简和压缩。<br>【2】uncompressed, development jQuery 3.4.1 - 用于测试和开发（未压缩，是可读的代码）</p>
+<h3 id="第2步，部署jquery，在根目录下建立-static-js、css、images、"><a href="#第2步，部署jquery，在根目录下建立-static-js、css、images、" class="headerlink" title="第2步，部署jquery，在根目录下建立 /static/js、css、images、"></a>第2步，部署jquery，在根目录下建立 /static/js、css、images、</h3><ol>
+<li>把jquery.js文件放入js文件夹<h3 id="第3步，设置project1-settings-py，拉到最底下："><a href="#第3步，设置project1-settings-py，拉到最底下：" class="headerlink" title="第3步，设置project1/settings.py，拉到最底下："></a>第3步，设置project1/settings.py，拉到最底下：</h3>设置静态文件的保存目录<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Static files (CSS, JavaScript, Images)</span></span><br><span class="line"><span class="comment"># https://docs.djangoproject.com/en/3.0/howto/static-files/</span></span><br><span class="line"></span><br><span class="line">STATIC_URL = <span class="string">'/static/'</span></span><br><span class="line">STATICFILES_DIRS = [os.path.join(BASE_DIR, <span class="string">'static'</span>)] <span class="comment"># 设置静态文件的保存目录</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="第4步，创建ajax请求示例页面templates-app1-test-ajax-html，"><a href="#第4步，创建ajax请求示例页面templates-app1-test-ajax-html，" class="headerlink" title="第4步，创建ajax请求示例页面templates/app1/test_ajax.html，"></a>第4步，创建ajax请求示例页面templates/app1/test_ajax.html，</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;ajax&lt;/title&gt;</span><br><span class="line">    &lt;script src="/static/js/jquery-1.12.4.min.js"&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        $(function () &#123;</span><br><span class="line">        </span><br><span class="line">            // 绑定btnAjax的click事件</span><br><span class="line">            $(<span class="string">'#btnAjax'</span>).click(function () &#123;</span><br><span class="line">                alert(<span class="number">1</span>)</span><br><span class="line">                $.ajax(&#123;</span><br><span class="line">                    <span class="string">'url'</span>: <span class="string">'/ajax_handle'</span>,</span><br><span class="line">                    <span class="string">'dataType'</span>: <span class="string">'json'</span>,</span><br><span class="line">                    // <span class="string">'async'</span>: false, // 同步的ajax请求</span><br><span class="line">                &#125;).success(function (data) &#123;</span><br><span class="line">                    // 进行处理</span><br><span class="line">                    alert(<span class="number">2</span>)</span><br><span class="line">                    <span class="keyword">if</span> (data.res == <span class="number">1</span>)&#123;</span><br><span class="line">                        $(<span class="string">'#message'</span>).show().html(<span class="string">'提示信息'</span>)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                alert(<span class="number">3</span>)</span><br><span class="line">            &#125;)</span><br><span class="line"></span><br><span class="line">        &#125;)</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">    &lt;style&gt;</span><br><span class="line">        <span class="comment">#message &#123;</span></span><br><span class="line">            display: none;</span><br><span class="line">            color: red;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;input type=<span class="string">"button"</span> id=<span class="string">"btnAjax"</span> value=<span class="string">"ajax请求"</span>&gt;</span><br><span class="line">&lt;div id="message"&gt;&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="第5步，配置app1-urls-py"><a href="#第5步，配置app1-urls-py" class="headerlink" title="第5步，配置app1/urls.py"></a>第5步，配置app1/urls.py</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">path(<span class="string">r'test_ajax'</span>,views.test_ajax),<span class="comment">#ajax测试页</span></span><br><span class="line">path(<span class="string">r'ajax_handle/'</span>,views.ajax_handle),<span class="comment">#ajax处理页</span></span><br></pre></td></tr></table></figure>
+<h3 id="第6步，编写app1-views-py"><a href="#第6步，编写app1-views-py" class="headerlink" title="第6步，编写app1/views.py"></a>第6步，编写app1/views.py</h3><ol>
+<li>引入json模块</li>
+<li>ajax测试页面</li>
+<li>ajax请求处理<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render,redirect <span class="comment">#引入重定向简写模块</span></span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo,AreaInfo <span class="comment">#从模型下导入bookinfo数据模型</span></span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse,HttpResponseRedirect,JsonResponse <span class="comment">#引入返回请求模块、重新定向模块、json模块</span></span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> date <span class="comment"># 引用时间模块</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># /test_ajax</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_ajax</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''显示ajax页面'''</span></span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">'app1/test_ajax.html'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ajax_handle</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''接收ajax请求处理，返回json数据'''</span></span><br><span class="line">    <span class="comment"># 返回的json数据 &#123;'res':1&#125;</span></span><br><span class="line">    <span class="keyword">return</span> JsonResponse(&#123;<span class="string">'res'</span>:<span class="number">1</span>&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="效果：http-127-0-0-1-8000-test-ajax"><a href="#效果：http-127-0-0-1-8000-test-ajax" class="headerlink" title="效果：http://127.0.0.1:8000/test_ajax"></a>效果：<a href="http://127.0.0.1:8000/test_ajax" target="_blank" rel="noopener">http://127.0.0.1:8000/test_ajax</a></h3>点击按钮后，用jquery发起ajax请求，服务器返回请求，jquery处理返回数据，在页面显示出来提示信息，但页面并未整体刷新：<br><img src="https://img-blog.csdnimg.cn/2020010814044788.png" alt="在这里插入图片描述"><br>后台的ajax请求查看：<br><img src="https://img-blog.csdnimg.cn/20200108140623330.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h4 id="技巧：出错调试也在调试里的network里查看"><a href="#技巧：出错调试也在调试里的network里查看" class="headerlink" title="技巧：出错调试也在调试里的network里查看"></a>技巧：出错调试也在调试里的network里查看</h4><img src="https://img-blog.csdnimg.cn/20200108141413121.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h2 id="2-2-ajax的异步和同步请求控制（上步的4步）"><a href="#2-2-ajax的异步和同步请求控制（上步的4步）" class="headerlink" title="2.2 ajax的异步和同步请求控制（上步的4步）"></a>2.2 ajax的异步和同步请求控制（上步的4步）</h2>还是在templates/app1/test_ajax.html把js部分加上alert(1),2,3查看运行顺序<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;ajax&lt;/title&gt;</span><br><span class="line">    &lt;script src="/static/js/jquery-1.12.4.min.js"&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        $(function () &#123;</span><br><span class="line"></span><br><span class="line">            // 绑定btnAjax的click事件</span><br><span class="line">            $(<span class="string">'#btnAjax'</span>).click(function () &#123;</span><br><span class="line">                alert(<span class="number">1</span>)//【<span class="number">1</span>】</span><br><span class="line">                $.ajax(&#123;</span><br><span class="line">                    <span class="string">'url'</span>: <span class="string">'/ajax_handle'</span>,</span><br><span class="line">                    <span class="string">'dataType'</span>: <span class="string">'json'</span>,</span><br><span class="line">                    // <span class="string">'async'</span>: false, // 【<span class="number">4</span>】同步的ajax请求</span><br><span class="line">                &#125;).success(function (data) &#123;</span><br><span class="line">                    // 进行处理</span><br><span class="line">                    alert(<span class="number">2</span>)//【<span class="number">2</span>】</span><br><span class="line">                    <span class="keyword">if</span> (data.res == <span class="number">1</span>)&#123;</span><br><span class="line">                        $(<span class="string">'#message'</span>).show().html(<span class="string">'提示信息'</span>)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                alert(<span class="number">3</span>)//【<span class="number">3</span>】</span><br><span class="line">            &#125;)</span><br><span class="line"></span><br><span class="line">        &#125;)</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">    &lt;style&gt;</span><br><span class="line">        <span class="comment">#message &#123;</span></span><br><span class="line">            display: none;</span><br><span class="line">            color: red;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;input type=<span class="string">"button"</span> id=<span class="string">"btnAjax"</span> value=<span class="string">"ajax请求"</span>&gt;</span><br><span class="line">&lt;div id="message"&gt;&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="效果：运行发现运行顺序为1-3-2，而不是预期的1，2，3这即是异步"><a href="#效果：运行发现运行顺序为1-3-2，而不是预期的1，2，3这即是异步" class="headerlink" title="效果：运行发现运行顺序为1,3,2，而不是预期的1，2，3这即是异步"></a>效果：运行发现运行顺序为1,3,2，而不是预期的1，2，3这即是异步</h3><h3 id="把第【4】项注释取消，顺序即变成1-2-3，又变回同步"><a href="#把第【4】项注释取消，顺序即变成1-2-3，又变回同步" class="headerlink" title="把第【4】项注释取消，顺序即变成1,2,3，又变回同步"></a>把第【4】项注释取消，顺序即变成1,2,3，又变回同步</h3>同步设置：<code>&#39;async&#39;: false,</code> <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">        $(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 绑定btnAjax的click事件</span></span><br><span class="line">            $(<span class="string">'#btnAjax'</span>).click(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                alert(<span class="number">1</span>)<span class="comment">//【1】</span></span><br><span class="line">                $.ajax(&#123;</span><br><span class="line">                    <span class="string">'url'</span>: <span class="string">'/ajax_handle'</span>,</span><br><span class="line">                    <span class="string">'dataType'</span>: <span class="string">'json'</span>,</span><br><span class="line">                    <span class="string">'async'</span>: <span class="literal">false</span>, <span class="comment">// 【4】同步的ajax请求</span></span><br><span class="line">                &#125;).success(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">                    <span class="comment">// 进行处理</span></span><br><span class="line">                    alert(<span class="number">2</span>)<span class="comment">//【2】</span></span><br><span class="line">                    <span class="keyword">if</span> (data.res == <span class="number">1</span>)&#123;</span><br><span class="line">                        $(<span class="string">'#message'</span>).show().html(<span class="string">'提示信息'</span>)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                alert(<span class="number">3</span>)<span class="comment">//【3】</span></span><br><span class="line">            &#125;)</span><br><span class="line"></span><br><span class="line">        &#125;)</span><br><span class="line">    &lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-3-ajax登录案例"><a href="#2-3-ajax登录案例" class="headerlink" title="2.3 ajax登录案例"></a><font color='red'>2.3 ajax登录案例</font></h2>【目标】：实现用户信息输入错误，也不刷新页面清空数据，直接提示错误，省得再次输入信息<h3 id="1-首先，分析出请求地址时需要携带的参数。"><a href="#1-首先，分析出请求地址时需要携带的参数。" class="headerlink" title="1) 首先，分析出请求地址时需要携带的参数。"></a>1) 首先，分析出请求地址时需要携带的参数。</h3>1) 视图函数处理完成之后，所返回的json的格式。<br>2) 显示出登录页面：<br>a) 设计url，通过浏览器访问 <a href="http://127.0.0.1:8000/login_ajax" target="_blank" rel="noopener">http://127.0.0.1:8000/login_ajax</a> 时显示登录页面。<br>b) 设计url对应的视图函数login_ajax。<br>c) 编写模板文件login_ajax.html：在里面写jquery代码发起ajax请求。<h3 id="2-然后，登录校验功能"><a href="#2-然后，登录校验功能" class="headerlink" title="2) 然后，登录校验功能"></a>2) 然后，登录校验功能</h3>a) 设计url,点击登录页的登录按钮发起请求<a href="http://127.0.0.1:8000/login_ajax_check时进行登录校验。" target="_blank" rel="noopener">http://127.0.0.1:8000/login_ajax_check时进行登录校验。</a><br>b) 设计url对应的视图函数login_ajax_check：</li>
+<li>接收post提交过来的数据。</li>
+<li>进行登录校验，并返回json内容。 JsonRepsone</li>
+<li>Json格式如下：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'res'</span>:<span class="string">'1'</span>&#125; <span class="comment">#表示登录成功</span></span><br><span class="line">&#123;<span class="string">'res'</span>:<span class="string">'0'</span>&#125; <span class="comment">#表示登录失败</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="第1步，templates-app1-login-html"><a href="#第1步，templates-app1-login-html" class="headerlink" title="第1步，templates/app1/login.html"></a>第1步，templates/app1/login.html</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"zh"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;!-- 【0】引入jquery --&gt;</span><br><span class="line">    &lt;script src="/static/js/jquery-1.12.4.min.js"&gt;&lt;/script&gt;</span><br><span class="line">    &lt;title&gt;登录页面&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    // 【<span class="number">5</span>】写ajax处理函数</span><br><span class="line">    $(function () &#123;</span><br><span class="line">        $(<span class="string">'#btnLogin'</span>).click(function () &#123;</span><br><span class="line">            //<span class="number">1.</span>获取用户名、密码</span><br><span class="line">            username=$(<span class="string">'#username'</span>).val()</span><br><span class="line">            password=$(<span class="string">'#password'</span>).val()</span><br><span class="line">            //<span class="number">2.</span>发起ajax--post(username,password)请求验证，地址：/login_check</span><br><span class="line">            $.ajax(&#123;</span><br><span class="line">                <span class="string">'url'</span>:<span class="string">'/login_check'</span>,//验证地址</span><br><span class="line">                <span class="string">'type'</span>:<span class="string">'post'</span>,//请求类型</span><br><span class="line">                <span class="string">'data'</span>:&#123;<span class="string">'username'</span>:username,<span class="string">'password'</span>:password&#125;,//发送数据</span><br><span class="line">                <span class="string">'dataType'</span>:<span class="string">'json'</span>,//希望返回数据类型</span><br><span class="line">            &#125;).success(function(data)&#123;</span><br><span class="line">                //成功返回&#123;<span class="string">'res'</span>:<span class="number">1</span>&#125;,失败&#123;<span class="string">'res'</span>:<span class="number">0</span>&#125;</span><br><span class="line">                <span class="keyword">if</span>(data.res===<span class="number">0</span>)&#123;</span><br><span class="line">                    $(<span class="string">'#msg'</span>).show().html(<span class="string">'用户名或密码错误请重试！'</span>)//登录失败则显示msg，并在里写入信息</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;//成功跳转到books页面</span><br><span class="line">                    location.href=<span class="string">'/books'</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line"></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style&gt;</span><br><span class="line">    /* 【<span class="number">4</span>】信息提示样式 */</span><br><span class="line"><span class="comment">#msg&#123;</span></span><br><span class="line">    display: none;</span><br><span class="line">    color:red;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;!-- 【1】原form删除，input的name变id，方便jquery操作 --&gt;</span><br><span class="line">    用户名:&lt;input type=<span class="string">"text"</span> id=<span class="string">"username"</span>&gt;&lt;br/&gt;</span><br><span class="line">    密码:&lt;input type=<span class="string">"password"</span> id=<span class="string">"password"</span>&gt;&lt;br/&gt;</span><br><span class="line">    &lt;!-- 【2】加入一个信息提示框，用于密码等错误提示 --&gt;</span><br><span class="line">    &lt;div id="msg"&gt;&lt;/div&gt;</span><br><span class="line">    &lt;!-- 【3】按钮type改button,加一个id方便jquery操作 --&gt;</span><br><span class="line">    &lt;input type=<span class="string">"button"</span> id=<span class="string">"btnLogin"</span> value=<span class="string">"登录"</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="第2步，app1-views-py处理函数"><a href="#第2步，app1-views-py处理函数" class="headerlink" title="第2步，app1/views.py处理函数"></a>第2步，app1/views.py处理函数</h3><ol>
+<li>登录页函数</li>
+<li>登录校验函数<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render,redirect <span class="comment">#引入重定向简写模块</span></span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo,AreaInfo <span class="comment">#从模型下导入bookinfo数据模型</span></span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse,HttpResponseRedirect,JsonResponse <span class="comment">#引入返回请求模块、重新定向模块</span></span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> date <span class="comment"># 引用时间模块</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''登录页'''</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/login.html'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login_check</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''登录校验'''</span></span><br><span class="line">    <span class="comment">#1.获取用户名密码</span></span><br><span class="line">    username=request.POST.get(<span class="string">'username'</span>)</span><br><span class="line">    password=request.POST.get(<span class="string">'password'</span>)</span><br><span class="line">    <span class="comment">#2.进行校验，并返回json数据</span></span><br><span class="line">    <span class="keyword">if</span> username==<span class="string">'jim'</span> <span class="keyword">and</span> password==<span class="string">'123'</span>:</span><br><span class="line">        <span class="comment">#return redirect('/books')</span></span><br><span class="line">        <span class="keyword">return</span> JsonResponse(&#123;<span class="string">'res'</span>:<span class="number">1</span>&#125;) <span class="comment">#正确返回1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment">#return redirect('/login')</span></span><br><span class="line">        <span class="keyword">return</span> JsonResponse(&#123;<span class="string">'res'</span>:<span class="number">0</span>&#125;) <span class="comment">#错误返回0</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="第3步，app1-ulrs-py配置"><a href="#第3步，app1-ulrs-py配置" class="headerlink" title="第3步，app1/ulrs.py配置"></a>第3步，app1/ulrs.py配置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">path(<span class="string">'login/'</span>,views.login),<span class="comment">#登录页</span></span><br><span class="line">path(<span class="string">'login_check'</span>,views.login_check),<span class="comment">#登录检测</span></span><br></pre></td></tr></table></figure>
+<h3 id="效果：http-127-0-0-1-8000-login"><a href="#效果：http-127-0-0-1-8000-login" class="headerlink" title="效果：http://127.0.0.1:8000/login/"></a>效果：<a href="http://127.0.0.1:8000/login/" target="_blank" rel="noopener">http://127.0.0.1:8000/login/</a></h3><p>不正确：则在不刷新页面情况下提示错误信息（用于名，密码都还在，不要再次填写），<br>正确：则跳转到页面 <a href="http://127.0.0.1:8000/books" target="_blank" rel="noopener">http://127.0.0.1:8000/books</a><br><img src="https://img-blog.csdnimg.cn/20200108154424979.png" alt="在这里插入图片描述"></p>
+<h3 id="注意：settings-py别忘记设置"><a href="#注意：settings-py别忘记设置" class="headerlink" title="注意：settings.py别忘记设置"></a>注意：settings.py别忘记设置</h3><p>设置静态文件的保存目录</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Static files (CSS, JavaScript, Images)</span></span><br><span class="line"><span class="comment"># https://docs.djangoproject.com/en/3.0/howto/static-files/</span></span><br><span class="line"></span><br><span class="line">STATIC_URL = <span class="string">'/static/'</span></span><br><span class="line">STATICFILES_DIRS = [os.path.join(BASE_DIR, <span class="string">'static'</span>)] <span class="comment"># 设置静态文件的保存目录</span></span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/08/Django%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89%E8%A7%86%E5%9B%BE%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E3%80%81%E7%99%BB%E5%BD%95%E5%AE%9E%E4%BE%8B%E3%80%81HttpReqeust%E5%AF%B9%E8%B1%A1%E3%80%81HttpResponse%E5%AF%B9%E8%B1%A1/" rel="prev" title="Django（十一）视图详解：基本使用、登录实例、HttpReqeust对象、HttpResponse对象">
+      <i class="fa fa-chevron-left"></i> Django（十一）视图详解：基本使用、登录实例、HttpReqeust对象、HttpResponse对象
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/10/python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E7%9A%84%E5%AE%89%E8%A3%85%EF%BC%9A%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8py2,py3%E3%80%81/" rel="next" title="python虚拟环境的安装：同时使用py2,py3、">
+      python虚拟环境的安装：同时使用py2,py3、 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、Ajax基本概念"><span class="nav-number">1.</span> <span class="nav-text">一、Ajax基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1ajax基本用法"><span class="nav-number">1.1.</span> <span class="nav-text">1.1ajax基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2完整过程示意"><span class="nav-number">1.2.</span> <span class="nav-text">1.2完整过程示意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、Ajax登录案例"><span class="nav-number">2.</span> <span class="nav-text">二、Ajax登录案例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1ajax测试案例"><span class="nav-number">2.1.</span> <span class="nav-text">2.1ajax测试案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第1步，下载-jquery：https-jquery-com-download"><span class="nav-number">2.1.1.</span> <span class="nav-text">第1步，下载 jquery：https:&#x2F;&#x2F;jquery.com&#x2F;download&#x2F;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第2步，部署jquery，在根目录下建立-static-js、css、images、"><span class="nav-number">2.1.2.</span> <span class="nav-text">第2步，部署jquery，在根目录下建立 &#x2F;static&#x2F;js、css、images、</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第3步，设置project1-settings-py，拉到最底下："><span class="nav-number">2.1.3.</span> <span class="nav-text">第3步，设置project1&#x2F;settings.py，拉到最底下：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第4步，创建ajax请求示例页面templates-app1-test-ajax-html，"><span class="nav-number">2.1.4.</span> <span class="nav-text">第4步，创建ajax请求示例页面templates&#x2F;app1&#x2F;test_ajax.html，</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第5步，配置app1-urls-py"><span class="nav-number">2.1.5.</span> <span class="nav-text">第5步，配置app1&#x2F;urls.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第6步，编写app1-views-py"><span class="nav-number">2.1.6.</span> <span class="nav-text">第6步，编写app1&#x2F;views.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：http-127-0-0-1-8000-test-ajax"><span class="nav-number">2.1.7.</span> <span class="nav-text">效果：http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;test_ajax</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#技巧：出错调试也在调试里的network里查看"><span class="nav-number">2.1.7.1.</span> <span class="nav-text">技巧：出错调试也在调试里的network里查看</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-ajax的异步和同步请求控制（上步的4步）"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 ajax的异步和同步请求控制（上步的4步）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：运行发现运行顺序为1-3-2，而不是预期的1，2，3这即是异步"><span class="nav-number">2.2.1.</span> <span class="nav-text">效果：运行发现运行顺序为1,3,2，而不是预期的1，2，3这即是异步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把第【4】项注释取消，顺序即变成1-2-3，又变回同步"><span class="nav-number">2.2.2.</span> <span class="nav-text">把第【4】项注释取消，顺序即变成1,2,3，又变回同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-ajax登录案例"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 ajax登录案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-首先，分析出请求地址时需要携带的参数。"><span class="nav-number">2.3.1.</span> <span class="nav-text">1) 首先，分析出请求地址时需要携带的参数。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-然后，登录校验功能"><span class="nav-number">2.3.2.</span> <span class="nav-text">2) 然后，登录校验功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第1步，templates-app1-login-html"><span class="nav-number">2.3.3.</span> <span class="nav-text">第1步，templates&#x2F;app1&#x2F;login.html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第2步，app1-views-py处理函数"><span class="nav-number">2.3.4.</span> <span class="nav-text">第2步，app1&#x2F;views.py处理函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第3步，app1-ulrs-py配置"><span class="nav-number">2.3.5.</span> <span class="nav-text">第3步，app1&#x2F;ulrs.py配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：http-127-0-0-1-8000-login"><span class="nav-number">2.3.6.</span> <span class="nav-text">效果：http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;login&#x2F;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意：settings-py别忘记设置"><span class="nav-number">2.3.7.</span> <span class="nav-text">注意：settings.py别忘记设置</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

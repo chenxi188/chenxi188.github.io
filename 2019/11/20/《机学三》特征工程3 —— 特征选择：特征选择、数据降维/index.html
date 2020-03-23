@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《机学三》特征工程3 —— 特征选择：特征选择、数据降维">
+<meta property="og:url" content="http://yoursite.com/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191120082724711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191120135221738.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191120120007540.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191120134919622.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191120135501464.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-11-20T07:39:36.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.805Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191120082724711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《机学三》特征工程3 —— 特征选择：特征选择、数据降维 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《机学三》特征工程3 —— 特征选择：特征选择、数据降维
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-20 15:39:36" itemprop="dateCreated datePublished" datetime="2019-11-20T15:39:36+08:00">2019-11-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><h2 id="1-1【降维】"><a href="#1-1【降维】" class="headerlink" title="1.1【降维】"></a>1.1【降维】</h2><p><strong>【维降】：把三维降成二维，本质就是减少特征数量；</strong><br><img src="https://img-blog.csdnimg.cn/20191120082724711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="降维示例"></p>
+<h2 id="1-2【特征选择】"><a href="#1-2【特征选择】" class="headerlink" title="1.2【特征选择】"></a>1.2【特征选择】</h2><p><strong>什么是特征选择：</strong></p>
+<ul>
+<li>特征选择就是单纯地从提取到的所有特征中选择部分特征作为训练集特征，特征在选择前和选择后可以改变值、也不改变值，但是选择后的特征维数肯定比选择前小，毕竟我们只选择了其中的一部分特征。</li>
+</ul>
+<p><strong>为什么要进行特征选择：</strong></p>
+<ol>
+<li>冗余：部分特征的相关度高，容易消耗计算性能</li>
+<li>噪声：部分特征对预测结果有负影响</li>
+<li>相同的特征值：比如亚洲人肤色都是黄色，这就没意义。</li>
+<li>冗余的特征</li>
+<li>没用的特征</li>
+</ol>
+<p><strong>主要方法（三大武器）：前2种主要方式</strong></p>
+<ol>
+<li><em>Filter(过滤式)：VarianceThreshold（方差阈值），计算特征值方差，得出其值[是否一样]或[差距大小]<br>*</em>【方差公式】**：一组数据中的各个数减这组数据的平均数的平方和的平均数，公式为(mean即平均数)：<br>$$var=\frac{(x1- mean)^{2}+(x2- mean)^{2}+…}{n(每个特征的样本数)}$$<br>【简单说】，方差（每一列每个数-这列的平均数）^2/这列数的个数<br>【目的】删除低方差的特征列</li>
+<li>*Embedded(嵌入式)：正则化、决策树</li>
+<li>Wrapper(包裹式)</li>
+<li>其它方法：神经网络（以后介绍）<h1 id="二、特征选择实战之：方差阈值VarianceThreshold"><a href="#二、特征选择实战之：方差阈值VarianceThreshold" class="headerlink" title="二、特征选择实战之：方差阈值VarianceThreshold"></a>二、特征选择实战之：方差阈值VarianceThreshold</h1><h2 id="2-1-方差阈值sklearnAPI：VarianceThreshold-API"><a href="#2-1-方差阈值sklearnAPI：VarianceThreshold-API" class="headerlink" title="2.1 方差阈值sklearnAPI：VarianceThreshold API"></a>2.1 方差阈值sklearnAPI：VarianceThreshold API</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.feature_selection.VarianceThreshold</span><br></pre></td></tr></table></figure>
+<h2 id="2-2-sklearn-VarianceThreshold语法"><a href="#2-2-sklearn-VarianceThreshold语法" class="headerlink" title="2.2 sklearn.VarianceThreshold语法"></a>2.2 sklearn.VarianceThreshold语法</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">【删除所有低方差特征】：</span><br><span class="line">VarianceThreshold(threshold = <span class="number">0.0</span>)  </span><br><span class="line"></span><br><span class="line">Variance.fit_transform(X,y)</span><br><span class="line">【解释】：</span><br><span class="line">X:numpy array格式的数据[n_samples,n_features]</span><br><span class="line">返回值：训练集差异低于threshold的特征将被删除。</span><br><span class="line">默认值是保留所有非零方差特征，即删除所有样本</span><br><span class="line">中具有相同值的特征。</span><br></pre></td></tr></table></figure>
+<h2 id="2-3sklearn-VarianceThreshold使用流程-代码演示"><a href="#2-3sklearn-VarianceThreshold使用流程-代码演示" class="headerlink" title="2.3sklearn.VarianceThreshold使用流程(代码演示)"></a>2.3sklearn.VarianceThreshold使用流程(代码演示)</h2>1、初始化VarianceThreshold,指定阀值方差<br>2、调用fit_transform</li>
+</ol>
+<p>【演示数据】：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">3</span>], </span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>], </span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>]]</span><br></pre></td></tr></table></figure>
+
+<p>【方差选择实例：day1.py】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> VarianceThreshold</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">var</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    特征选择-删除低方差的特征</span></span><br><span class="line"><span class="string">    :return: None</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    var=VarianceThreshold(threshold=<span class="number">0</span>) <span class="comment">#去除方差等于0的列；【threshold即域值。方差（每一列每个数-这列的平均数）^2/数的个数=0的列】</span></span><br><span class="line">    data=var.fit_transform([[<span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">3</span>],[<span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>],[<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>]]) <span class="comment">#按去除方差等于0列，对此列表进行转换</span></span><br><span class="line">    print(data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">'__main__'</span>:</span><br><span class="line">    var()</span><br><span class="line"></span><br><span class="line"><span class="string">'''结果：</span></span><br><span class="line"><span class="string">原数据：</span></span><br><span class="line"><span class="string">[[0, 2, 0, 3], </span></span><br><span class="line"><span class="string">[0, 1, 4, 3], </span></span><br><span class="line"><span class="string">[0, 1, 1, 3]]</span></span><br><span class="line"><span class="string">threold=0时，去除特征值完全一样的列：</span></span><br><span class="line"><span class="string">[[2 0]</span></span><br><span class="line"><span class="string"> [1 4]</span></span><br><span class="line"><span class="string"> [1 1]]</span></span><br><span class="line"><span class="string">threold=1时，去除特征值小于1的列：</span></span><br><span class="line"><span class="string">[[0]</span></span><br><span class="line"><span class="string"> [4]</span></span><br><span class="line"><span class="string"> [1]]</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="三、降维示例"><a href="#三、降维示例" class="headerlink" title="三、降维示例"></a>三、降维示例</h1><h2 id="3-1-sklearn降维API之：decomposition（分解）"><a href="#3-1-sklearn降维API之：decomposition（分解）" class="headerlink" title="3.1 sklearn降维API之：decomposition（分解）"></a>3.1 sklearn降维API之：decomposition（分解）</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn. decomposition</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-PCA-主成分分析"><a href="#3-2-PCA-主成分分析" class="headerlink" title="3.2 PCA(主成分分析)"></a>3.2 PCA(主成分分析)</h2><p>【本质】：PCA是一种分析、简化数据集的技术<br>【目的】：是数据维数压缩，尽可能降低原数据的维数（复杂度），损失少量信息。<br>【作用】：可以削减回归分析或者聚类分析中特征的数量<br>【场景】：特征数量达到上百的时候，就要考虑数据的简化，即用到PCA<br>【公式】：理解即可，不必掌握（参考例2理解此公式）：<br><img src="https://img-blog.csdnimg.cn/20191120135221738.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>【例1】：用二维的照片去更好的表示三维的洒水壶，哪张能更好的表现三维实体？<br>这时就要用到PCA来分析决定选择去除哪些特征，又不影响对实体的表现（信息不会损失很大）。<br><img src="https://img-blog.csdnimg.cn/20191120120007540.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="用二维的照片去更好的表示三维的洒水壶"><br>【例2】<br>要求：将这个二维的数据简化成一维？<br>数据：(-1,-2)，(-1, 0)，( 0, 0)，( 2, 1)，( 0, 1)<br>方法1：直接降到x轴，或y轴上，数据都剩下3个点，都损失了2个点。这就是信息损失比较大的情况；<br>方法2：如果在都投到（蓝线），则还是5个点，虽然还是有信息损失，但已经把损失降到最小。<br><img src="https://img-blog.csdnimg.cn/20191120134919622.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>【例3】<br>下图的特征1、特征50相差其实不大，把50进行缩放，和特征1类似，因此可把1、50当一个数据处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">特征<span class="number">1</span> 特征<span class="number">2</span> 特征<span class="number">3</span> 特征<span class="number">50</span>，。。。。特征<span class="number">100</span></span><br><span class="line"><span class="number">1</span>                 <span class="number">2</span></span><br><span class="line"><span class="number">2</span>                 <span class="number">4</span></span><br><span class="line"><span class="number">3</span>                 <span class="number">6</span>              </span><br><span class="line"><span class="number">4</span>                 <span class="number">8</span></span><br><span class="line"><span class="number">5</span>                 <span class="number">9</span></span><br><span class="line"><span class="number">6</span>                <span class="number">12</span></span><br><span class="line"><span class="number">7</span>                <span class="number">13</span></span><br><span class="line"><span class="number">8</span>                <span class="number">15</span></span><br></pre></td></tr></table></figure>
+<p>【例4】实际应用：把人脸特征用PCA分析后，进行的数据降维<br><img src="https://img-blog.csdnimg.cn/20191120135501464.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="3-3-sklern的PCA语法"><a href="#3-3-sklern的PCA语法" class="headerlink" title="3.3 sklern的PCA语法"></a>3.3 sklern的PCA语法</h2><p><strong>from sklearn.decomposition import PCA</strong><br>1）<strong>PCA(n_components=None)</strong></p>
+<ul>
+<li>将数据分解为较低维数空间</li>
+<li>当n_components取值 0-1（即,0%-100%)：表示信息损失比率为，xx%【最好取：90%-95%】</li>
+<li>当n_components取值整数时：表示减少到的特征数量【一般不用，因为你知减少成多个特征是最好的】</li>
+</ul>
+<p>2）<strong>PCA.fit_transform(X)</strong> </p>
+<ul>
+<li>X:numpy array格式的数据[n_samples,n_features]</li>
+<li>返回值：转换后指定维度的array</li>
+</ul>
+<h2 id="3-4-PCA流程-代码演示"><a href="#3-4-PCA流程-代码演示" class="headerlink" title="3.4 PCA流程(代码演示)"></a>3.4 PCA流程(代码演示)</h2><p>1、初始化PCA,指定减少后的维度<br>2、调用fit_transform<br>3、演示数据：<br>[[2,8,4,5],<br>[6,3,0,8],<br>[5,4,9,1]]</p>
+<p>【代码实例】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pca</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    特征选择-PCA处理（decomposition）</span></span><br><span class="line"><span class="string">    主成分分析进行特征降维</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    pca=PCA(n_components=<span class="number">0.9</span>)</span><br><span class="line">    data=pca.fit_transform([[<span class="number">2</span>,<span class="number">8</span>,<span class="number">4</span>,<span class="number">5</span>],[<span class="number">6</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">8</span>],[<span class="number">5</span>,<span class="number">4</span>,<span class="number">9</span>,<span class="number">1</span>]])</span><br><span class="line">    print(data)</span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">'__main__'</span>:</span><br><span class="line">    pca()</span><br><span class="line">    </span><br><span class="line"><span class="string">'''结果:其信息量为输入信息的90%</span></span><br><span class="line"><span class="string">[[ 1.28620952e-15  3.82970843e+00]</span></span><br><span class="line"><span class="string"> [ 5.74456265e+00 -1.91485422e+00]</span></span><br><span class="line"><span class="string"> [-5.74456265e+00 -1.91485422e+00]]</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<h1 id="四、降维实战（菜篮子分析-数据降维）"><a href="#四、降维实战（菜篮子分析-数据降维）" class="headerlink" title="四、降维实战（菜篮子分析-数据降维）"></a>四、降维实战（菜篮子分析-数据降维）</h1><p>地址：<a href="https://www.kaggle.com/c/instacart-market-basket-analysis/data" target="_blank" rel="noopener">https://www.kaggle.com/c/instacart-market-basket-analysis/data</a><br><a href="https://pan.baidu.com/s/1CD8JsfoxOh8NeRSGNYMPyg" target="_blank" rel="noopener">https://pan.baidu.com/s/1CD8JsfoxOh8NeRSGNYMPyg</a> 提取码: 6qfp<br>1、合并各张表到一张表当中<br>pd.merge()<br>prior: product_id,order_id<br>products:product_id, aisle_id<br>orders:order_id,user_id<br>aisles:aisle_id,aisle<br>2、建个类似，列数据<br>交叉表（特殊的分组表）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取四张表的数据</span></span><br><span class="line">prior = pd.read_csv(<span class="string">"./data/instacart/order_products__prior.csv"</span>)</span><br><span class="line">products = pd.read_csv(<span class="string">"./data/instacart/products.csv"</span>)</span><br><span class="line">orders = pd.read_csv(<span class="string">"./data/instacart/orders.csv"</span>)</span><br><span class="line">aisles = pd.read_csv(<span class="string">"./data/instacart/aisles.csv"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并四张表到一张表  （用户-物品类别）</span></span><br><span class="line">_mg = pd.merge(prior, products, on=[<span class="string">'product_id'</span>, <span class="string">'product_id'</span>])</span><br><span class="line">_mg = pd.merge(_mg, orders, on=[<span class="string">'order_id'</span>, <span class="string">'order_id'</span>])</span><br><span class="line">mt = pd.merge(_mg, aisles, on=[<span class="string">'aisle_id'</span>, <span class="string">'aisle_id'</span>])</span><br><span class="line">mt.head(<span class="number">10</span>)<span class="comment"># 展示此表前十个【表1】</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 交叉表（特殊的分组工具）以userid为列，商品分类 aisle为行的表</span></span><br><span class="line">cross = pd.crosstab(mt[<span class="string">'user_id'</span>], mt[<span class="string">'aisle'</span>])</span><br><span class="line">cross.head(<span class="number">10</span>) <span class="comment">#展示此示前十个【表2】</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行主成分分析</span></span><br><span class="line">pca = PCA(n_components=<span class="number">0.9</span>)</span><br><span class="line">data = pca.fit_transform(cross)</span><br><span class="line">data.shape() <span class="comment">#将看到数据维度明显变小</span></span><br></pre></td></tr></table></figure>
+<p>【表1】：</p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right">
+      <th></th>
+      <th>order_id</th>
+      <th>product_id</th>
+      <th>add_to_cart_order</th>
+      <th>reordered</th>
+      <th>product_name</th>
+      <th>aisle_id</th>
+      <th>department_id</th>
+      <th>user_id</th>
+      <th>eval_set</th>
+      <th>order_number</th>
+      <th>order_dow</th>
+      <th>order_hour_of_day</th>
+      <th>days_since_prior_order</th>
+      <th>aisle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>33120</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>202279</td>
+      <td>prior</td>
+      <td>3</td>
+      <td>5</td>
+      <td>9</td>
+      <td>8.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>26</td>
+      <td>33120</td>
+      <td>5</td>
+      <td>0</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>153404</td>
+      <td>prior</td>
+      <td>2</td>
+      <td>0</td>
+      <td>16</td>
+      <td>7.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>120</td>
+      <td>33120</td>
+      <td>13</td>
+      <td>0</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>23750</td>
+      <td>prior</td>
+      <td>11</td>
+      <td>6</td>
+      <td>8</td>
+      <td>10.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>327</td>
+      <td>33120</td>
+      <td>5</td>
+      <td>1</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>58707</td>
+      <td>prior</td>
+      <td>21</td>
+      <td>6</td>
+      <td>9</td>
+      <td>8.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>390</td>
+      <td>33120</td>
+      <td>28</td>
+      <td>1</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>166654</td>
+      <td>prior</td>
+      <td>48</td>
+      <td>0</td>
+      <td>12</td>
+      <td>9.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>537</td>
+      <td>33120</td>
+      <td>2</td>
+      <td>1</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>180135</td>
+      <td>prior</td>
+      <td>15</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>582</td>
+      <td>33120</td>
+      <td>7</td>
+      <td>1</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>193223</td>
+      <td>prior</td>
+      <td>6</td>
+      <td>2</td>
+      <td>19</td>
+      <td>10.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>608</td>
+      <td>33120</td>
+      <td>5</td>
+      <td>1</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>91030</td>
+      <td>prior</td>
+      <td>11</td>
+      <td>3</td>
+      <td>21</td>
+      <td>12.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>623</td>
+      <td>33120</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>37804</td>
+      <td>prior</td>
+      <td>63</td>
+      <td>3</td>
+      <td>12</td>
+      <td>3.0</td>
+      <td>eggs</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>689</td>
+      <td>33120</td>
+      <td>4</td>
+      <td>1</td>
+      <td>Organic Egg Whites</td>
+      <td>86</td>
+      <td>16</td>
+      <td>108932</td>
+      <td>prior</td>
+      <td>16</td>
+      <td>1</td>
+      <td>13</td>
+      <td>3.0</td>
+      <td>eggs</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<p>【表2】</p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right">
+      <th>aisle</th>
+      <th>air fresheners candles</th>
+      <th>asian foods</th>
+      <th>baby accessories</th>
+      <th>baby bath body care</th>
+      <th>baby food formula</th>
+      <th>bakery desserts</th>
+      <th>baking ingredients</th>
+      <th>baking supplies decor</th>
+      <th>beauty</th>
+      <th>beers coolers</th>
+      <th>...</th>
+      <th>spreads</th>
+      <th>tea</th>
+      <th>tofu meat alternatives</th>
+      <th>tortillas flat bread</th>
+      <th>trail mix snack mix</th>
+      <th>trash bags liners</th>
+      <th>vitamins supplements</th>
+      <th>water seltzer sparkling water</th>
+      <th>white wines</th>
+      <th>yogurt</th>
+    </tr>
+    <tr>
+      <th>user_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>4</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>19</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/19/%E5%8D%81%E5%9B%9B%E3%80%81%20React%E8%B7%AF%E7%94%B1%EF%BC%88react-router4.x%EF%BC%89%EF%BC%9A%20%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E3%80%81get%E4%BC%A0%E5%80%BC%E3%80%81React%E4%B9%8B%E4%B8%AD%E4%BD%BF%E7%94%A8url%E6%A8%A1%E5%9D%97/" rel="prev" title="十四、 React路由（react-router4.x）： 动态路由、get传值、React之中使用url模块">
+      <i class="fa fa-chevron-left"></i> 十四、 React路由（react-router4.x）： 动态路由、get传值、React之中使用url模块
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/21/%E5%8D%81%E4%BA%94%E3%80%81React%EF%BC%9A%E7%AE%80%E5%8D%95%E7%82%B9%E9%A4%90%E5%AE%9E%E4%BE%8B%EF%BC%9A%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%8Chtml%E8%A7%A3%E6%9E%90%E5%86%99%E6%B3%95/" rel="next" title="十五、React：简单点餐实例：知识点，html解析写法">
+      十五、React：简单点餐实例：知识点，html解析写法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概述"><span class="nav-number">1.</span> <span class="nav-text">一、概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1【降维】"><span class="nav-number">1.1.</span> <span class="nav-text">1.1【降维】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2【特征选择】"><span class="nav-number">1.2.</span> <span class="nav-text">1.2【特征选择】</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、特征选择实战之：方差阈值VarianceThreshold"><span class="nav-number">2.</span> <span class="nav-text">二、特征选择实战之：方差阈值VarianceThreshold</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-方差阈值sklearnAPI：VarianceThreshold-API"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 方差阈值sklearnAPI：VarianceThreshold API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-sklearn-VarianceThreshold语法"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 sklearn.VarianceThreshold语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3sklearn-VarianceThreshold使用流程-代码演示"><span class="nav-number">2.3.</span> <span class="nav-text">2.3sklearn.VarianceThreshold使用流程(代码演示)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、降维示例"><span class="nav-number">3.</span> <span class="nav-text">三、降维示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-sklearn降维API之：decomposition（分解）"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 sklearn降维API之：decomposition（分解）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-PCA-主成分分析"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 PCA(主成分分析)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-sklern的PCA语法"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 sklern的PCA语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-PCA流程-代码演示"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 PCA流程(代码演示)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、降维实战（菜篮子分析-数据降维）"><span class="nav-number">4.</span> <span class="nav-text">四、降维实战（菜篮子分析-数据降维）</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript es6中扩展运算符（...）">
+<meta property="og:url" content="http://yoursite.com/2019/12/02/Javascript%20es6%E4%B8%AD%E6%89%A9%E5%B1%95%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%88...%EF%BC%89/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-02T06:53:34.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:53:25.406Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/02/Javascript%20es6%E4%B8%AD%E6%89%A9%E5%B1%95%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%88...%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Javascript es6中扩展运算符（...） | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/02/Javascript%20es6%E4%B8%AD%E6%89%A9%E5%B1%95%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%88...%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Javascript es6中扩展运算符（...）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-02 14:53:34" itemprop="dateCreated datePublished" datetime="2019-12-02T14:53:34+08:00">2019-12-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:53:25" itemprop="dateModified" datetime="2020-03-23T10:53:25+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/javaScript/" itemprop="url" rel="index"><span itemprop="name">javaScript</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、在函数调用时使用拓展运算符。"><a href="#一、在函数调用时使用拓展运算符。" class="headerlink" title="一、在函数调用时使用拓展运算符。"></a>一、在函数调用时使用拓展运算符。</h1><p>其它：<a href="https://blog.csdn.net/xiaxiangyun/article/details/80244499" target="_blank" rel="noopener">https://blog.csdn.net/xiaxiangyun/article/details/80244499</a></p>
+<h3 id="1-1以前如果我们想将数组元素迭代为函数参数使用，一般使用Function-prototype-apply的方式。"><a href="#1-1以前如果我们想将数组元素迭代为函数参数使用，一般使用Function-prototype-apply的方式。" class="headerlink" title="1.1以前如果我们想将数组元素迭代为函数参数使用，一般使用Function.prototype.apply的方式。"></a>1.1以前如果我们想将数组元素迭代为函数参数使用，一般使用Function.prototype.apply的方式。</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myFunction</span>(<span class="params">x, y, z</span>) </span>&#123; </span><br><span class="line">  <span class="built_in">console</span>.log(x+<span class="string">""</span>+y+<span class="string">""</span>+z);</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">var</span> args = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]; </span><br><span class="line">myFunction.apply(<span class="literal">null</span>, args); <span class="comment">//012</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2有了展开语法，我们可以这样写。"><a href="#1-2有了展开语法，我们可以这样写。" class="headerlink" title="1.2有了展开语法，我们可以这样写。"></a>1.2有了展开语法，我们可以这样写。</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myFunction</span>(<span class="params">x, y, z</span>) </span>&#123; </span><br><span class="line">  <span class="built_in">console</span>.log(x+<span class="string">""</span>+y+<span class="string">""</span>+z); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> args = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]; </span><br><span class="line">myFunction(...args);  <span class="comment">//012</span></span><br></pre></td></tr></table></figure>
+
+<p>提示: …arr返回的并不是一个数组，而是各个数组的值。只有[…arr]才是一个数组，所以…arr可以用来对方法进行传值</p>
+<h1 id="二、数组和对象的拷贝。"><a href="#二、数组和对象的拷贝。" class="headerlink" title="二、数组和对象的拷贝。"></a>二、数组和对象的拷贝。</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> arr2 = [...arr1];</span><br><span class="line">arr2.push(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(arr1 === arr2);  <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(arr1); <span class="comment">// [1,2,3]</span></span><br><span class="line"><span class="built_in">console</span>.log(arr2);<span class="comment">// [1,2,3,4]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="对象也是一样，也可以使用拓展运算符"><a href="#对象也是一样，也可以使用拓展运算符" class="headerlink" title="对象也是一样，也可以使用拓展运算符"></a>对象也是一样，也可以使用拓展运算符</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj1 = &#123;</span><br><span class="line">  a:<span class="number">1</span>,</span><br><span class="line">  b:<span class="number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> obj2 = &#123;...obj1&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(obj2); <span class="comment">//&#123; a:1, b:2&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(obj1 === obj2);<span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<p>提示: 在这里你会发现，这是一个深拷贝，其实不然，实际上, 展开语法和 Object.assign() 行为一致, 执行的都是浅拷贝(只遍历一层)。</p>
+<h1 id="三、构造字面量数组。"><a href="#三、构造字面量数组。" class="headerlink" title="三、构造字面量数组。"></a>三、构造字面量数组。</h1><h3 id="没有展开语法的时候，只能组合使用-push-splice-concat-等方法，来将已有数组元素变成新数组的一部分。"><a href="#没有展开语法的时候，只能组合使用-push-splice-concat-等方法，来将已有数组元素变成新数组的一部分。" class="headerlink" title="没有展开语法的时候，只能组合使用 push, splice, concat 等方法，来将已有数组元素变成新数组的一部分。"></a>没有展开语法的时候，只能组合使用 push, splice, concat 等方法，来将已有数组元素变成新数组的一部分。</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="number">4</span>,<span class="number">5</span>,...arr1];</span><br><span class="line"><span class="built_in">console</span>.log(arr2);</span><br><span class="line"><span class="comment">// [4,5,1,2,3]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="代替Array-concat-函数"><a href="#代替Array-concat-函数" class="headerlink" title="代替Array.concat 函数"></a>代替Array.concat 函数</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>];</span><br><span class="line"><span class="keyword">var</span> demo = [...arr1,...arr2];</span><br><span class="line"><span class="built_in">console</span>.log(demo);</span><br><span class="line"><span class="comment">//  [1, 2, 3, 4, 5, 6]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="代替Array-unshift-方法"><a href="#代替Array-unshift-方法" class="headerlink" title="代替Array.unshift 方法"></a>代替Array.unshift 方法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>];</span><br><span class="line">arr1 = [...arr2,...arr1];</span><br><span class="line"><span class="built_in">console</span>.log(arr1);</span><br><span class="line"><span class="comment">//  [4, 5, 6, 1, 2, 3]</span></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="4、字符串转数组。"><a href="#4、字符串转数组。" class="headerlink" title="4、字符串转数组。"></a>4、字符串转数组。</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> demo = <span class="string">"hello"</span></span><br><span class="line"><span class="keyword">var</span> str = [...demo];</span><br><span class="line"><span class="built_in">console</span>.log(str);</span><br><span class="line"><span class="comment">// ["h", "e", "l", "l", "o"]</span></span><br></pre></td></tr></table></figure>
+<h3 id="剩余语法（剩余参数，rest运算符）"><a href="#剩余语法（剩余参数，rest运算符）" class="headerlink" title="剩余语法（剩余参数，rest运算符）"></a>剩余语法（剩余参数，rest运算符）</h3><p>剩余语法(Rest syntax) 看起来和展开语法完全相同，不同点在于, 剩余参数用于解构数组和对象。从某种意义上说，剩余语法与展开语法是相反的：展开语法将数组展开为其中的各个元素，而剩余语法则是将多个元素收集起来并“凝聚”为单个元素。</p>
+<h3 id="4-1、主要用于不定参数，所以es6开始不再使用arguments对象。"><a href="#4-1、主要用于不定参数，所以es6开始不再使用arguments对象。" class="headerlink" title="4.1、主要用于不定参数，所以es6开始不再使用arguments对象。"></a>4.1、主要用于不定参数，所以es6开始不再使用arguments对象。</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> demo = <span class="function"><span class="keyword">function</span> (<span class="params">...arg</span>)</span>&#123;</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> arg)&#123;</span><br><span class="line">       <span class="built_in">console</span>.log(item);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line">demo(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> demo = <span class="function"><span class="keyword">function</span> (<span class="params">a,...arg</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(a);</span><br><span class="line">  <span class="built_in">console</span>.log(arg);</span><br><span class="line">&#125;</span><br><span class="line">demo(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// [2, 3, 4]</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="4-2、配合解构一起使用。"><a href="#4-2、配合解构一起使用。" class="headerlink" title="4.2、配合解构一起使用。"></a>4.2、配合解构一起使用。</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> [a,...rest] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br><span class="line"><span class="built_in">console</span>.log(a);</span><br><span class="line"><span class="built_in">console</span>.log(rest);</span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// [2,3,4]</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">  a:<span class="number">1</span>,</span><br><span class="line">  b:<span class="number">2</span>,</span><br><span class="line">  c:<span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> &#123;a,...demo&#125; = obj;</span><br><span class="line"><span class="built_in">console</span>.log(a);</span><br><span class="line"><span class="built_in">console</span>.log(demo);</span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// &#123;b:2,c:3&#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">...[a, b, c]</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(a);</span><br><span class="line">  <span class="keyword">return</span> a + b + c;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(f(<span class="number">1</span>))          <span class="comment">//1, NaN </span></span><br><span class="line"><span class="built_in">console</span>.log(f(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>))   <span class="comment">// 1, 6</span></span><br><span class="line"><span class="built_in">console</span>.log(f(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)) <span class="comment">//1, 6</span></span><br></pre></td></tr></table></figure>
+
+
+<p>小结：<br>等号表达式是典型的赋值形式，函数传参和for循环的变量都是特殊形式的赋值。解构的原理是赋值的两边具有相同的结构，就可以正确取出数组或对象里面的元素或属性值，省略了使用下标逐个赋值的麻烦。对于三个点号，三点放在形参或者等号左边为rest运算符; 放在实参或者等号右边为spread运算符，或者说，放在被赋值一方为rest运算符，放在赋值一方为扩展运算符。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/02/%E4%BA%94%E3%80%81React%E4%BA%8B%E4%BB%B6%E6%96%B9%E6%B3%95%EF%BC%9A%E8%87%AA%E5%86%99%E4%B8%80%E4%B8%AA%E6%96%B9%E6%B3%95(%E5%87%BD%E6%95%B0)%E5%B9%B6%E7%94%A8%E6%8C%89%E9%92%AEonClick%E8%A7%A6%E5%8F%91%E5%AE%83%E3%80%81%E8%87%AA%E5%86%99%E6%96%B9%E6%B3%95%E6%94%B9%E5%8F%98this%E6%8C%87%E5%90%913%E7%A7%8D%E5%86%99%E6%B3%95%E3%80%81/" rel="prev" title="五、React事件方法：自写一个方法(函数)并用按钮onClick触发它、自写方法改变this指向3种写法、">
+      <i class="fa fa-chevron-left"></i> 五、React事件方法：自写一个方法(函数)并用按钮onClick触发它、自写方法改变this指向3种写法、
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/07/%E3%80%8A%E6%A6%82%E7%8E%87%E8%AE%BA%E4%B8%8E%E6%95%B0%E7%90%86%E7%BB%9F%E8%AE%A1%E2%80%94%E2%80%94%E7%AC%AC%E4%B8%80%E7%AB%A0%E3%80%8B%EF%BC%9A1%E6%A6%82%E7%8E%87%E6%A6%82%E5%BF%B5%E3%80%812%E6%8E%92%E5%88%97%E7%BB%84%E5%90%88%E5%85%AC%E5%BC%8F%E3%80%813%E4%BA%8B%E4%BB%B6%E7%9A%84%E8%BF%90%E7%AE%97%E3%80%814%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87%E4%B8%8E%E7%8B%AC%E7%AB%8B%E6%80%A7/" rel="next" title="《概率论与数理统计——第一章》：1概率概念、2排列组合公式、3事件的运算、4条件概率与独立性">
+      《概率论与数理统计——第一章》：1概率概念、2排列组合公式、3事件的运算、4条件概率与独立性 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、在函数调用时使用拓展运算符。"><span class="nav-number">1.</span> <span class="nav-text">一、在函数调用时使用拓展运算符。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1以前如果我们想将数组元素迭代为函数参数使用，一般使用Function-prototype-apply的方式。"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.1以前如果我们想将数组元素迭代为函数参数使用，一般使用Function.prototype.apply的方式。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2有了展开语法，我们可以这样写。"><span class="nav-number">1.0.2.</span> <span class="nav-text">1.2有了展开语法，我们可以这样写。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、数组和对象的拷贝。"><span class="nav-number">2.</span> <span class="nav-text">二、数组和对象的拷贝。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对象也是一样，也可以使用拓展运算符"><span class="nav-number">2.0.1.</span> <span class="nav-text">对象也是一样，也可以使用拓展运算符</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、构造字面量数组。"><span class="nav-number">3.</span> <span class="nav-text">三、构造字面量数组。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#没有展开语法的时候，只能组合使用-push-splice-concat-等方法，来将已有数组元素变成新数组的一部分。"><span class="nav-number">3.0.1.</span> <span class="nav-text">没有展开语法的时候，只能组合使用 push, splice, concat 等方法，来将已有数组元素变成新数组的一部分。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代替Array-concat-函数"><span class="nav-number">3.0.2.</span> <span class="nav-text">代替Array.concat 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代替Array-unshift-方法"><span class="nav-number">3.0.3.</span> <span class="nav-text">代替Array.unshift 方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4、字符串转数组。"><span class="nav-number">4.</span> <span class="nav-text">4、字符串转数组。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#剩余语法（剩余参数，rest运算符）"><span class="nav-number">4.0.1.</span> <span class="nav-text">剩余语法（剩余参数，rest运算符）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1、主要用于不定参数，所以es6开始不再使用arguments对象。"><span class="nav-number">4.0.2.</span> <span class="nav-text">4.1、主要用于不定参数，所以es6开始不再使用arguments对象。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2、配合解构一起使用。"><span class="nav-number">4.0.3.</span> <span class="nav-text">4.2、配合解构一起使用。</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

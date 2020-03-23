@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用Git管理项目进行版本控制">
+<meta property="og:url" content="http://yoursite.com/2020/01/02/%E7%94%A8Git%E7%AE%A1%E7%90%86%E9%A1%B9%E7%9B%AE%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-02T00:20:42.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:55:57.758Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/02/%E7%94%A8Git%E7%AE%A1%E7%90%86%E9%A1%B9%E7%9B%AE%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>用Git管理项目进行版本控制 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/02/%E7%94%A8Git%E7%AE%A1%E7%90%86%E9%A1%B9%E7%9B%AE%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用Git管理项目进行版本控制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-02 08:20:42" itemprop="dateCreated datePublished" datetime="2020-01-02T08:20:42+08:00">2020-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:55:57" itemprop="dateModified" datetime="2020-03-23T10:55:57+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、安装"><a href="#一、安装" class="headerlink" title="一、安装"></a>一、安装</h1><h2 id="1-1windows"><a href="#1-1windows" class="headerlink" title="1.1windows"></a>1.1windows</h2><p>要在Windows系统中安装Git，请访问<a href="http://msysgit.github.io/，并单击Download。安装。" target="_blank" rel="noopener">http://msysgit.github.io/，并单击Download。安装。</a></p>
+<h2 id="1-2-在-Linux-系统中安装-Git"><a href="#1-2-在-Linux-系统中安装-Git" class="headerlink" title="1.2 在 Linux 系统中安装 Git"></a>1.2 在 Linux 系统中安装 Git</h2><p>要在Linux系统中安装Git，请执行如下命令即可：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install git</span><br></pre></td></tr></table></figure>
+<h2 id="1-3-在-OS-X-系统中安装-Git"><a href="#1-3-在-OS-X-系统中安装-Git" class="headerlink" title="1.3 在 OS X 系统中安装 Git"></a>1.3 在 OS X 系统中安装 Git</h2><ul>
+<li>你的OS X系统可能已经安装了Git，因此请尝试执行命令git –version。如果你在输出中看<br>到了具体的版本号，说明你的系统安装了Git；如果你看到一条消息，提示你安装或升级Git，只<br>需按屏幕上的说明做即可。</li>
+<li>你也可以访问<a href="https://git-scm.com/，单击链接Downloads，再单击适合你所用系统的安装程序" target="_blank" rel="noopener">https://git-scm.com/，单击链接Downloads，再单击适合你所用系统的安装程序</a></li>
+</ul>
+<h1 id="二、Git的配置"><a href="#二、Git的配置" class="headerlink" title="二、Git的配置"></a>二、Git的配置</h1><p>Git跟踪谁修改了项目，哪怕参与项目开发的人只有一个。为此， Git需要知道你的用户名和<br>电子邮件地址。你必须提供用户名，但可以使用虚构的电子邮件地址（会在提交时提醒输入：八步）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name <span class="string">"username"</span></span><br><span class="line">$ git config --global user.email <span class="string">"username@example.com"</span></span><br></pre></td></tr></table></figure>
+<h1 id="三、创建项目"><a href="#三、创建项目" class="headerlink" title="三、创建项目"></a>三、创建项目</h1><p>我们来创建一个要进行版本控制的项目。在你的系统中创建一个文件夹，并将其命名为<br>git_practice。在这个文件夹中，创建一个简单的Python程序：<br>hello_world.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"Hello Git world!"</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="四、忽略文件"><a href="#四、忽略文件" class="headerlink" title="四、忽略文件"></a>四、忽略文件</h1><p>扩展名为.pyc的文件是根据.py文件自动生成的，因此我们无需让Git跟踪它们。这些文件存<br>储在目录<strong>pycache</strong>中。为让Git忽略这个目录，创建一个名为.gitignore的特殊文件（这个文件<br>名以句点打头，且没有扩展名），并在其中添加下面一行内容：<br>【.gitignore】</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__pycache__/</span><br></pre></td></tr></table></figure>
+<p>这让Git忽略目录<strong>pycache</strong>中的所有文件。使用文件.gitignore可避免项目混乱，开发起来<br>更容易。</p>
+<h1 id="五、初始化仓库"><a href="#五、初始化仓库" class="headerlink" title="五、初始化仓库"></a>五、初始化仓库</h1><p>你创建了一个目录，其中包含一个Python文件和一个.gitignore文件，可以初始化一个Git仓库<br>了。为此，打开一个终端窗口，切换到文件夹git_practice，并执行如下命令：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git_practice$ git init</span><br><span class="line"><span class="comment"># Initialized empty Git repository in git_practice/.git/</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>输出表明Git在git_practice中初始化了一个空仓库。仓库是程序中被Git主动跟踪的一组文件。<br>Git用来管理仓库的文件都存储在隐藏的.git/中，你根本不需要与这个目录打交道，但千万不要删<br>除这个目录，否则将丢弃项目的所有历史记录。</p>
+<h1 id="六、检查状态"><a href="#六、检查状态" class="headerlink" title="六、检查状态"></a>六、检查状态</h1><p>执行其他操作前，先来看一下项目的状态：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">git_practice$ git status</span><br><span class="line">【<span class="number">1</span>】<span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># Initial commit</span></span><br><span class="line"> </span><br><span class="line">【<span class="number">2</span>】 <span class="comment"># Untracked files:</span></span><br><span class="line"><span class="comment"># (use "git add &lt;file&gt;..." to include in what will be committed)</span></span><br><span class="line"><span class="comment"># .gitignore</span></span><br><span class="line"><span class="comment"># hello_world.py</span></span><br><span class="line"></span><br><span class="line">【<span class="number">3</span>】<span class="comment"># nothing added to commit but untracked files present (use "git add" to track)</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>在Git中， 分支是项目的一个版本。从这里的输出可知，我们位于分支master上（见【1】）。你<br>每次查看项目的状态时，输出都将指出你位于分支master上。接下来的输出表明，我们将进行初<br>始提交。 提交是项目在特定时间点的快照。<br>Git指出了项目中未被跟踪的文件（见【2】），因为我们还没有告诉它要跟踪哪些文件。接下来，<br>我们被告知没有将任何东西添加到当前提交中，我们需要将未跟踪的文件加入到仓库中<br>（见【3】）。</p>
+<h1 id="七、将文件加入到仓库中"><a href="#七、将文件加入到仓库中" class="headerlink" title="七、将文件加入到仓库中"></a>七、将文件加入到仓库中</h1><p>下面将这两个文件加入到仓库中，并再次检查状态：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">【<span class="number">1</span>】 git_practice$ git add .</span><br><span class="line">【<span class="number">2</span>】 git_practice$ git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># Initial commit</span></span><br><span class="line"><span class="comment"># Changes to be committed:</span></span><br><span class="line"><span class="comment"># (use "git rm --cached &lt;file&gt;..." to unstage)</span></span><br><span class="line"></span><br><span class="line">【<span class="number">3</span>】 <span class="comment"># new file: .gitignore</span></span><br><span class="line"><span class="comment"># new file: hello_world.py</span></span><br><span class="line"></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>命令git add .将项目中未被跟踪的所有文件都加入到仓库中（见【1】）。它不提交这些文件，<br>而只是让Git开始关注它们。现在我们检查项目的状态时， 发现Git找出了需要提交的一些修改（见<br>【2】）。标签new file意味着这些文件是新添加到仓库中的（见【3】）。</p>
+<h1 id="八、执行提交"><a href="#八、执行提交" class="headerlink" title="八、执行提交"></a>八、执行提交</h1><p>下面来执行第一次提交：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">【<span class="number">1</span>】git_practice$ git commit -m <span class="string">"Started project."</span> </span><br><span class="line">【<span class="number">2</span>】<span class="comment"># [master (root-commit) c03d2a3] Started project. </span></span><br><span class="line">【<span class="number">3</span>】<span class="comment"># 2 files changed, 1 insertion(+)</span></span><br><span class="line"><span class="comment"># create mode 100644 .gitignore</span></span><br><span class="line"><span class="comment"># create mode 100644 hello_world.py </span></span><br><span class="line">【<span class="number">4</span>】 git_practice$ git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># nothing to commit, working directory clean</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>我们执行命令git commit -m “message”（见【1】）以拍摄项目的快照。标志-m让Git将接下来的<br>消息（”Started project.”）记录到项目的历史记录中。输出表明我们在分支master上（见【2】），<br>且有两个文件被修改了（见【3】）。<br>现在我们检查状态时，发现我们在分支master上，且工作目录是干净的（见【4】）。这是你每次<br>提交项目的可行状态时都希望看到的消息。如果显示的消息不是这样的，请仔细阅读，很可能你<br>在提交前忘记了添加文件。</p>
+<h1 id="九、查看提交历史"><a href="#九、查看提交历史" class="headerlink" title="九、查看提交历史"></a>九、查看提交历史</h1><p>Git记录所有的项目提交。下面来看一下提交历史：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git_practice$ git log</span><br><span class="line"><span class="comment"># commit a9d74d87f1aa3b8f5b2688cb586eac1a908cfc7f</span></span><br><span class="line"><span class="comment"># Author: Eric Matthes &lt;eric@example.com&gt;</span></span><br><span class="line"><span class="comment"># Date: Mon Mar 16 07:23:32 2015 -0800</span></span><br><span class="line"><span class="comment"># Started project.</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>你每次提交时， Git都会生成一个包含40字符的独一无二的引用ID。它记录提交是谁执行的、<br>提交的时间以及提交时指定的消息。并非在任何情况下你都需要所有这些信息，因此Git提供了<br>一个选项，让你能够打印提交历史条目的更简单的版本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git_practice$ git log --pretty=oneline</span><br><span class="line"><span class="comment"># a9d74d87f1aa3b8f5b2688cb586eac1a908cfc7f Started project.</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>标志–pretty=oneline指定显示两项最重要的信息：提交的引用ID以及为提交记录的消息。</p>
+<h2 id="9-1第二次提交"><a href="#9-1第二次提交" class="headerlink" title="9.1第二次提交"></a>9.1第二次提交</h2><p>为展示版本控制的强大威力，我们需要对项目进行修改，并提交所做的修改。为此，我们在<br>hello_world.py中再随便添加一行代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"Hello Git world!"</span>)</span><br><span class="line">print(<span class="string">"Hello everyone."</span>)</span><br></pre></td></tr></table></figure>
+<p>如果我们现在查看项目的状态，将发现Git注意到了这个文件发生了变化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">git_practice$ git status </span><br><span class="line">【<span class="number">1</span>】<span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># Changes not staged for commit:</span></span><br><span class="line"><span class="comment"># (use "git add &lt;file&gt;..." to update what will be committed)</span></span><br><span class="line"><span class="comment"># (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)</span></span><br><span class="line"></span><br><span class="line">【<span class="number">2</span>】 <span class="comment"># modified: hello_world.py</span></span><br><span class="line"></span><br><span class="line">【<span class="number">3</span>】<span class="comment"># no changes added to commit (use "git add" and/or "git commit -a")</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>输出指出了我们当前所在的分支（见【1】）、被修改了的文件的名称（见【2】），还指出了所做的<br>修改未提交（见【3】）。下面来提交所做的修改，并再次查看状态：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">【<span class="number">1</span>】 git_practice$ git commit -am <span class="string">"Extended greeting."</span></span><br><span class="line"><span class="comment"># [master 08d4d5e] Extended greeting.</span></span><br><span class="line"><span class="comment"># 1 file changed, 1 insertion(+) </span></span><br><span class="line">【<span class="number">2</span>】 git_practice$ git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># nothing to commit, working directory clean </span></span><br><span class="line">【<span class="number">3</span>】 git_practice$ git log --pretty=oneline</span><br><span class="line"><span class="comment"># 08d4d5e39cb906f6cff197bd48e9ab32203d7ed6 Extended greeting.</span></span><br><span class="line"><span class="comment"># be017b7f06d390261dbc64ff593be6803fd2e3a1 Started project.</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>我们再次执行了提交，并在执行命令git commit时指定了标志-am（见【1】）。标志-a让Git将仓<br>库中所有修改了的文件都加入到当前提交中（如果你在两次提交之间创建了新文件，可再次执行<br>命令git add .将这些新文件加入到仓库中）。标志-m让Git在提交历史中记录一条消息。<br>我们查看项目的状态时，发现工作目录也是干净的（见【2】）。最后，我们发现提交历史中包<br>含两个提交（见【3】）</p>
+<h1 id="十、撤销修改"><a href="#十、撤销修改" class="headerlink" title="十、撤销修改"></a>十、撤销修改</h1><p>下面来看看如何放弃所做的修改，恢复到前一个可行状态。为此，首先在hello_world.py中再<br>添加一行代码：<br>hello_world.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"Hello Git world!"</span>)</span><br><span class="line">print(<span class="string">"Hello everyone."</span>)</span><br><span class="line">print(<span class="string">"Oh no, I broke the project!"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>保存并运行这个文件。<br>我们查看状态，发现Git注意到了所做的修改：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git_practice$ git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># Changes not staged for commit:</span></span><br><span class="line"><span class="comment"># (use "git add &lt;file&gt;..." to update what will be committed)</span></span><br><span class="line"><span class="comment"># (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)</span></span><br><span class="line"></span><br><span class="line">【<span class="number">1</span>】 <span class="comment"># modified: hello_world.py</span></span><br><span class="line"><span class="comment">#no changes added to commit (use "git add" and/or "git commit -a")</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>Git注意到我们修改了hello_world.py（见【1】）。我们可以提交所做的修改，但这次我们不提交<br>所做的修改，而要恢复到最后一个提交（我们知道，那次提交时项目能够正常地运行）。为此，<br>我们不对hello_world.py执行任何操作——不删除刚添加的代码行，也不使用文本编辑器的撤销功能，而在终端会话中执行如下命令：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git_practice$ git checkout .</span><br><span class="line">git_practice$ git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># nothing to commit, working directory clean</span></span><br><span class="line">git_practice$</span><br></pre></td></tr></table></figure>
+<p>命令git checkout让你能够恢复到以前的任何提交。命令git checkout . 放弃自最后一次提<br>交后所做的所有修改，将项目恢复到最后一次提交的状态。<br>如果我们返回到文本编辑器，将发现hello_world.py被修改成了下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"Hello Git world!"</span>)</span><br><span class="line">print(<span class="string">"Hello everyone."</span>)</span><br></pre></td></tr></table></figure>
+<p>就这个项目而言，恢复到前一个状态微不足道，但如果我们开发的是大型项目，其中数十个<br>文件都被修改了，那么恢复到前一个状态，将撤销自最后一次提交后对这些文件所做的所有修改。<br>这个功能很有用：实现新功能时，你可以根据需要做任意数量的修改，如果这些修改不可行，可<br>撤销它们，而不会对项目有任何伤害。你无需记住做了哪些修改，因而不必手工撤销所做的修改，<br>Git会替你完成所有这些工作</p>
+<h1 id="十一、检出以前的提交"><a href="#十一、检出以前的提交" class="headerlink" title="十一、检出以前的提交"></a>十一、检出以前的提交</h1><p>你可以检出提交历史中的任何提交，而不仅仅是最后一次提交，为此可在命令git check末<br>尾指定该提交的引用ID的前6个字符（而不是句点）。通过检出以前的提交，你可以对其进行审核，<br>然后返回到最后一次提交，或者放弃最近所做的工作，并选择以前的提交：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">git_practice<span class="variable">$</span> git log -<span class="literal">-pretty</span>=oneline</span><br><span class="line"><span class="comment"># 08d4d5e39cb906f6cff197bd48e9ab32203d7ed6 Extended greeting.</span></span><br><span class="line"><span class="comment"># be017b7f06d390261dbc64ff593be6803fd2e3a1 Started project.</span></span><br><span class="line">git_practice<span class="variable">$</span> git checkout be017b</span><br><span class="line"><span class="comment"># Note: checking out 'be017b'.</span></span><br><span class="line">【<span class="number">1</span>】 <span class="comment"># You are in 'detached HEAD' state. You can look around, make experimental</span></span><br><span class="line"><span class="comment"># changes and commit them, and you can discard any commits you make in this</span></span><br><span class="line"><span class="comment"># state without impacting any branches by performing another checkout.</span></span><br><span class="line"><span class="comment"># If you want to create a new branch to retain commits you create, you may</span></span><br><span class="line"><span class="comment"># do so (now or later) by using -b with the checkout command again. Example:</span></span><br><span class="line"><span class="comment"># git checkout -b new_branch_name</span></span><br><span class="line"><span class="comment"># HEAD is now at be017b7... Started project.</span></span><br><span class="line">git_practice<span class="variable">$</span></span><br></pre></td></tr></table></figure>
+<p>检出以前的提交后，你将离开分支master，并进入Git所说的分离头指针（detached HEAD）<br>状态（见【1】）。 HEAD表示项目的当前状态，之所以说我们处于分离状态，是因为我们离开了一个<br>命名分支（这里是master）。<br>要回到分支master，可检出它：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git_practice<span class="variable">$</span> git checkout master</span><br><span class="line"><span class="comment"># Previous HEAD position was be017b7... Started project.</span></span><br><span class="line"><span class="comment"># Switched to branch 'master'</span></span><br><span class="line">git_practice<span class="variable">$</span></span><br></pre></td></tr></table></figure>
+<p>这让你回到分支master。除非你要使用Git的高级功能，否则在检出以前的提交后，最好不要<br>对项目做任何修改。然而，如果参与项目开发的人只有你自己，而你又想放弃较近的所有提交，<br>并恢复到以前的状态，也可以将项目重置到以前的提交。为此，可在处于分支master上的情况下，<br>执行如下命令：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">【<span class="number">1</span>】git_practice<span class="variable">$</span> git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># nothing to commit, working directory clean </span></span><br><span class="line">【<span class="number">2</span>】 git_practice<span class="variable">$</span> git log -<span class="literal">-pretty</span>=oneline</span><br><span class="line"><span class="comment"># 08d4d5e39cb906f6cff197bd48e9ab32203d7ed6 Extended greeting.</span></span><br><span class="line"><span class="comment"># be017b7f06d390261dbc64ff593be6803fd2e3a1 Started project. </span></span><br><span class="line">【<span class="number">3</span>】 git_practice<span class="variable">$</span> git reset -<span class="literal">-hard</span> be017b</span><br><span class="line"><span class="comment"># HEAD is now at be017b7 Started project. </span></span><br><span class="line">【<span class="number">4</span>】 git_practice<span class="variable">$</span> git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># nothing to commit, working directory clean </span></span><br><span class="line">【<span class="number">5</span>】 git_practice<span class="variable">$</span> git log -<span class="literal">-pretty</span>=oneline</span><br><span class="line"><span class="comment"># be017b7f06d390261dbc64ff593be6803fd2e3a1 Started project.</span></span><br><span class="line">git_practice<span class="variable">$</span></span><br></pre></td></tr></table></figure>
+<p>我们首先查看了状态，确认我们在分支master上（见【1】）。查看提交历史时，我们看到了两个<br>提交（见【2】）。接下来，我们执行命令git reset –hard，并在其中指定了要永久地恢复到的提交<br>的引用ID的前6个字符（见【3】）。再次查看状态，发现我们在分支master上，且没有需要提交的修<br>改（见【4】）。再次查看提交历史时，发现我们处于要从它重新开始的提交中（见【5】）。</p>
+<h1 id="十二、删除仓库"><a href="#十二、删除仓库" class="headerlink" title="十二、删除仓库"></a>十二、删除仓库</h1><p>有时候，仓库的历史记录被你搞乱了，而你又不知道如何恢复。在这种情况下，你首先应考<br>虑使用附录C介绍的方法寻求帮助。如果无法恢复且参与项目开发的只有你一个人，可继续使用<br>这些文件，但要将项目的历史记录删除——删除目录.git。这不会影响任何文件的当前状态，而<br>只会删除所有的提交，因此你将无法检出项目的其他任何状态。<br>为此，可打开一个文件浏览器，并将目录.git删除，也可通过命令行完成这个任务。这样做<br>后，你需要重新创建一个仓库，以重新对修改进行跟踪。下面演示了如何在终端会话中完成这个<br>过程：.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">【<span class="number">1</span>】 git_practice<span class="variable">$</span> git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># nothing to commit, working directory clean </span></span><br><span class="line">【<span class="number">2</span>】 git_practice<span class="variable">$</span> rm <span class="literal">-rf</span> .git</span><br><span class="line">【<span class="number">3</span>】 git_practice<span class="variable">$</span> git status</span><br><span class="line"><span class="comment"># fatal: Not a git repository (or any of the parent directories): .git </span></span><br><span class="line">【<span class="number">4</span>】 git_practice<span class="variable">$</span> git init</span><br><span class="line"><span class="comment"># Initialized empty Git repository in git_practice/.git/ </span></span><br><span class="line">【<span class="number">5</span>】 git_practice<span class="variable">$</span> git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># Initial commit</span></span><br><span class="line"><span class="comment"># Untracked files:</span></span><br><span class="line"><span class="comment"># (use "git add &lt;file&gt;..." to include in what will be committed)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># .gitignore</span></span><br><span class="line"><span class="comment"># hello_world.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># nothing added to commit but untracked files present (use "git add" to track) </span></span><br><span class="line">【<span class="number">6</span>】 git_practice<span class="variable">$</span> git add .</span><br><span class="line">git_practice<span class="variable">$</span> git commit <span class="literal">-m</span> <span class="string">"Starting over."</span></span><br><span class="line"><span class="comment"># [master (root-commit) 05f5e01] Starting over.</span></span><br><span class="line"><span class="comment"># 2 files changed, 2 insertions(+)</span></span><br><span class="line"><span class="comment"># create mode 100644 .gitignore</span></span><br><span class="line"><span class="comment"># create mode 100644 hello_world.py </span></span><br><span class="line">【<span class="number">7</span>】git_practice<span class="variable">$</span> git status</span><br><span class="line"><span class="comment"># On branch master</span></span><br><span class="line"><span class="comment"># nothing to commit, working directory clean</span></span><br><span class="line">git_practice<span class="variable">$</span></span><br></pre></td></tr></table></figure>
+<p>我们首先查看了状态，发现工作目录是干净的（见【1】）。接下来，我们使用命令rm -rf .git<br>（在Windows系统中，应使用命令rmdir /s .git）删除了目录.git（见【2】）。删除文件夹.git后，当<br>我们再次查看状态时，被告知这不是一个Git仓库（见【3】）。 Git用来跟踪仓库的信息都存储在文件<br>夹.git中，因此删除该文件夹也将删除整个仓库。<br>接下来，我们使用命令git init新建一个全新的仓库（见【4】）。然后，我们查看状态，发现<br>又回到了初始状态，等待着第一次提交（见【5】）。我们将所有文件都加入仓库，并执行第一次提<br>交（见【6】）。然后，我们再次查看状态，发现我们在分支master上，且没有任何未提交的修改（见<br>【7】）。<br>需要经过一定的练习才能学会使用版本控制，但一旦开始使用，你就再也离不开它。</p>
+<h2 id="远程仓库的使用"><a href="#远程仓库的使用" class="headerlink" title="远程仓库的使用"></a>远程仓库的使用</h2><p><a href="https://git-scm.com/book/zh/v2/Git-基础-远程仓库的使用" target="_blank" rel="noopener">https://git-scm.com/book/zh/v2/Git-基础-远程仓库的使用</a><br><a href="https://blog.csdn.net/qq_43344133/article/details/89893281" target="_blank" rel="noopener">https://blog.csdn.net/qq_43344133/article/details/89893281</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/31/Django%EF%BC%88%E4%BA%8C%EF%BC%89%20%E6%A8%A1%E6%9D%BF%EF%BC%9A%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E3%80%81%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95%E3%80%81%E6%A8%A1%E6%9D%BF%E7%BB%A7%E6%89%BF/" rel="prev" title="Django（二） 模板：基本使用、模板语法、模板继承">
+      <i class="fa fa-chevron-left"></i> Django（二） 模板：基本使用、模板语法、模板继承
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/02/react%EF%BC%9Acreate-react-app%E6%85%A2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" rel="next" title="react：create-react-app慢的解决方法">
+      react：create-react-app慢的解决方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、安装"><span class="nav-number">1.</span> <span class="nav-text">一、安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1windows"><span class="nav-number">1.1.</span> <span class="nav-text">1.1windows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-在-Linux-系统中安装-Git"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 在 Linux 系统中安装 Git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-在-OS-X-系统中安装-Git"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 在 OS X 系统中安装 Git</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、Git的配置"><span class="nav-number">2.</span> <span class="nav-text">二、Git的配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、创建项目"><span class="nav-number">3.</span> <span class="nav-text">三、创建项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、忽略文件"><span class="nav-number">4.</span> <span class="nav-text">四、忽略文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、初始化仓库"><span class="nav-number">5.</span> <span class="nav-text">五、初始化仓库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、检查状态"><span class="nav-number">6.</span> <span class="nav-text">六、检查状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、将文件加入到仓库中"><span class="nav-number">7.</span> <span class="nav-text">七、将文件加入到仓库中</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#八、执行提交"><span class="nav-number">8.</span> <span class="nav-text">八、执行提交</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#九、查看提交历史"><span class="nav-number">9.</span> <span class="nav-text">九、查看提交历史</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#9-1第二次提交"><span class="nav-number">9.1.</span> <span class="nav-text">9.1第二次提交</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十、撤销修改"><span class="nav-number">10.</span> <span class="nav-text">十、撤销修改</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十一、检出以前的提交"><span class="nav-number">11.</span> <span class="nav-text">十一、检出以前的提交</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十二、删除仓库"><span class="nav-number">12.</span> <span class="nav-text">十二、删除仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#远程仓库的使用"><span class="nav-number">12.1.</span> <span class="nav-text">远程仓库的使用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

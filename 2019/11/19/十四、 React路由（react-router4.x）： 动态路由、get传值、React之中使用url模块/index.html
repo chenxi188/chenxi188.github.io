@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="十四、 React路由（react-router4.x）： 动态路由、get传值、React之中使用url模块">
+<meta property="og:url" content="http://yoursite.com/2019/11/19/%E5%8D%81%E5%9B%9B%E3%80%81%20React%E8%B7%AF%E7%94%B1%EF%BC%88react-router4.x%EF%BC%89%EF%BC%9A%20%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E3%80%81get%E4%BC%A0%E5%80%BC%E3%80%81React%E4%B9%8B%E4%B8%AD%E4%BD%BF%E7%94%A8url%E6%A8%A1%E5%9D%97/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191119135707316.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191119143945139.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191119150539958.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191119150713512.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-11-19T07:16:26.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:37:02.381Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191119135707316.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/19/%E5%8D%81%E5%9B%9B%E3%80%81%20React%E8%B7%AF%E7%94%B1%EF%BC%88react-router4.x%EF%BC%89%EF%BC%9A%20%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E3%80%81get%E4%BC%A0%E5%80%BC%E3%80%81React%E4%B9%8B%E4%B8%AD%E4%BD%BF%E7%94%A8url%E6%A8%A1%E5%9D%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>十四、 React路由（react-router4.x）： 动态路由、get传值、React之中使用url模块 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/%E5%8D%81%E5%9B%9B%E3%80%81%20React%E8%B7%AF%E7%94%B1%EF%BC%88react-router4.x%EF%BC%89%EF%BC%9A%20%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E3%80%81get%E4%BC%A0%E5%80%BC%E3%80%81React%E4%B9%8B%E4%B8%AD%E4%BD%BF%E7%94%A8url%E6%A8%A1%E5%9D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          十四、 React路由（react-router4.x）： 动态路由、get传值、React之中使用url模块
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-19 15:16:26" itemprop="dateCreated datePublished" datetime="2019-11-19T15:16:26+08:00">2019-11-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:37:02" itemprop="dateModified" datetime="2020-03-23T10:37:02+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>新闻列表 —跳转—&gt; 详情页 时，想把列表对应的id传到详情页里，可用到三种传值方法：<br>1、动态路由传值<br>2、get传值<br>3、localstorage传值</p>
+<h1 id="一、动态路由传值"><a href="#一、动态路由传值" class="headerlink" title="一、动态路由传值"></a>一、动态路由传值</h1><p>【App.js】主要路由配置都在此处。01所在</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'./App.css'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; BrowserRouter <span class="keyword">as</span> Router, Route, Link &#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span>; <span class="comment">//引入路由模块</span></span><br><span class="line"><span class="keyword">import</span> Home <span class="keyword">from</span> <span class="string">'./components/Home'</span>;</span><br><span class="line"><span class="keyword">import</span> News <span class="keyword">from</span> <span class="string">'./components/News'</span>;</span><br><span class="line"><span class="keyword">import</span> Product <span class="keyword">from</span> <span class="string">'./components/Product'</span>;</span><br><span class="line"><span class="keyword">import</span> Content <span class="keyword">from</span> <span class="string">'./components/Content'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;Router&gt;</span><br><span class="line">    &lt;div&gt;           </span><br><span class="line">        &lt;header className=<span class="string">"title"</span>&gt; </span><br><span class="line">          &lt;Link to=<span class="string">"/"</span>&gt;首页&lt;<span class="regexp">/Link&gt; | </span></span><br><span class="line"><span class="regexp">          &lt;Link to="/</span>news<span class="string">"&gt;新闻&lt;/Link&gt; | </span></span><br><span class="line"><span class="string">          &lt;Link to="</span>/product<span class="string">"&gt;商品&lt;/Link&gt; | </span></span><br><span class="line"><span class="string">        &lt;/header&gt;</span></span><br><span class="line"><span class="string">         &lt;br /&gt;&lt;hr /&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &lt;Route exact path="</span>/<span class="string">" component=&#123;Home&#125; /&gt;</span></span><br><span class="line"><span class="string">        &lt;Route path="</span>/news<span class="string">" component=&#123;News&#125; /&gt;    </span></span><br><span class="line"><span class="string">        &lt;Route path="</span>/product<span class="string">" component=&#123;Product&#125; /&gt;</span></span><br><span class="line"><span class="string">        &#123;/* 【01】配置动态路由 （:aid即动态路由意思） 02在News.js */&#125;</span></span><br><span class="line"><span class="string">        &lt;Route path="</span>/Content/:aid<span class="string">" component=&#123;Content&#125; /&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">&lt;/Router&gt;</span></span><br><span class="line"><span class="string">  );</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">export default App;</span></span><br></pre></td></tr></table></figure>
+
+<p>【News.js】路由配置02步所在</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Link&#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">News</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            list:[</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">1</span>,</span><br><span class="line">                    title:<span class="string">'新闻列表111'</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">2</span>,</span><br><span class="line">                    title:<span class="string">'新闻列表222'</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">3</span>,</span><br><span class="line">                    title:<span class="string">'新闻列表333'</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">4</span>,</span><br><span class="line">                    title:<span class="string">'新闻列表444'</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">5</span>,</span><br><span class="line">                    title:<span class="string">'新闻列表555'</span></span><br><span class="line">                &#125;,</span><br><span class="line">            ]</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (      </span><br><span class="line">            &lt;div&gt;</span><br><span class="line">                &lt;h1&gt;我是新闻组件&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">                &lt;ul&gt;</span></span><br><span class="line"><span class="regexp">                    &#123;this.state.list.map((value,key)=&gt;&#123;</span></span><br><span class="line"><span class="regexp">                        /</span><span class="regexp">/【02】动态路由配置，获取对应值的aid值传到链接里。地址栏会变成类似 localhost:3000/</span>content/<span class="number">1</span> </span><br><span class="line">                        <span class="comment">//（ 01在App.js里。to=&#123;``&#125;这两个类似引号的符号是es6中模板字符串标记）</span></span><br><span class="line">                        <span class="comment">//03在Content.js </span></span><br><span class="line">                      <span class="keyword">return</span>  <span class="xml"><span class="tag">&lt;<span class="name">li</span> <span class="attr">key</span>=<span class="string">&#123;key&#125;</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">&#123;</span>`/<span class="attr">Content</span>/$&#123;<span class="attr">value.aid</span>&#125;`&#125;&gt;</span>&#123;value.title&#125;<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span><br><span class="line">                        &#125;)</span><br><span class="line">                    &#125;</span><br><span class="line">                &lt;<span class="regexp">/ul&gt;</span></span><br><span class="line"><span class="regexp">            &lt;/</span>div&gt;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> News;</span><br></pre></td></tr></table></figure>
+
+<p>【Content.js】路由配置03步所在</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Content</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;  &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//生命周期函数：加载完成调用props</span></span><br><span class="line">    componentDidMount()&#123;</span><br><span class="line">        <span class="comment">//打印出整个传值内容为：Object isExact:true params:Object aid:"2"</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.props)</span><br><span class="line">        <span class="comment">//【03】所以获取aid的值方法为（获取动态路由传值）【02】在News.js里</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.props.match.params.aid)</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (    </span><br><span class="line">            &lt;div&gt;</span><br><span class="line">                我是新闻详情组件，当前aid值为：&#123;<span class="keyword">this</span>.props.match.params.aid&#125;</span><br><span class="line">            &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">        );</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">export default Content;</span></span><br></pre></td></tr></table></figure>
+<p>【效果】在新闻列表页点aid=2项：<br><img src="https://img-blog.csdnimg.cn/20191119135707316.png" alt="在这里插入图片描述"></p>
+<h1 id="二、get传值"><a href="#二、get传值" class="headerlink" title="二、get传值"></a>二、get传值</h1><p>get传值主要特征是地址有个 ?xxx：<a href="http://localhost:3000/ProductDetail?aid=1" target="_blank" rel="noopener">http://localhost:3000/ProductDetail?aid=1</a><br>【App.js】路由配置同路由</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'./App.css'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; BrowserRouter <span class="keyword">as</span> Router, Route, Link &#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span>; <span class="comment">//引入路由模块</span></span><br><span class="line"><span class="keyword">import</span> Home <span class="keyword">from</span> <span class="string">'./components/Home'</span>;</span><br><span class="line"><span class="keyword">import</span> News <span class="keyword">from</span> <span class="string">'./components/News'</span>;</span><br><span class="line"><span class="keyword">import</span> Content <span class="keyword">from</span> <span class="string">'./components/Content'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Product <span class="keyword">from</span> <span class="string">'./components/Product'</span>;</span><br><span class="line"><span class="keyword">import</span> ProductDetail <span class="keyword">from</span> <span class="string">'./components/ProductDetail'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;Router&gt;</span><br><span class="line">    &lt;div&gt;           </span><br><span class="line">        &lt;header className=<span class="string">"title"</span>&gt; </span><br><span class="line">          &lt;Link to=<span class="string">"/"</span>&gt;首页&lt;<span class="regexp">/Link&gt; | </span></span><br><span class="line"><span class="regexp">          &lt;Link to="/</span>news<span class="string">"&gt;新闻&lt;/Link&gt; | </span></span><br><span class="line"><span class="string">          &lt;Link to="</span>/product<span class="string">"&gt;商品&lt;/Link&gt; | </span></span><br><span class="line"><span class="string">        &lt;/header&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">         &lt;br /&gt;&lt;hr /&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &lt;Route exact path="</span>/<span class="string">" component=&#123;Home&#125; /&gt;</span></span><br><span class="line"><span class="string">        &lt;Route path="</span>/news<span class="string">" component=&#123;News&#125; /&gt;</span></span><br><span class="line"><span class="string">        &lt;Route path="</span>/Content/:aid<span class="string">" component=&#123;Content&#125; /&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &lt;Route path="</span>/product<span class="string">" component=&#123;Product&#125; /&gt;</span></span><br><span class="line"><span class="string">        &#123;/* 【01】get配置 02在Product.js */&#125;</span></span><br><span class="line"><span class="string">        &lt;Route path="</span>/ProductDetail<span class="string">" component=&#123;ProductDetail&#125; /&gt;</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">&lt;/Router&gt;</span></span><br><span class="line"><span class="string">  );</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">export default App;</span></span><br></pre></td></tr></table></figure>
+
+<p>【Product.js】</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Link&#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Product</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            list:[</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">1</span>,</span><br><span class="line">                    title:<span class="string">'商品列表111'</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">2</span>,</span><br><span class="line">                    title:<span class="string">'商品列表222'</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">3</span>,</span><br><span class="line">                    title:<span class="string">'商品列表333'</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">4</span>,</span><br><span class="line">                    title:<span class="string">'商品列表444'</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    aid:<span class="number">5</span>,</span><br><span class="line">                    title:<span class="string">'商品列表555'</span></span><br><span class="line">                &#125;,</span><br><span class="line">            ]</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (    </span><br><span class="line">            &lt;div&gt;</span><br><span class="line">                &lt;h1&gt;我是商品组件&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">                &lt;ul&gt;</span></span><br><span class="line"><span class="regexp">                    &#123;this.state.list.map((value,key)=&gt;&#123;</span></span><br><span class="line"><span class="regexp">                        /</span><span class="regexp">/【02】get配置：获取对应值的aid值传到链接里。地址栏会变成类似 localhost:3000/</span>ProductDetail?aid=<span class="number">1</span> </span><br><span class="line">                        <span class="comment">//（ 01在App.js里。to=&#123;``&#125;这两个类似引号的符号是es6中模板字符串标记）</span></span><br><span class="line">                        <span class="comment">//03在ProductDetail.js </span></span><br><span class="line">                      <span class="keyword">return</span>  <span class="xml"><span class="tag">&lt;<span class="name">li</span> <span class="attr">key</span>=<span class="string">&#123;key&#125;</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">&#123;</span>`/<span class="attr">ProductDetail</span>?<span class="attr">aid</span>=<span class="string">$&#123;value.aid&#125;</span>`&#125;&gt;</span>&#123;value.title&#125;<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span><br><span class="line">                        &#125;)</span><br><span class="line">                    &#125;</span><br><span class="line">                &lt;<span class="regexp">/ul&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">            &lt;/</span>div&gt;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> Product;</span><br></pre></td></tr></table></figure>
+
+<p>【ProductDetail.js】</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProductDetail</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;  &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//生命周期函数：加载完成调用props</span></span><br><span class="line">    componentDidMount()&#123;</span><br><span class="line">        <span class="comment">//打印出整个传值内容为：</span></span><br><span class="line"><span class="comment">//location:[hash:"",key:"ov4jf0",pathname:"/ProductDetail",search:"?aid=3",state:undefined]</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.props)</span><br><span class="line">        <span class="comment">//【03】所以获取aid的值方法为（获取动态路由传值）【02】在News.js里</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.props.location.search)</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (    </span><br><span class="line">            &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;我是商品详情组件当前商品aid是：&#123;<span class="keyword">this</span>.props.location.search&#125;&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">            &lt;/</span>div&gt;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> ProductDetail;</span><br></pre></td></tr></table></figure>
+<p>【效果】：点 [商品列表] 任意一个，会把 [对应的aid] 通过地址栏传到 [商品详情页] 去：<br>问题：此处需要得到的是 5 这个值，但结果确不同，将在下一节解决<br><img src="https://img-blog.csdnimg.cn/20191119143945139.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="三、React中使用url模块，解析url"><a href="#三、React中使用url模块，解析url" class="headerlink" title="三、React中使用url模块，解析url"></a>三、React中使用url模块，解析url</h1><p>1.安装url模块：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install url --save</span><br></pre></td></tr></table></figure>
+<p>2.引入页面：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> url <span class="keyword">from</span> <span class="string">'url'</span></span><br></pre></td></tr></table></figure>
+<h2 id="url解析使用"><a href="#url解析使用" class="headerlink" title="url解析使用"></a>url解析使用</h2><p>解决：将解决上一节传过来的aid值成了：?aid=xx ，直接获取xx；<br>【App.js】：代码同上<br>【Product.js】：代码同上<br>【ProductDetail.js】</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> url <span class="keyword">from</span> <span class="string">'url'</span>; <span class="comment">//引入url解析模块</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProductDetail</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;  &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//生命周期函数：加载完成调用props</span></span><br><span class="line">    componentDidMount()&#123;</span><br><span class="line">        <span class="comment">//打印出整个传值内容为：</span></span><br><span class="line">        <span class="comment">//location:[hash:"",key:"ov4jf0",pathname:"/ProductDetail",search:"?aid=3",state:undefined]</span></span><br><span class="line">        <span class="comment">//console.log(this.props)</span></span><br><span class="line">        <span class="comment">//【03】所以获取aid的值方法为（获取动态路由传值）【02】在News.js里</span></span><br><span class="line">        <span class="comment">//console.log(this.props.location.search)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//【url解析01】将返回：query:[aid:x]</span></span><br><span class="line">        <span class="built_in">console</span>.log(url.parse(<span class="keyword">this</span>.props.location.search,<span class="literal">true</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">//【url解析02】所以获取aid值写法：</span></span><br><span class="line">        <span class="keyword">var</span> query=url.parse(<span class="keyword">this</span>.props.location.search,<span class="literal">true</span>).query;</span><br><span class="line">        <span class="built_in">console</span>.log(query);</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (    </span><br><span class="line">            &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;我是商品详情组件当前商品&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">            &lt;/</span>div&gt;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> ProductDetail;</span><br></pre></td></tr></table></figure>
+<p>效果：在地址栏随意传过来的参数都会进行解析：<br><img src="https://img-blog.csdnimg.cn/20191119150539958.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>自己随便写个参数：都可进行解析<br><img src="https://img-blog.csdnimg.cn/20191119150713512.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><h2 id="react动态路由传值："><a href="#react动态路由传值：" class="headerlink" title="react动态路由传值："></a>react动态路由传值：</h2><pre><code>1、动态路由配置
+    &lt;Route path=&quot;/content/:aid&quot; component={Content} /&gt;   
+2、对应的动态路由加载的组件里面获取传值
+      this.props.match.params
+跳转：&lt;Link to={`/content/${value.aid}`}&gt;{value.title}&lt;/Link&gt;</code></pre><h2 id="react-get传值："><a href="#react-get传值：" class="headerlink" title="react get传值："></a>react get传值：</h2><pre><code>1、获取 this.props.location.search</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/19/%E5%8D%81%E4%B8%89%E3%80%81react-router%204.x%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/" rel="prev" title="十三、react-router 4.x的基本配置">
+      <i class="fa fa-chevron-left"></i> 十三、react-router 4.x的基本配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/" rel="next" title="《机学三》特征工程3 —— 特征选择：特征选择、数据降维">
+      《机学三》特征工程3 —— 特征选择：特征选择、数据降维 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、动态路由传值"><span class="nav-number">2.</span> <span class="nav-text">一、动态路由传值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、get传值"><span class="nav-number">3.</span> <span class="nav-text">二、get传值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、React中使用url模块，解析url"><span class="nav-number">4.</span> <span class="nav-text">三、React中使用url模块，解析url</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#url解析使用"><span class="nav-number">4.1.</span> <span class="nav-text">url解析使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、总结"><span class="nav-number">5.</span> <span class="nav-text">三、总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#react动态路由传值："><span class="nav-number">5.1.</span> <span class="nav-text">react动态路由传值：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#react-get传值："><span class="nav-number">5.2.</span> <span class="nav-text">react get传值：</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="五、Vue：使用axios库进行get和post、用拦截器对请求和响应进行预处理、Mock（数据模拟）">
+<meta property="og:url" content="http://yoursite.com/2019/12/23/%E4%BA%94%E3%80%81Vue%EF%BC%9A%E4%BD%BF%E7%94%A8axios%E5%BA%93%E8%BF%9B%E8%A1%8Cget%E5%92%8Cpost%E3%80%81%E7%94%A8%E6%8B%A6%E6%88%AA%E5%99%A8%E5%AF%B9%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%E8%BF%9B%E8%A1%8C%E9%A2%84%E5%A4%84%E7%90%86%E3%80%81Mock%EF%BC%88%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%8B%9F%EF%BC%89/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-23T07:48:34.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:37:01.959Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/23/%E4%BA%94%E3%80%81Vue%EF%BC%9A%E4%BD%BF%E7%94%A8axios%E5%BA%93%E8%BF%9B%E8%A1%8Cget%E5%92%8Cpost%E3%80%81%E7%94%A8%E6%8B%A6%E6%88%AA%E5%99%A8%E5%AF%B9%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%E8%BF%9B%E8%A1%8C%E9%A2%84%E5%A4%84%E7%90%86%E3%80%81Mock%EF%BC%88%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%8B%9F%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>五、Vue：使用axios库进行get和post、用拦截器对请求和响应进行预处理、Mock（数据模拟） | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/23/%E4%BA%94%E3%80%81Vue%EF%BC%9A%E4%BD%BF%E7%94%A8axios%E5%BA%93%E8%BF%9B%E8%A1%8Cget%E5%92%8Cpost%E3%80%81%E7%94%A8%E6%8B%A6%E6%88%AA%E5%99%A8%E5%AF%B9%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%E8%BF%9B%E8%A1%8C%E9%A2%84%E5%A4%84%E7%90%86%E3%80%81Mock%EF%BC%88%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%8B%9F%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          五、Vue：使用axios库进行get和post、用拦截器对请求和响应进行预处理、Mock（数据模拟）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-23 15:48:34" itemprop="dateCreated datePublished" datetime="2019-12-23T15:48:34+08:00">2019-12-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:37:01" itemprop="dateModified" datetime="2020-03-23T10:37:01+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、axios"><a href="#一、axios" class="headerlink" title="一、axios"></a>一、axios</h1><p>【应用】进行请求和传表单<br>【axios中文档】：<a href="https://www.kancloud.cn/yunye/axios/234845" target="_blank" rel="noopener">https://www.kancloud.cn/yunye/axios/234845</a><br>【vue-axios】：<a href="https://cn.vuejs.org/v2/cookbook/using-axios-to-consume-apis.html" target="_blank" rel="noopener">https://cn.vuejs.org/v2/cookbook/using-axios-to-consume-apis.html</a><br>【参考】：<a href="https://blog.csdn.net/u010132177/article/details/103116767" target="_blank" rel="noopener">https://blog.csdn.net/u010132177/article/details/103116767</a></p>
+<h2 id="1-1-安装axios"><a href="#1-1-安装axios" class="headerlink" title="1.1 安装axios"></a>1.1 安装axios</h2><p>进入项目目录，运行cmd，运行如下代码：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span> <span class="comment">--save axios</span></span><br></pre></td></tr></table></figure>
+<p>运行项目：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">run</span><span class="bash"> dev</span></span><br></pre></td></tr></table></figure>
+<h2 id="1-2-挂载axios到-axios写法（get）"><a href="#1-2-挂载axios到-axios写法（get）" class="headerlink" title="1.2 挂载axios到$axios写法（get）"></a>1.2 挂载axios到$axios写法（get）</h2><h3 id="第一步-src-main-js"><a href="#第一步-src-main-js" class="headerlink" title="第一步 src/main.js"></a>第一步 src/main.js</h3><p>【1】引入axios为 Axios<br>【2】挂载Axios到 <code>$axios (使用其内部函数时：this.$Axios即可)</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The Vue build version to load with the `import` command</span></span><br><span class="line"><span class="comment">// (runtime-only or standalone) has been set in webpack.base.conf with an alias.</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"><span class="keyword">import</span> Axios <span class="keyword">from</span> <span class="string">"axios"</span> <span class="comment">//【1】引入axios</span></span><br><span class="line"></span><br><span class="line">Vue.prototype.$axios = Axios <span class="comment">//【2】挂载Axios到 $axios (使用其内部函数时：this.$Axios即可)</span></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* eslint-disable no-new */</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>, <span class="comment">//[1]:在index.html里id为#app标签里写入组件内容</span></span><br><span class="line">  components: &#123; App &#125;,<span class="comment">//[2]:写入的组件</span></span><br><span class="line">  template: <span class="string">'&lt;App/&gt;'</span> <span class="comment">//[3]:写入的模板名(也可看成一个完整组件)</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="第二步-parent-vue"><a href="#第二步-parent-vue" class="headerlink" title="第二步 parent.vue"></a>第二步 parent.vue</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 【<span class="number">2</span>】把获取到的数据循环展现出来 --&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &lt;li v-<span class="keyword">for</span>=<span class="string">"v in list"</span>&gt;&#123;&#123;v.title&#125;&#125;&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/u</span>l&gt;</span><br><span class="line"></span><br><span class="line">    &lt;hr/&gt;【显示获取到的请求】&lt;hr/&gt;</span><br><span class="line">    &#123;&#123;list&#125;&#125;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  <span class="comment">//import axios from 'axios' //首先导入安装好的axios</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    components:&#123;&#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        list:[] <span class="comment">//定义一个空数组用于存放接收到的数据</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">//【1】生命周期函数，组件安装好后调用此函数</span></span><br><span class="line">    mounted ()&#123;</span><br><span class="line">      <span class="keyword">let</span> api=<span class="string">"http://www.phonegap100.com/appapi.php?a=getPortalList&amp;catid=20"</span>;</span><br><span class="line">      <span class="keyword">this</span>.$axios  <span class="comment">//对应main.js里挂载写法</span></span><br><span class="line">      .get(api)</span><br><span class="line">      .then(<span class="function"><span class="params">res</span>=&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(res);</span><br><span class="line">        <span class="keyword">this</span>.list=res.data.result;</span><br><span class="line">      &#125;)</span><br><span class="line">      .catch(<span class="function"><span class="params">error</span>=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error);</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;,</span><br><span class="line">    filters:&#123;&#125;,</span><br><span class="line">    directives:&#123;&#125;,</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：<br>【国内首家】微信小程序视频教程免费下载<br>ionic域资源共享 CORS 详解<br>移动端触摸滑动js插件_html5手机端轮播插件<br>未来程序员会被机器人取代吗？<br>锤子安全锤_锤子真的出了个“锤子”：车充＋安全锤<br>html5能做什么_html5能做哪些开发？<br>平安口袋银行App采用-Cordova混合开发<br>JavaScript Emoji 表情库_js 类似于qq微信的表情库<br>cordova热更新插件-不发布应用市场动态更新APP源码<br>央行新规！支付宝、微信用户别忘做这件事<br>HTML5 移动app开发框架该如何选择<br>纯CSS3动画按钮效果,可用于移动wap app开发<br>京东每天亏上亿_不会抄袭、剽窃?必将死在互联网下一站的起点上! …<br>ionic react-native和native开发移动app那个好<br>这12行代码分分钟让你电脑崩溃手机重启<br>罗振宇罗永浩雷军们的演讲 你喜欢哪一个<br>ionic-native-transitions让你的Ionic应用比原生还快<br>ionic 1.2.4 发布，最好的html5移动app开发框架<br>phonegap发布应用到appstore<br>HTML5仿苹果应用的动画<br>【显示获取到的请求】<br>[ { “aid”: “499”, “catid”: “20”, “username”: “admin”, “title”: “【国内首家】微信小程序视频教程免费下载”, “pic”: “portal/201610/13/211832yvlbybpl3rologrr.jpg”, “dateline”: “1476364740” }, { “aid”: “498”, “catid”: “20”, “username”: “admin”, “title”: “ionic域资源共享 CORS 详解”, “pic”: “”, “dateline”: “1472952906” }, { “aid”: “497”, “catid”: “20”, “username”: “admin”, “title”: “移动端触摸滑动js插件_html5手机端轮播插件”, “pic”: “portal/201606/28/211604ullzo5arr4iurnum.jpg”, “dateline”: “1467119820” }, { “aid”: “496”, “catid”: “20”, “username”: “admin”, “title”: “未来程序员会被机器人取代吗？”, “pic”: “portal/201606/02/221818eafffffm4srfdf4s.jpg”, “dateline”: “1464874140” }, { “aid”: “495”, “catid”: “20”, “username”: “admin”, “title”: “锤子安全锤_锤子真的出了个“锤子”：车充＋安全锤”, “pic”: “portal/201605/20/213752f6i56f1e0hbfzhkb.jpg”, “dateline”: “1463751505” }, { “aid”: “494”, “catid”: “20”, “username”: “admin”, “title”: “html5能做什么_html5能做哪些开发？”, “pic”: “”, “dateline”: “1463664540” }, { “aid”: “493”, “catid”: “20”, “username”: “admin”, “title”: “平安口袋银行App采用-Cordova混合开发”, “pic”: “”, “dateline”: “1463294580” }, { “aid”: “492”, “catid”: “20”, “username”: “admin”, “title”: “JavaScript Emoji 表情库_js 类似于qq微信的表情库”, “pic”: “portal/201604/25/084907r2e3im3dvd1q3f7z.jpg”, “dateline”: “1461545392” }, { “aid”: “491”, “catid”: “20”, “username”: “admin”, “title”: “cordova热更新插件-不发布应用市场动态更新APP源码”, “pic”: “portal/201604/12/152638zaxz5xz3t58bfts2.png”, “dateline”: “1460446140” }, { “aid”: “490”, “catid”: “20”, “username”: “admin”, “title”: “央行新规！支付宝、微信用户别忘做这件事”, “pic”: “portal/201603/29/144942tcnnenueefagukfk.jpg”, “dateline”: “1459234206” }, { “aid”: “471”, “catid”: “20”, “username”: “admin”, “title”: “HTML5 移动app开发框架该如何选择”, “pic”: “portal/201511/15/163112q4kz6k2rgcgpi1tc.jpg”, “dateline”: “1457771160” }, { “aid”: “488”, “catid”: “20”, “username”: “admin”, “title”: “纯CSS3动画按钮效果,可用于移动wap app开发”, “pic”: “portal/201603/09/202742r1kngyt17na7n1nk.jpg”, “dateline”: “1457526780” }, { “aid”: “487”, “catid”: “20”, “username”: “admin”, “title”: “京东每天亏上亿_不会抄袭、剽窃?必将死在互联网下一站的起点上! …”, “pic”: “portal/201603/02/155825h28zxs2vsxjccv4c.jpg”, “dateline”: “1456905746” }, { “aid”: “486”, “catid”: “20”, “username”: “admin”, “title”: “ionic react-native和native开发移动app那个好”, “pic”: “portal/201602/25/193433dtzfvlzl1oavhljy.jpg”, “dateline”: “1456398960” }, { “aid”: “484”, “catid”: “20”, “username”: “admin”, “title”: “这12行代码分分钟让你电脑崩溃手机重启”, “pic”: “”, “dateline”: “1453426595” }, { “aid”: “483”, “catid”: “20”, “username”: “admin”, “title”: “罗振宇罗永浩雷军们的演讲 你喜欢哪一个”, “pic”: “”, “dateline”: “1452226800” }, { “aid”: “482”, “catid”: “20”, “username”: “admin”, “title”: “ionic-native-transitions让你的Ionic应用比原生还快”, “pic”: “portal/201601/07/135529z4r7gwglv4rw8l74.jpeg”, “dateline”: “1452145500” }, { “aid”: “481”, “catid”: “20”, “username”: “admin”, “title”: “ionic 1.2.4 发布，最好的html5移动app开发框架”, “pic”: “portal/201601/05/132107h9bllr7li74zoh49.jpg”, “dateline”: “1451971293” }, { “aid”: “480”, “catid”: “20”, “username”: “admin”, “title”: “phonegap发布应用到appstore”, “pic”: “portal/201601/05/122115yhh22i77sqn2ijc6.jpg”, “dateline”: “1451967910” }, { “aid”: “479”, “catid”: “20”, “username”: “admin”, “title”: “HTML5仿苹果应用的动画”, “pic”: “portal/201601/04/220252ycyddectvivr55pq.png”, “dateline”: “1451916189” } ]</p>
+<h2 id="1-3直接导入到组件axios写法（get）"><a href="#1-3直接导入到组件axios写法（get）" class="headerlink" title="1.3直接导入到组件axios写法（get）"></a>1.3直接导入到组件axios写法（get）</h2><p>把main.js里的注释掉</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//import Axios from "axios"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Vue.prototype.$axios = Axios</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="parent-vue"><a href="#parent-vue" class="headerlink" title="parent.vue"></a>parent.vue</h3><p>【0】首先导入安装好的axios<br>【1】重点：生命周期函数，组件安装好后调用此函数（真正用axios获取数据部分）<br>【2】把获取到的数据循环展现出来</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 【<span class="number">2</span>】把获取到的数据循环展现出来 --&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &lt;li v-<span class="keyword">for</span>=<span class="string">"v in list"</span>&gt;&#123;&#123;v.title&#125;&#125;&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/u</span>l&gt;</span><br><span class="line"></span><br><span class="line">    &lt;hr/&gt;【显示获取到的请求】&lt;hr/&gt;</span><br><span class="line">    &#123;&#123;list&#125;&#125;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  <span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">'axios'</span> <span class="comment">//【0】首先导入安装好的axios</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    components:&#123;&#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        list:[] <span class="comment">//【0.1】定义一个空数据用来存放接收到的数据</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">//【1】生命周期函数，组件安装好后调用此函数</span></span><br><span class="line">    mounted ()&#123;</span><br><span class="line">      <span class="keyword">let</span> api=<span class="string">"http://www.phonegap100.com/appapi.php?a=getPortalList&amp;catid=20"</span>;</span><br><span class="line">      axios</span><br><span class="line">      .get(api)</span><br><span class="line">      .then(<span class="function"><span class="params">res</span>=&gt;</span> &#123;  <span class="comment">// 简略写法原：res参数省略了括号.then((res)=&gt;&#123;....&#125;)</span></span><br><span class="line">        <span class="built_in">console</span>.log(res);</span><br><span class="line">        <span class="keyword">this</span>.list=res.data.result;</span><br><span class="line">      &#125;)</span><br><span class="line">      .catch(<span class="function"><span class="params">error</span>=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error);</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;,</span><br><span class="line">    filters:&#123;&#125;,</span><br><span class="line">    directives:&#123;&#125;,</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果同1.2</p>
+<h3 id="1-3-1-把请求参数单独提出来写法-get"><a href="#1-3-1-把请求参数单独提出来写法-get" class="headerlink" title="1.3.1 把请求参数单独提出来写法(get)"></a>1.3.1 把请求参数单独提出来写法(get)</h3><p>效果同上例</p>
+<h4 id="parent-vue-中的请求部分，其它略过"><a href="#parent-vue-中的请求部分，其它略过" class="headerlink" title="parent.vue 中的请求部分，其它略过"></a>parent.vue 中的请求部分，其它略过</h4><p>api接口：<a href="http://www.phonegap100.com/appapi.php?a=getPortalList&amp;catid=20" target="_blank" rel="noopener">http://www.phonegap100.com/appapi.php?a=getPortalList&amp;catid=20</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//【1】生命周期函数，组件安装好后调用此函数</span></span><br><span class="line">    mounted ()&#123;</span><br><span class="line">      <span class="keyword">let</span> api=<span class="string">"http://www.phonegap100.com/appapi.php"</span>;</span><br><span class="line">      <span class="keyword">let</span> params=&#123;<span class="attr">a</span>:<span class="string">"getPortalList"</span>,<span class="attr">catid</span>:<span class="number">20</span>&#125; <span class="comment">//【1】把参数提到此处</span></span><br><span class="line">      <span class="keyword">this</span>.$axios  </span><br><span class="line">      .get(api,&#123;<span class="attr">params</span>:params&#125;) <span class="comment">//【2】get加上参数</span></span><br><span class="line">      .then(<span class="function"><span class="params">res</span>=&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(res);</span><br><span class="line">        <span class="keyword">this</span>.list=res.data.result;</span><br><span class="line">      &#125;)</span><br><span class="line">      .catch(<span class="function"><span class="params">error</span>=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error);</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>效果同1.2例</p>
+<h2 id="1-3-axios的post"><a href="#1-3-axios的post" class="headerlink" title="1.3 axios的post"></a>1.3 axios的post</h2><h3 id="1-3-1post简单写法"><a href="#1-3-1post简单写法" class="headerlink" title="1.3.1post简单写法"></a>1.3.1post简单写法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//form-data:?name=iwen&amp;age=20</span></span><br><span class="line">			<span class="comment">//x-www-form-urlencoded:&#123;name:"iwen",age:20&#125;</span></span><br><span class="line">			<span class="comment">//注意：axios接受的post请求参数的格式是form-data格式</span></span><br><span class="line">			<span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">"axios"</span></span><br><span class="line">			<span class="keyword">import</span> qs <span class="keyword">from</span> <span class="string">"qs"</span> <span class="comment">//node.js的一个库用于把post之类的参数转换成需要的格式</span></span><br><span class="line">			axios.post(<span class="string">"http://www.wwtliu.com/sxtstu/blueberrypai/login.php"</span>,	qs.stringify(&#123;</span><br><span class="line">				user_id:<span class="string">"iwen@qq.com"</span>,</span><br><span class="line">					password:<span class="string">"iwen123"</span>,</span><br><span class="line">					verification_code:<span class="string">"crfvw"</span></span><br><span class="line">				&#125;))</span><br><span class="line">				.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">					<span class="built_in">console</span>.log(res.data)</span><br><span class="line">				&#125;)</span><br><span class="line">				.catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">					<span class="built_in">console</span>.log(error);</span><br><span class="line">				&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-2使用全局变量axios的post写法"><a href="#1-3-2使用全局变量axios的post写法" class="headerlink" title="1.3.2使用全局变量axios的post写法"></a>1.3.2使用全局变量axios的post写法</h3><pre><code>axios.defaults.baseURL = &apos;https://api.example.com&apos;;
+axios.defaults.headers.common[&apos;Authorization&apos;] = AUTH_TOKEN;
+axios.defaults.headers.post[&apos;Content-Type&apos;] = &apos;application/x-www-form-urlencoded&apos;;</code></pre><h4 id="main-js"><a href="#main-js" class="headerlink" title="main.js"></a>main.js</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The Vue build version to load with the `import` command</span></span><br><span class="line"><span class="comment">// (runtime-only or standalone) has been set in webpack.base.conf with an alias.</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"><span class="keyword">import</span> Axios <span class="keyword">from</span> <span class="string">"axios"</span></span><br><span class="line"><span class="keyword">import</span> qs <span class="keyword">from</span> <span class="string">"qs"</span></span><br><span class="line"></span><br><span class="line">Vue.prototype.$axios = Axios</span><br><span class="line">Vue.prototype.HOST = <span class="string">'/api'</span></span><br><span class="line"></span><br><span class="line"> Axios.defaults.baseURL = <span class="string">'http://www.wwtliu.com'</span>; <span class="comment">//定义全局变量</span></span><br><span class="line"> Axios.defaults.headers.post[<span class="string">'Content-Type'</span>] = <span class="string">'application/x-www-form-urlencoded'</span>;</span><br><span class="line"></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* eslint-disable no-new */</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">	el: <span class="string">'#app'</span>,</span><br><span class="line">	template: <span class="string">'&lt;App/&gt;'</span>,</span><br><span class="line">	components: &#123;</span><br><span class="line">		App</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="post-js"><a href="#post-js" class="headerlink" title="post.js"></a>post.js</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">	&lt;div&gt;</span><br><span class="line">		post</span><br><span class="line">	&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> qs <span class="keyword">from</span> <span class="string">"qs"</span>  <span class="comment">//node.js的一个库，用于对post之类的参数进行转换成需要的类型</span></span><br><span class="line">	</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">	name:<span class="string">"posts"</span>,</span><br><span class="line">	data()&#123;</span><br><span class="line">		<span class="keyword">return</span>&#123;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	created()&#123;</span><br><span class="line">		<span class="keyword">var</span> url = <span class="keyword">this</span>.HOST + <span class="string">"/login"</span>;</span><br><span class="line">		<span class="built_in">console</span>.log(url);</span><br><span class="line">		<span class="keyword">this</span>.$axios.post(url,	&#123;</span><br><span class="line">			username:<span class="string">"iwen"</span>,</span><br><span class="line">			password:<span class="string">"helloiwen"</span></span><br><span class="line">		&#125;)</span><br><span class="line">		.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">			<span class="built_in">console</span>.log(res.data)</span><br><span class="line">		&#125;)</span><br><span class="line">		.catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">			<span class="built_in">console</span>.log(error);</span><br><span class="line">		&#125;)	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;	</span><br><span class="line"></span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：将成功登录对应网站</p>
+<h2 id="1-4-拦截器"><a href="#1-4-拦截器" class="headerlink" title="1.4 拦截器"></a>1.4 拦截器</h2><p>【作用】：在请求或响应被 then 或 catch 处理前拦截它们。</p>
+<h3 id="mian-js"><a href="#mian-js" class="headerlink" title="mian.js"></a>mian.js</h3><p>通过拦截器对发送之前数据处理，把格式不对的转化成正确的，在组件中就不用再处理了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The Vue build version to load with the `import` command</span></span><br><span class="line"><span class="comment">// (runtime-only or standalone) has been set in webpack.base.conf with an alias.</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"><span class="keyword">import</span> Axios <span class="keyword">from</span> <span class="string">"axios"</span></span><br><span class="line"><span class="keyword">import</span> qs <span class="keyword">from</span> <span class="string">"qs"</span></span><br><span class="line"></span><br><span class="line">Vue.prototype.$axios = Axios</span><br><span class="line">Vue.prototype.HOST = <span class="string">'/api'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Axios.defaults.baseURL = 'http://www.wwtliu.com';</span></span><br><span class="line"><span class="comment">// Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';</span></span><br><span class="line"></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加请求拦截器</span></span><br><span class="line">Axios.interceptors.request.use(<span class="function"><span class="keyword">function</span>(<span class="params">config</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (config.method == <span class="string">"post"</span>) &#123;<span class="comment">//如果请求为post，则把其参数格式进行qs.stringify处理</span></span><br><span class="line">		config.data = qs.stringify(config.data)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> config;</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// 对请求错误做些什么</span></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">Promise</span>.reject(error);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加响应拦截器</span></span><br><span class="line">Axios.interceptors.response.use(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> response;</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// 对响应错误做点什么</span></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">Promise</span>.reject(error);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* eslint-disable no-new */</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">	el: <span class="string">'#app'</span>,</span><br><span class="line">	template: <span class="string">'&lt;App/&gt;'</span>,</span><br><span class="line">	components: &#123;</span><br><span class="line">		App</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="post-vue"><a href="#post-vue" class="headerlink" title="post.vue"></a>post.vue</h3><p>在全局中用拦截器处理数据，在组件中直接用即可，就不用进行处理参数，引用qs.stringfiy（注释部分）处理了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">	&lt;div&gt;</span><br><span class="line">		post</span><br><span class="line">	&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">	</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">	name:<span class="string">"posts"</span>,</span><br><span class="line">	data()&#123;</span><br><span class="line">		<span class="keyword">return</span>&#123;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	created()&#123;</span><br><span class="line">		<span class="comment">// var url = this.HOST + "/login";</span></span><br><span class="line">		<span class="comment">// console.log(url);</span></span><br><span class="line">		<span class="comment">// this.$axios.post(url,	&#123;</span></span><br><span class="line">		<span class="comment">// 	username:"iwen",</span></span><br><span class="line">		<span class="comment">// 	password:"helloiwen"</span></span><br><span class="line">		<span class="comment">// &#125;)</span></span><br><span class="line">		<span class="comment">// .then(res =&gt; &#123;</span></span><br><span class="line">		<span class="comment">// 	console.log(res.data)</span></span><br><span class="line">		<span class="comment">// &#125;)</span></span><br><span class="line">		<span class="comment">// .catch(error =&gt; &#123;</span></span><br><span class="line">		<span class="comment">// 	console.log(error);</span></span><br><span class="line">		<span class="comment">// &#125;)</span></span><br><span class="line">		<span class="keyword">var</span> url = <span class="keyword">this</span>.HOST + <span class="string">"/movie/top250"</span>;</span><br><span class="line">		<span class="keyword">this</span>.$axios.get(url,&#123;</span><br><span class="line">			params:&#123;</span><br><span class="line">				count:<span class="number">10</span>,</span><br><span class="line">				start:<span class="number">0</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;)</span><br><span class="line">		.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">			<span class="built_in">console</span>.log(res.data)</span><br><span class="line">		&#125;)</span><br><span class="line">		.catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">			<span class="built_in">console</span>.log(error);</span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;	</span><br><span class="line"></span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;style&gt;&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="1-5-跨域解决方案"><a href="#1-5-跨域解决方案" class="headerlink" title="1.5 跨域解决方案"></a>1.5 跨域解决方案</h2><p>修改config index.js文件、host文件<br>【修改完成后，重新运行项目才会生效：（关闭cmd，重新，npm run dev）】        </p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">proxyTable:</span> &#123;</span><br><span class="line">	            <span class="string">"/api"</span>: &#123;</span><br><span class="line"><span class="symbol">	                target:</span> <span class="string">"http://localhost:3000"</span>,</span><br><span class="line"><span class="symbol">	                changeOrigin:</span> <span class="literal">true</span>,</span><br><span class="line"><span class="symbol">	                pathRewrite:</span> &#123;</span><br><span class="line">	                    <span class="string">'^/api'</span>: <span class="string">''</span></span><br><span class="line">	                &#125;</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;</span><br><span class="line">	        </span><br><span class="line">添加host</span><br><span class="line">	    	Vue.prototype.HOST = <span class="string">'/api'</span></span><br><span class="line">	【注意】：此种跨域解决方案，只能适用于测试阶段，打包的时候，不会具备服务器不能跨域了，后端解决。</span><br></pre></td></tr></table></figure>
+<h2 id="1-6-Mock：数据模拟"><a href="#1-6-Mock：数据模拟" class="headerlink" title="1.6 Mock：数据模拟"></a>1.6 Mock：数据模拟</h2><pre><code>1.自己创建JSON文件。使用get请求形式访问数据
+    优点：方便，快捷
+    缺点：只能存在get请求
+2.项目中集成服务器，模拟各种接口
+    优点：模拟真实线上环境
+    缺点：增加开发成本
+3.直接使用线上数据
+    优点：真实
+    缺点：不一定每个项目都存在
+4.数据模拟库
+    www.mockjs.com
+    https://github.com/nuysoft/Mock/wiki/Getting-Started</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/18/%E5%9B%9B%E3%80%81Vue%E8%BF%87%E6%B8%A1%E4%B8%8E%E5%8A%A8%E7%94%BB%E3%80%81%E8%BF%87%E6%B8%A1css%E7%B1%BB%E5%90%8D%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E5%AE%9A%E3%80%81%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="prev" title="四、Vue过渡与动画、过渡css类名、自定义指定、过滤器">
+      <i class="fa fa-chevron-left"></i> 四、Vue过渡与动画、过渡css类名、自定义指定、过滤器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/25/Vue%E7%82%B9%E5%88%B0%E5%AD%90%E8%B7%AF%E7%94%B1%EF%BC%8C%E7%88%B6%E7%BA%A7%EF%BC%8C%E6%97%A0%E6%B3%95%E9%AB%98%E4%BA%AE%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" rel="next" title="Vue点到子路由，父级，无法高亮问题解决">
+      Vue点到子路由，父级，无法高亮问题解决 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、axios"><span class="nav-number">1.</span> <span class="nav-text">一、axios</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-安装axios"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装axios</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-挂载axios到-axios写法（get）"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 挂载axios到$axios写法（get）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步-src-main-js"><span class="nav-number">1.2.1.</span> <span class="nav-text">第一步 src&#x2F;main.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步-parent-vue"><span class="nav-number">1.2.2.</span> <span class="nav-text">第二步 parent.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3直接导入到组件axios写法（get）"><span class="nav-number">1.3.</span> <span class="nav-text">1.3直接导入到组件axios写法（get）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#parent-vue"><span class="nav-number">1.3.1.</span> <span class="nav-text">parent.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1-把请求参数单独提出来写法-get"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.3.1 把请求参数单独提出来写法(get)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#parent-vue-中的请求部分，其它略过"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">parent.vue 中的请求部分，其它略过</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-axios的post"><span class="nav-number">1.4.</span> <span class="nav-text">1.3 axios的post</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1post简单写法"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.3.1post简单写法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2使用全局变量axios的post写法"><span class="nav-number">1.4.2.</span> <span class="nav-text">1.3.2使用全局变量axios的post写法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#main-js"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">main.js</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#post-js"><span class="nav-number">1.4.3.</span> <span class="nav-text">post.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-拦截器"><span class="nav-number">1.5.</span> <span class="nav-text">1.4 拦截器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mian-js"><span class="nav-number">1.5.1.</span> <span class="nav-text">mian.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#post-vue"><span class="nav-number">1.5.2.</span> <span class="nav-text">post.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-跨域解决方案"><span class="nav-number">1.6.</span> <span class="nav-text">1.5 跨域解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-Mock：数据模拟"><span class="nav-number">1.7.</span> <span class="nav-text">1.6 Mock：数据模拟</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

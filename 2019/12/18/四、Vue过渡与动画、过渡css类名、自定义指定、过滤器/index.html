@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="四、Vue过渡与动画、过渡css类名、自定义指定、过滤器">
+<meta property="og:url" content="http://yoursite.com/2019/12/18/%E5%9B%9B%E3%80%81Vue%E8%BF%87%E6%B8%A1%E4%B8%8E%E5%8A%A8%E7%94%BB%E3%80%81%E8%BF%87%E6%B8%A1css%E7%B1%BB%E5%90%8D%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E5%AE%9A%E3%80%81%E8%BF%87%E6%BB%A4%E5%99%A8/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191214164954860.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191217092200265.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191217104404619.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191217134705638.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191218120044960.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191218143639490.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191218144548805.png">
+<meta property="article:published_time" content="2019-12-18T07:29:57.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:37:02.411Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191214164954860.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/18/%E5%9B%9B%E3%80%81Vue%E8%BF%87%E6%B8%A1%E4%B8%8E%E5%8A%A8%E7%94%BB%E3%80%81%E8%BF%87%E6%B8%A1css%E7%B1%BB%E5%90%8D%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E5%AE%9A%E3%80%81%E8%BF%87%E6%BB%A4%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>四、Vue过渡与动画、过渡css类名、自定义指定、过滤器 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/18/%E5%9B%9B%E3%80%81Vue%E8%BF%87%E6%B8%A1%E4%B8%8E%E5%8A%A8%E7%94%BB%E3%80%81%E8%BF%87%E6%B8%A1css%E7%B1%BB%E5%90%8D%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E5%AE%9A%E3%80%81%E8%BF%87%E6%BB%A4%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          四、Vue过渡与动画、过渡css类名、自定义指定、过滤器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-18 15:29:57" itemprop="dateCreated datePublished" datetime="2019-12-18T15:29:57+08:00">2019-12-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:37:02" itemprop="dateModified" datetime="2020-03-23T10:37:02+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、过渡-动画"><a href="#一、过渡-动画" class="headerlink" title="一、过渡 动画"></a>一、过渡 动画</h1><h2 id="1-1简单的过渡动画使用"><a href="#1-1简单的过渡动画使用" class="headerlink" title="1.1简单的过渡动画使用"></a>1.1简单的过渡动画使用</h2><h3 id="parent-vue"><a href="#parent-vue" class="headerlink" title="parent.vue"></a>parent.vue</h3><p>【0】定义一个待显示的数据<br>【1】定义一个显示隐藏flag<br>【2】使用动画过滤标签，name用来连接style样式；v-show用来控制数据显隐；<br>【3】按钮监听事件来控制data的flag为true,或false以控制视图的显隐 ；也可用函数来处理见methods里的sh函数<br>【4】可选，用来控制flag的true或false<br>【5】html5控制动画效果的样式</p>
+<figure class="highlight django"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"parent"</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">transition</span> <span class="attr">name</span>=<span class="string">"fade"</span>&gt;</span><span class="comment">&lt;!-- 【2】使用动画过滤标签，name用来连接style样式；v-show用来控制数据显隐； --&gt;</span></span></span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">p</span> <span class="attr">v-show</span>=<span class="string">"flag"</span>&gt;</span></span><span class="template-variable">&#123;&#123;msg&#125;&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">transition</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">"flag=!flag"</span>&gt;</span>显示隐藏<span class="tag">&lt;/<span class="name">button</span>&gt;</span> <span class="comment">&lt;!-- 【3】按钮监听事件来控制data的flag为true,或false以控制视图的显隐 ；也可用函数来处理见methods里的sh函数--&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="xml">  // import Child from './child';</span></span><br><span class="line"></span><br><span class="line"><span class="xml">  export default&#123;</span></span><br><span class="line"><span class="xml">    name:'parent',</span></span><br><span class="line"><span class="xml">    components:&#123;&#125;,</span></span><br><span class="line"><span class="xml">    data()&#123;</span></span><br><span class="line"><span class="xml">      return&#123;</span></span><br><span class="line"><span class="xml">        msg:'渐变显示隐藏',//【0】定义一个待显示的数据</span></span><br><span class="line"><span class="xml">        flag:true, //【1】定义一个显示隐藏flag</span></span><br><span class="line"><span class="xml">      &#125;</span></span><br><span class="line"><span class="xml">    &#125;,</span></span><br><span class="line"><span class="xml">    methods:&#123;</span></span><br><span class="line"><span class="xml">      sh()&#123;//【4】可选，用来控制flag的true或false</span></span><br><span class="line"><span class="xml">        this.flag=!this.flag;</span></span><br><span class="line"><span class="xml">      &#125;</span></span><br><span class="line"><span class="xml">    &#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="xml">【5】html5控制动画效果的样式</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span></span><br><span class="line"><span class="xml">  .fade-enter-active, .fade-leave-active &#123;</span></span><br><span class="line"><span class="xml">    transition: opacity .5s;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ &#123;</span></span><br><span class="line"><span class="xml">    opacity: 0;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>效果：此处是逐渐显示或隐藏的<br><img src="https://img-blog.csdnimg.cn/20191214164954860.png" alt="在这里插入图片描述"></p>
+<h2 id="1-2-css过渡类名"><a href="#1-2-css过渡类名" class="headerlink" title="1.2 css过渡类名"></a>1.2 css过渡类名</h2><p><strong>在进入/离开的过渡中，会有 6 个 class 切换（见1.1代码style部分）：</strong></p>
+<ol>
+<li><p>v-enter：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。</p>
+</li>
+<li><p>v-enter-active：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡/动画完成之后移除。这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。</p>
+</li>
+<li><p>v-enter-to: 2.1.8版及以上 定义进入过渡的结束状态。在元素被插入之后下一帧生效 (与此同时 v-enter 被移除)，在过渡/动画完成之后移除。</p>
+</li>
+<li><p>v-leave: 定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。</p>
+</li>
+<li><p>v-leave-active：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。</p>
+</li>
+<li><p>v-leave-to: 2.1.8版及以上 定义离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 v-leave 被删除)，在过渡/动画完成之后移除。<br>【注】：v 即<code>&lt;transition name=&quot;fade&quot;&gt;</code>中的，‘fade’</p>
+</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/20191217092200265.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="parent-vue-css控制动画示例"><a href="#parent-vue-css控制动画示例" class="headerlink" title="parent.vue css控制动画示例"></a>parent.vue css控制动画示例</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;transition name=<span class="string">"fade"</span>&gt;&lt;!-- 使用动画过滤标签，name用来连接style样式；v-show用来控制数据显隐； --&gt;</span><br><span class="line">      &lt;p v-show=<span class="string">"flag"</span>&gt;&#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>transition&gt;</span><br><span class="line"></span><br><span class="line">    &lt;button @click=<span class="string">"flag=!flag"</span>&gt;显示隐藏&lt;<span class="regexp">/button&gt; &lt;!-- 按钮监听事件来控制data的flag为true,或false以控制视图的显隐 ；也可用函数来处理见methods里的sh函数--&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ import Child from './</span>child<span class="string">';</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  export default&#123;</span></span><br><span class="line"><span class="string">    name:'</span>parent<span class="string">',</span></span><br><span class="line"><span class="string">    components:&#123;&#125;,</span></span><br><span class="line"><span class="string">    data()&#123;</span></span><br><span class="line"><span class="string">      return&#123;</span></span><br><span class="line"><span class="string">        msg:'</span>渐变显示隐藏<span class="string">',//定义一个待显示的数据</span></span><br><span class="line"><span class="string">        flag:true, //定义一个显示隐藏flag</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    methods:&#123;</span></span><br><span class="line"><span class="string">      sh()&#123;//可选，用来控制flag的true或false</span></span><br><span class="line"><span class="string">        this.flag=!this.flag;</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;style&gt;</span></span><br><span class="line"><span class="string">  /* 【1】进入起始时状态,透明度0,字大小14px */</span></span><br><span class="line"><span class="string">.fade-enter&#123;</span></span><br><span class="line"><span class="string">  opacity:0;</span></span><br><span class="line"><span class="string">  font-size: 0.875rem;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">/*【1.1】进入中：动画效果：透明、字大小、变形、时长控制，*/</span></span><br><span class="line"><span class="string">.fade-enter-active&#123;</span></span><br><span class="line"><span class="string">  transition: opacity .8s,font-size 1s,transform 1s;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">/*【1.2】 进入尾:透明度1,字大小25,变形旋转360度 */</span></span><br><span class="line"><span class="string">.fade-enter-to&#123;</span></span><br><span class="line"><span class="string">  opacity:1;</span></span><br><span class="line"><span class="string">  font-size: 1.5625rem;</span></span><br><span class="line"><span class="string">  transform: rotate(360deg);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">/* 【2】离开时设置 */</span></span><br><span class="line"><span class="string">.fade-leave&#123;</span></span><br><span class="line"><span class="string">  opacity:1;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">.fade-leave-active&#123;</span></span><br><span class="line"><span class="string">  transition: opacity 2s;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">.fade-leave-to&#123;</span></span><br><span class="line"><span class="string">  opacity:0;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;/style&gt;</span></span><br></pre></td></tr></table></figure>
+<p>效果：隐藏时，逐渐降低透明度，到彻底消失。对应【2】<br>出现时，旋转360度进入，同时文字逐渐放大。对应【1】<br><img src="https://img-blog.csdnimg.cn/20191217104404619.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="1-3引用-Animate-css-动画库（自定义过渡的类名）"><a href="#1-3引用-Animate-css-动画库（自定义过渡的类名）" class="headerlink" title="1.3引用 Animate.css 动画库（自定义过渡的类名）"></a>1.3引用 Animate.css 动画库（自定义过渡的类名）</h2><p>官网：<br><a href="https://cn.vuejs.org/v2/guide/transitions.html#CSS-动画" target="_blank" rel="noopener">https://cn.vuejs.org/v2/guide/transitions.html#CSS-动画</a><br>第三方Animate.css动画库：<br><a href="https://daneden.github.io/animate.css/" target="_blank" rel="noopener">https://daneden.github.io/animate.css/</a></p>
+<h3 id="根目录下index-html"><a href="#根目录下index-html" class="headerlink" title="根目录下index.html"></a>根目录下index.html</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">    &lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width,initial-scale=1.0"</span>&gt;</span><br><span class="line">    &lt;!--【<span class="number">1</span>】引入css动画库--&gt;</span><br><span class="line">    &lt;link href=<span class="string">"https://cdn.jsdelivr.net/npm/animate.css@3.5.1"</span> rel=<span class="string">"stylesheet"</span> type=<span class="string">"text/css"</span>&gt;</span><br><span class="line">    &lt;title&gt;hello_vue&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;div id=<span class="string">"app"</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    &lt;!-- built files will be auto injected --&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="parent-vue-1"><a href="#parent-vue-1" class="headerlink" title="parent.vue"></a>parent.vue</h3><p>【重点】：transition的两个属性，想要什么样动画，类名都可在animate.css官网找，然后直接把animated 后面的那个类换掉即可<br>enter-active-class=”animated tada”<br>leave-active-class=”animated bounceOutRight”</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 【<span class="number">1</span>】引用 --&gt;</span><br><span class="line">    &lt;transition name=<span class="string">"f"</span>  enter-active-<span class="class"><span class="keyword">class</span></span>=<span class="string">"animated tada"</span> leave-active-<span class="class"><span class="keyword">class</span></span>=<span class="string">"animated bounceOutRight"</span> &gt;</span><br><span class="line">      &lt;p v-show=<span class="string">"flag"</span>&gt;&#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>transition&gt;</span><br><span class="line">    &lt;button @click=<span class="string">"flag=!flag"</span>&gt;显示隐藏&lt;<span class="regexp">/button&gt; &lt;!-- 【2】隐藏显示 --&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'parent',</span></span><br><span class="line"><span class="regexp">    components:&#123;&#125;,</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return&#123;</span></span><br><span class="line"><span class="regexp">        msg:'渐变显示隐藏',/</span><span class="regexp">/定义一个待显示的数据</span></span><br><span class="line"><span class="regexp">        flag:true, /</span><span class="regexp">/定义一个显示隐藏flag</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    </span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+<p>结果：<br><img src="https://img-blog.csdnimg.cn/20191217134705638.png" alt="在这里插入图片描述"></p>
+<h3 id="播放动画页面会出现滚动条解决"><a href="#播放动画页面会出现滚动条解决" class="headerlink" title="播放动画页面会出现滚动条解决"></a>播放动画页面会出现滚动条解决</h3><p>【出现原因】因为所有动画都是浮动的<br>【解决】把对应的动画所在标签加一个样式即可，如上例将P定义一个样式即可</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">  p&#123;</span><br><span class="line">    position:absolute;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="1-4-svg绘画"><a href="#1-4-svg绘画" class="headerlink" title="1.4 svg绘画"></a>1.4 svg绘画</h2><p>教程<br><a href="https://www.w3school.com.cn/svg/index.asp" target="_blank" rel="noopener">https://www.w3school.com.cn/svg/index.asp</a></p>
+<h1 id="二、自定义指令"><a href="#二、自定义指令" class="headerlink" title="二、自定义指令"></a>二、自定义指令</h1><h2 id="2-1自定全局的指令"><a href="#2-1自定全局的指令" class="headerlink" title="2.1自定全局的指令"></a>2.1自定全局的指令</h2><h3 id="全局在src-main-js处定义"><a href="#全局在src-main-js处定义" class="headerlink" title="全局在src/main.js处定义"></a>全局在src/main.js处定义</h3><p>重点【全局】处</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The Vue build version to load with the `import` command</span></span><br><span class="line"><span class="comment">// (runtime-only or standalone) has been set in webpack.base.conf with an alias.</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 【全局】自定义指令</span></span><br><span class="line">Vue.directive(<span class="string">'focus'</span>, &#123;</span><br><span class="line">	<span class="comment">// 当被绑定的元素插入到 DOM 中时……</span></span><br><span class="line">	inserted: <span class="function"><span class="keyword">function</span>(<span class="params">el</span>) </span>&#123;</span><br><span class="line">		<span class="comment">// 聚焦元素</span></span><br><span class="line">		el.focus()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/* eslint-disable no-new */</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>, <span class="comment">//[1]:在index.html里id为#app标签里写入组件内容</span></span><br><span class="line">  components: &#123; App &#125;,<span class="comment">//[2]:写入的组件</span></span><br><span class="line">  template: <span class="string">'&lt;App/&gt;'</span> <span class="comment">//[3]:写入的模板名(也可看成一个完整组件)</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="src-components-parent-vue"><a href="#src-components-parent-vue" class="headerlink" title="src/components/parent.vue"></a>src/components/parent.vue</h3><p>【1】引用自定义的全局指令 v-focus ，实现：当加载页面时，自动把焦点定到此文本框 </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 【<span class="number">1</span>】引用自定义的全局指令 v-focus ，实现：当加载页面时，自动把焦点定到此文本框 --&gt;</span><br><span class="line">    &lt;input v-focus /&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    components:&#123;&#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;&#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：页面加载光标自动到文本框里<br><img src="https://img-blog.csdnimg.cn/20191218120044960.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="2-2-自定义局部指令"><a href="#2-2-自定义局部指令" class="headerlink" title="2.2 自定义局部指令"></a>2.2 自定义局部指令</h2><h3 id="2-2-1-把上节src-main-js里的自定义全局指令先注释或删除"><a href="#2-2-1-把上节src-main-js里的自定义全局指令先注释或删除" class="headerlink" title="2.2.1 把上节src/main.js里的自定义全局指令先注释或删除"></a>2.2.1 把上节src/main.js里的自定义全局指令先注释或删除</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// [全局]自定义指令</span></span><br><span class="line"><span class="comment">// Vue.directive('focus', &#123;</span></span><br><span class="line"><span class="comment">// 	// 当被绑定的元素插入到 DOM 中时……</span></span><br><span class="line"><span class="comment">// 	inserted: function(el) &#123;</span></span><br><span class="line"><span class="comment">// 		// 聚焦元素</span></span><br><span class="line"><span class="comment">// 		el.focus()</span></span><br><span class="line"><span class="comment">// 	&#125;</span></span><br><span class="line"><span class="comment">// &#125;)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="src-components-parent-vue-1"><a href="#src-components-parent-vue-1" class="headerlink" title="src/components/parent.vue"></a>src/components/parent.vue</h3><p>【0】directive(指令)自定义指令写在此处<br>【1】引用自定义的全局指令 v-focus ，实现：当加载页面时，自动把焦点定到此文本框 </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 【<span class="number">1</span>】引用自定义的全局指令 v-focus ，实现：当加载页面时，自动把焦点定到此文本框 --&gt;</span><br><span class="line">    &lt;input v-focus /&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    components:&#123;&#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;&#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    directives:&#123;<span class="comment">//【0】directive(指令)自定义指令写在此处</span></span><br><span class="line">      focus:&#123;<span class="comment">//【指令名】第1个自定义指令</span></span><br><span class="line">        inserted:<span class="function"><span class="keyword">function</span>(<span class="params">el</span>)</span>&#123;<span class="comment">//插入函数</span></span><br><span class="line">          el.focus();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：同2.1节，加载后自动把焦点定到用了v-focus的文本框内<br><img src="https://img-blog.csdnimg.cn/20191218143639490.png" alt="在这里插入图片描述"></p>
+<h3 id="2-2-2-再写一个示例"><a href="#2-2-2-再写一个示例" class="headerlink" title="2.2.2 再写一个示例"></a>2.2.2 再写一个示例</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 引用自定义的全局指令 v-focus ，实现：当加载页面时，自动把焦点定到此文本框 --&gt;</span><br><span class="line">    &lt;input v-focus /&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;div v-mycss&gt;你好哇&lt;<span class="regexp">/div&gt; &lt;!--【2.1】引用第2个样式指令，v-mycss 将把内部字变成红色 --&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'parent',</span></span><br><span class="line"><span class="regexp">    components:&#123;&#125;,</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return&#123;&#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    directives:&#123;/</span><span class="regexp">/【0】directive(指令)</span></span><br><span class="line"><span class="regexp">      focus:&#123;/</span><span class="regexp">/【指令名】</span></span><br><span class="line"><span class="regexp">        inserted:function(el)&#123;/</span><span class="regexp">/插入函数</span></span><br><span class="line"><span class="regexp">          el.focus();</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">      &#125;,</span></span><br><span class="line"><span class="regexp">      mycss:&#123;/</span><span class="regexp">/【2.0】再写一个自定义样式指令</span></span><br><span class="line"><span class="regexp">        inserted:function(el)&#123;</span></span><br><span class="line"><span class="regexp">          el.style.color="red";</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+<p>效果：引用自定义指令后，字变成红色<br><img src="https://img-blog.csdnimg.cn/20191218144548805.png" alt="在这里插入图片描述"></p>
+<h2 id="2-3-过滤器"><a href="#2-3-过滤器" class="headerlink" title="2.3 过滤器"></a>2.3 过滤器</h2><p>【应用场景】比如商城系统返回产品 <strong>价格</strong>  前面一般不会加 <strong>￥</strong> 符号，但显示时又需要显示，这时就可以用上过滤器，为数字类型的自动加上￥ 符号，否则返回原始值；</p>
+<h3 id="parent-vue-2"><a href="#parent-vue-2" class="headerlink" title="parent.vue"></a>parent.vue</h3><p>【1】要用到的价格数据<br>【2】过滤器都放此处<br>【3】数字过滤器，如果是数字，则加上人民币符号，否则返回原值<br>【4】使用过滤器，在管道符号后加过滤器名即可（price|addmenoy）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 【<span class="number">4</span>】使用过滤器，在管道符号后加过滤器名即可（price|addmenoy） --&gt;</span><br><span class="line">    &#123;&#123;price | addmenoy&#125;&#125;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    components:&#123;&#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        price:<span class="number">25</span> <span class="comment">//【1】要用到的价格数据</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    filters:&#123; <span class="comment">//【2】过滤器</span></span><br><span class="line">      addmenoy(value)&#123;<span class="comment">//【3】数字过滤器，如果是数字，则加上人民币符号，否则返回原值</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">typeof</span> value===<span class="string">"number"</span>)&#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="string">'￥'</span>+ value;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">    &#125;,</span><br><span class="line">    </span><br><span class="line">    directives:&#123;<span class="comment">//directive(指令&#125;,</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：数据是数字：￥25 ，否则显示 原值；</p>
+<h3 id="2-3-2-过滤器示例2"><a href="#2-3-2-过滤器示例2" class="headerlink" title="2.3.2 过滤器示例2"></a>2.3.2 过滤器示例2</h3><p>自动在文章后加入作者，———来自xxxx</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line">  </span><br><span class="line">     &#123;&#123;price | addmenoy&#125;&#125;</span><br><span class="line">    &#123;&#123;info | addauthor&#125;&#125;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    components:&#123;&#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        price:<span class="number">25</span>,</span><br><span class="line">        info:<span class="string">'这是一段文章'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    filters:&#123;</span><br><span class="line">      addmenoy(value)&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">typeof</span> value===<span class="string">"number"</span>)&#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="string">'￥'</span>+ value;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">      &#125;,</span><br><span class="line">      addauthor(v)&#123;<span class="comment">//【1】对文章加上作者</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">typeof</span> v===<span class="string">"string"</span>)&#123;</span><br><span class="line">          <span class="keyword">return</span> v+<span class="string">'————来自爱因斯坦'</span></span><br><span class="line">        &#125;<span class="keyword">return</span> v</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    directives:&#123;<span class="comment">//directive(指令)&#125;,</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：<br>这是一段文章————来自爱因斯坦</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/10/%E4%BA%8C%E3%80%81Vue%E7%BB%84%E4%BB%B6(component)%EF%BC%9A%E7%BB%84%E4%BB%B6%E7%9A%84%E7%9B%B8%E4%BA%92%E5%BC%95%E7%94%A8%E3%80%81%E9%80%9A%E8%BF%87props%E5%AE%9E%E7%8E%B0%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E4%BA%92%E4%BC%A0%E5%80%BC/" rel="prev" title="二、Vue组件(component)：组件的相互引用、通过props实现父子组件互传值">
+      <i class="fa fa-chevron-left"></i> 二、Vue组件(component)：组件的相互引用、通过props实现父子组件互传值
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/23/%E4%BA%94%E3%80%81Vue%EF%BC%9A%E4%BD%BF%E7%94%A8axios%E5%BA%93%E8%BF%9B%E8%A1%8Cget%E5%92%8Cpost%E3%80%81%E7%94%A8%E6%8B%A6%E6%88%AA%E5%99%A8%E5%AF%B9%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%E8%BF%9B%E8%A1%8C%E9%A2%84%E5%A4%84%E7%90%86%E3%80%81Mock%EF%BC%88%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%8B%9F%EF%BC%89/" rel="next" title="五、Vue：使用axios库进行get和post、用拦截器对请求和响应进行预处理、Mock（数据模拟）">
+      五、Vue：使用axios库进行get和post、用拦截器对请求和响应进行预处理、Mock（数据模拟） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、过渡-动画"><span class="nav-number">1.</span> <span class="nav-text">一、过渡 动画</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1简单的过渡动画使用"><span class="nav-number">1.1.</span> <span class="nav-text">1.1简单的过渡动画使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#parent-vue"><span class="nav-number">1.1.1.</span> <span class="nav-text">parent.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-css过渡类名"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 css过渡类名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#parent-vue-css控制动画示例"><span class="nav-number">1.2.1.</span> <span class="nav-text">parent.vue css控制动画示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3引用-Animate-css-动画库（自定义过渡的类名）"><span class="nav-number">1.3.</span> <span class="nav-text">1.3引用 Animate.css 动画库（自定义过渡的类名）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#根目录下index-html"><span class="nav-number">1.3.1.</span> <span class="nav-text">根目录下index.html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parent-vue-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">parent.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#播放动画页面会出现滚动条解决"><span class="nav-number">1.3.3.</span> <span class="nav-text">播放动画页面会出现滚动条解决</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-svg绘画"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 svg绘画</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、自定义指令"><span class="nav-number">2.</span> <span class="nav-text">二、自定义指令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1自定全局的指令"><span class="nav-number">2.1.</span> <span class="nav-text">2.1自定全局的指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#全局在src-main-js处定义"><span class="nav-number">2.1.1.</span> <span class="nav-text">全局在src&#x2F;main.js处定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-components-parent-vue"><span class="nav-number">2.1.2.</span> <span class="nav-text">src&#x2F;components&#x2F;parent.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-自定义局部指令"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 自定义局部指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-把上节src-main-js里的自定义全局指令先注释或删除"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 把上节src&#x2F;main.js里的自定义全局指令先注释或删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-components-parent-vue-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">src&#x2F;components&#x2F;parent.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-再写一个示例"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.2 再写一个示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-过滤器"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#parent-vue-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">parent.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-过滤器示例2"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2 过滤器示例2</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

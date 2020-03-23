@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django（五）1 - 4章实战：从数据库读取图书列表并渲染出来、通过url传参urls.py path,re_path通过url传参设置、模板语法">
+<meta property="og:url" content="http://yoursite.com/2020/01/04/Django%EF%BC%88%E4%BA%94%EF%BC%891%20-%204%E7%AB%A0%E5%AE%9E%E6%88%98%EF%BC%9A%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E5%9B%BE%E4%B9%A6%E5%88%97%E8%A1%A8%E5%B9%B6%E6%B8%B2%E6%9F%93%E5%87%BA%E6%9D%A5%E3%80%81%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82urls.py%20path,re_path%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82%E8%AE%BE%E7%BD%AE%E3%80%81%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200104132333546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200104132429235.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200104133627243.png">
+<meta property="article:published_time" content="2020-01-04T05:41:02.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.202Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200104132333546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/04/Django%EF%BC%88%E4%BA%94%EF%BC%891%20-%204%E7%AB%A0%E5%AE%9E%E6%88%98%EF%BC%9A%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E5%9B%BE%E4%B9%A6%E5%88%97%E8%A1%A8%E5%B9%B6%E6%B8%B2%E6%9F%93%E5%87%BA%E6%9D%A5%E3%80%81%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82urls.py%20path,re_path%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82%E8%AE%BE%E7%BD%AE%E3%80%81%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Django（五）1 - 4章实战：从数据库读取图书列表并渲染出来、通过url传参urls.py path,re_path通过url传参设置、模板语法 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/04/Django%EF%BC%88%E4%BA%94%EF%BC%891%20-%204%E7%AB%A0%E5%AE%9E%E6%88%98%EF%BC%9A%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E5%9B%BE%E4%B9%A6%E5%88%97%E8%A1%A8%E5%B9%B6%E6%B8%B2%E6%9F%93%E5%87%BA%E6%9D%A5%E3%80%81%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82urls.py%20path,re_path%E9%80%9A%E8%BF%87url%E4%BC%A0%E5%8F%82%E8%AE%BE%E7%BD%AE%E3%80%81%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Django（五）1 - 4章实战：从数据库读取图书列表并渲染出来、通过url传参urls.py path,re_path通过url传参设置、模板语法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-04 13:41:02" itemprop="dateCreated datePublished" datetime="2020-01-04T13:41:02+08:00">2020-01-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、从数据库读取图书数据并渲染出来"><a href="#一、从数据库读取图书数据并渲染出来" class="headerlink" title="一、从数据库读取图书数据并渲染出来"></a>一、从数据库读取图书数据并渲染出来</h1><h2 id="1-app1-views-py函数books编写"><a href="#1-app1-views-py函数books编写" class="headerlink" title="1)app1/views.py函数books编写"></a>1)app1/views.py函数books编写</h2><p>【1】从模型下导入bookinfo信息<br>【2】从数据库获取图书对象列表<br>【3】把获取到的图书对象赋值给books键。【注意】键’books’必须要加引号</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo <span class="comment">#【1】从模型下导入bookinfo信息</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># app1应用首页</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">    context=&#123;&#125; <span class="comment">#定义1个字典</span></span><br><span class="line">    context[<span class="string">'hello'</span>]=<span class="string">'hello world!!!'</span> <span class="comment">#向字典写一个键：值（hello:'hello world!!'）</span></span><br><span class="line">    context[<span class="string">'wa'</span>]=<span class="string">'wawawawawahahahaha!'</span></span><br><span class="line">    context[<span class="string">'list'</span>]=list(range(<span class="number">1</span>,<span class="number">10</span>)) <span class="comment">#定义一个字典值为一个列表,list为把内容转换为列表</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/index.html'</span>,context) <span class="comment">#返回：把context渲染到app1/index.html的模板文件</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># app1应用图书页</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">books</span><span class="params">(request)</span>:</span></span><br><span class="line">    books=BookInfo.objects.all()<span class="comment">#【2】从数据库获取图书对象列表</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/book.html'</span>,&#123;<span class="string">'books'</span>:books&#125;)<span class="comment">#【3】把获取到的图书对象赋值给books键。【注意】键'books'必须要加引号</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-app1-urls-py配置"><a href="#2-app1-urls-py配置" class="headerlink" title="2)app1/urls.py配置"></a>2)app1/urls.py配置</h2><p>【1】引入views<br>【2】books应用配置</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views <span class="comment">#【1】引入views</span></span><br><span class="line"></span><br><span class="line">urlpatterns=[</span><br><span class="line">    path(<span class="string">'app1/'</span>,views.index),</span><br><span class="line">    path(<span class="string">'books/'</span>,views.books),<span class="comment">#【2】books应用配置</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-templates-app1-book-html模析创建编写"><a href="#3-templates-app1-book-html模析创建编写" class="headerlink" title="3)templates/app1/book.html模析创建编写"></a>3)templates/app1/book.html模析创建编写</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;书籍页面&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">本站的图书有：</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">    &#123;% <span class="keyword">for</span> book <span class="keyword">in</span> books %&#125;</span><br><span class="line">    	&lt;li&gt;&#123;&#123;book.btitle&#125;&#125;：&#123;&#123;book.bpub_date&#125;&#125;&lt;/li&gt;</span><br><span class="line">    &#123;%empty%&#125;</span><br><span class="line">    	暂时没有图书！！！</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="效果：http-127-0-0-1-8000-books"><a href="#效果：http-127-0-0-1-8000-books" class="headerlink" title="效果：http://127.0.0.1:8000/books/"></a>效果：<a href="http://127.0.0.1:8000/books/" target="_blank" rel="noopener">http://127.0.0.1:8000/books/</a></h3><p>本站的图书有：<br>天龙八部：1991年1月2日<br>射雕英雄传：2020年1月2日</p>
+<h1 id="二、通过url传参，访问书英雄详情"><a href="#二、通过url传参，访问书英雄详情" class="headerlink" title="二、通过url传参，访问书英雄详情"></a>二、通过url传参，访问书英雄详情</h1><h3 id="1-加带参数的链接-templates-app1-book-html"><a href="#1-加带参数的链接-templates-app1-book-html" class="headerlink" title="1)加带参数的链接/templates/app1/book.html"></a>1)加带参数的链接/templates/app1/book.html</h3><p>【1】通过href属性，把book的id做为参数传给详情页，进而查询对应英雄信息</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;书籍页面&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">本站的图书有：</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">    &#123;% <span class="keyword">for</span> book <span class="keyword">in</span> books %&#125;</span><br><span class="line">		&lt;!--【1】通过href属性，把book的id做为参数传给详情页，进而查询对应英雄信息--&gt;</span><br><span class="line">   		&lt;li&gt;&lt;a href="/detail/&#123;&#123;book.id&#125;&#125;"&gt; &#123;&#123;book.btitle&#125;&#125;&lt;/a&gt;：&#123;&#123;book.bpub_date&#125;&#125;&lt;/li&gt;</span><br><span class="line">    &#123;%empty%&#125;</span><br><span class="line">    	暂时没有图书！！！</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-接收参数，渲染到模板app1-views-py"><a href="#2-接收参数，渲染到模板app1-views-py" class="headerlink" title="2)接收参数，渲染到模板app1/views.py"></a>2)接收参数，渲染到模板app1/views.py</h3><p>【1】查询主键为url中传过来的参数Id。或写成：id=bookId<br>【2】关联查询：查询对应书的所有英雄信息<br>【3】把参数渲染到detail页面去</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo <span class="comment">#【0】从模型下导入bookinfo数据模型</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''app1应用：首页'''</span></span><br><span class="line">    context=&#123;&#125; <span class="comment">#定义1个字典</span></span><br><span class="line">    context[<span class="string">'hello'</span>]=<span class="string">'hello world!!!'</span> <span class="comment">#向字典写一个键：值（hello:'hello world!!'）</span></span><br><span class="line">    context[<span class="string">'wa'</span>]=<span class="string">'wawawawawahahahaha!'</span></span><br><span class="line">    context[<span class="string">'list'</span>]=list(range(<span class="number">1</span>,<span class="number">10</span>)) <span class="comment">#定义一个字典值为一个列表,list为把内容转换为列表</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/index.html'</span>,context) <span class="comment">#返回：把context渲染到app1/index.html的模板文件</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">books</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''app1应用：图书列表页'''</span></span><br><span class="line">    books=BookInfo.objects.all()<span class="comment">#从数据库获取图书对象列表</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/book.html'</span>,&#123;<span class="string">'books'</span>:books&#125;)<span class="comment">#把获取到的图书对象赋值给books键。【注意】键'books'必须要加引号</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">detail</span><span class="params">(request,bookId)</span>:</span><span class="comment"># bookId为接收urls.py中指定的参数，来源页templates/app1/book.html</span></span><br><span class="line">    <span class="string">'''app1应用：图书详情页，显示英雄信息'''</span></span><br><span class="line">    book=BookInfo.objects.get(pk=bookId) <span class="comment">#【1】查询主键为url中传过来的参数Id。或写成：id=bookId</span></span><br><span class="line">    heros=book.heroinfo_set.all() <span class="comment">#【2】关联查询：查询对应书的所有英雄信息</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/detail.html'</span>,&#123;<span class="string">'book'</span>:book,<span class="string">'heros'</span>:heros&#125;) <span class="comment">#【3】把参数渲染到detail页面去</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-配置url及传参形式-app1-urls-py"><a href="#3-配置url及传参形式-app1-urls-py" class="headerlink" title="3) 配置url及传参形式 app1/urls.py"></a>3) 配置url及传参形式 app1/urls.py</h3><p>【书详情页】，通过url接收参数2种写法以下两种都可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path</span><br><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns=[</span><br><span class="line">    path(<span class="string">'app1/'</span>,views.index),</span><br><span class="line">    path(<span class="string">'books/'</span>,views.books),</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 【书详情页】，通过url接收参数2种写法以下两种都可：</span></span><br><span class="line">    <span class="comment"># path(r"detail/&lt;int:bookId&gt;",views.detail), #参数用尖括号包起来&lt;&gt;</span></span><br><span class="line">    re_path(<span class="string">r"^detail/(\d+)"</span>,views.detail), <span class="comment">#参数必须要带括号</span></span><br><span class="line">    </span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="4）详情模板-templates-app1-detail-html"><a href="#4）详情模板-templates-app1-detail-html" class="headerlink" title="4）详情模板 templates/app1/detail.html"></a>4）详情模板 templates/app1/detail.html</h3><p>【1】如果数据为空则执行如下代码</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;图书详情页，英雄信息&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&#123;&#123;book.btitle&#125;&#125;的英雄有：</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">    &#123;% <span class="keyword">for</span> hero <span class="keyword">in</span> heros %&#125;</span><br><span class="line">    	&lt;li&gt;&#123;&#123;hero.hname&#125;&#125;：&#123;&#123;hero.hcomment&#125;&#125;&lt;/li&gt;</span><br><span class="line">    &#123;%empty%&#125;&lt;!--【1】如果数据为空则执行如下代码--&gt;</span><br><span class="line">    	&lt;li&gt;暂时没有英雄信息！！&lt;/li&gt;</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="5-附件）project1-models-py"><a href="#5-附件）project1-models-py" class="headerlink" title="5.附件）project1/models.py"></a>5.附件）project1/models.py</h3><p>表来源此处</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"><span class="comment"># 设计和表对应的类，模型类</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 一类</span></span><br><span class="line"><span class="comment"># 图书类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BookInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">'''图书模型类'''</span></span><br><span class="line">    <span class="comment"># 图书名称，CharField说明是一个字符串，max_length指定字符串的最大长度</span></span><br><span class="line">    btitle = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    <span class="comment"># 出版日期，DateField说明是一个日期类型</span></span><br><span class="line">    bpub_date = models.DateField()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span> <span class="comment">#重定义系统的str方法，让它返回对应图书的名字</span></span><br><span class="line">        <span class="keyword">return</span> self.btitle</span><br><span class="line"></span><br><span class="line"><span class="comment"># 多类</span></span><br><span class="line"><span class="comment"># 英雄人物类</span></span><br><span class="line"><span class="comment"># 英雄名 hname</span></span><br><span class="line"><span class="comment"># 性别 hgender</span></span><br><span class="line"><span class="comment"># 年龄　hage</span></span><br><span class="line"><span class="comment"># 备注　hcomment</span></span><br><span class="line"><span class="comment"># 关系属性　hbook，建立图书类和英雄人物类之间的一对多关系</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HeroInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">'''英雄人物模型类'''</span></span><br><span class="line">    hname = models.CharField(max_length=<span class="number">20</span>) <span class="comment"># 英雄名称</span></span><br><span class="line">    <span class="comment"># 性别，BooleanField说明是bool类型，default指定默认值，False代表男</span></span><br><span class="line">    hgender = models.BooleanField(default=<span class="literal">False</span>)</span><br><span class="line">    <span class="comment"># 备注</span></span><br><span class="line">    hcomment = models.CharField(max_length=<span class="number">128</span>)</span><br><span class="line">    <span class="comment"># 关系属性　hbook，建立图书类和英雄人物类之间的一对多关系</span></span><br><span class="line">    <span class="comment"># 关系属性对应的表的字段名格式: 关系属性名_id</span></span><br><span class="line">    hbook = models.ForeignKey(<span class="string">'BookInfo'</span>, on_delete=models.CASCADE) <span class="comment">#对应BookInfo表的主键ID</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span> <span class="comment">#返回英雄名</span></span><br><span class="line">        <span class="keyword">return</span> self.hname</span><br></pre></td></tr></table></figure>
+<h3 id="效果：点书列表-http-127-0-0-1-8000-books"><a href="#效果：点书列表-http-127-0-0-1-8000-books" class="headerlink" title="效果：点书列表 http://127.0.0.1:8000/books/"></a>效果：点书列表 <a href="http://127.0.0.1:8000/books/" target="_blank" rel="noopener">http://127.0.0.1:8000/books/</a></h3><p><img src="https://img-blog.csdnimg.cn/20200104132333546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="进入英雄详情：http-127-0-0-1-8000-detail-3"><a href="#进入英雄详情：http-127-0-0-1-8000-detail-3" class="headerlink" title="进入英雄详情：http://127.0.0.1:8000/detail/3"></a>进入英雄详情：<a href="http://127.0.0.1:8000/detail/3" target="_blank" rel="noopener">http://127.0.0.1:8000/detail/3</a></h4><p><img src="https://img-blog.csdnimg.cn/20200104132429235.png" alt="在这里插入图片描述"></p>
+<h4 id="英雄为空，在localhost-8000-admin新加一个书《笑傲江湖》，但不要加英雄信息，book页再点进去后：http-127-0-0-1-8000-detail-4"><a href="#英雄为空，在localhost-8000-admin新加一个书《笑傲江湖》，但不要加英雄信息，book页再点进去后：http-127-0-0-1-8000-detail-4" class="headerlink" title="英雄为空，在localhost:8000/admin新加一个书《笑傲江湖》，但不要加英雄信息，book页再点进去后：http://127.0.0.1:8000/detail/4"></a>英雄为空，在localhost:8000/admin新加一个书《笑傲江湖》，但不要加英雄信息，book页再点进去后：<a href="http://127.0.0.1:8000/detail/4" target="_blank" rel="noopener">http://127.0.0.1:8000/detail/4</a></h4><p><img src="https://img-blog.csdnimg.cn/20200104133627243.png" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/03/Django%EF%BC%88%E5%9B%9B%EF%BC%89%20%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%EF%BC%9A%E5%88%9B%E5%BB%BA%E7%AE%A1%E7%90%86%E5%91%98%E3%80%81%E6%B3%A8%E5%86%8C%E6%A8%A1%E5%9E%8B%E7%B1%BB%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" rel="prev" title="Django（四） 后台管理：创建管理员、注册模型类、自定义管理页面显示内容">
+      <i class="fa fa-chevron-left"></i> Django（四） 后台管理：创建管理员、注册模型类、自定义管理页面显示内容
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/06/GitBook%E5%88%B6%E4%BD%9C%E7%94%B5%E5%AD%90%E4%B9%A6%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" rel="next" title="GitBook制作电子书使用教程">
+      GitBook制作电子书使用教程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、从数据库读取图书数据并渲染出来"><span class="nav-number">1.</span> <span class="nav-text">一、从数据库读取图书数据并渲染出来</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-app1-views-py函数books编写"><span class="nav-number">1.1.</span> <span class="nav-text">1)app1&#x2F;views.py函数books编写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-app1-urls-py配置"><span class="nav-number">1.2.</span> <span class="nav-text">2)app1&#x2F;urls.py配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-templates-app1-book-html模析创建编写"><span class="nav-number">1.3.</span> <span class="nav-text">3)templates&#x2F;app1&#x2F;book.html模析创建编写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：http-127-0-0-1-8000-books"><span class="nav-number">1.3.1.</span> <span class="nav-text">效果：http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;books&#x2F;</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、通过url传参，访问书英雄详情"><span class="nav-number">2.</span> <span class="nav-text">二、通过url传参，访问书英雄详情</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-加带参数的链接-templates-app1-book-html"><span class="nav-number">2.0.1.</span> <span class="nav-text">1)加带参数的链接&#x2F;templates&#x2F;app1&#x2F;book.html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-接收参数，渲染到模板app1-views-py"><span class="nav-number">2.0.2.</span> <span class="nav-text">2)接收参数，渲染到模板app1&#x2F;views.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-配置url及传参形式-app1-urls-py"><span class="nav-number">2.0.3.</span> <span class="nav-text">3) 配置url及传参形式 app1&#x2F;urls.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4）详情模板-templates-app1-detail-html"><span class="nav-number">2.0.4.</span> <span class="nav-text">4）详情模板 templates&#x2F;app1&#x2F;detail.html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-附件）project1-models-py"><span class="nav-number">2.0.5.</span> <span class="nav-text">5.附件）project1&#x2F;models.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果：点书列表-http-127-0-0-1-8000-books"><span class="nav-number">2.0.6.</span> <span class="nav-text">效果：点书列表 http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;books&#x2F;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#进入英雄详情：http-127-0-0-1-8000-detail-3"><span class="nav-number">2.0.6.1.</span> <span class="nav-text">进入英雄详情：http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;detail&#x2F;3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#英雄为空，在localhost-8000-admin新加一个书《笑傲江湖》，但不要加英雄信息，book页再点进去后：http-127-0-0-1-8000-detail-4"><span class="nav-number">2.0.6.2.</span> <span class="nav-text">英雄为空，在localhost:8000&#x2F;admin新加一个书《笑傲江湖》，但不要加英雄信息，book页再点进去后：http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;detail&#x2F;4</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

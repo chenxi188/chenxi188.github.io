@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python @函数装饰器及用法">
+<meta property="og:url" content="http://yoursite.com/2020/01/11/Python%20@%E5%87%BD%E6%95%B0%E8%A3%85%E9%A5%B0%E5%99%A8%E5%8F%8A%E7%94%A8%E6%B3%95/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-11T05:46:14.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:59:42.576Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/11/Python%20@%E5%87%BD%E6%95%B0%E8%A3%85%E9%A5%B0%E5%99%A8%E5%8F%8A%E7%94%A8%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Python @函数装饰器及用法 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/11/Python%20@%E5%87%BD%E6%95%B0%E8%A3%85%E9%A5%B0%E5%99%A8%E5%8F%8A%E7%94%A8%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python @函数装饰器及用法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-11 13:46:14" itemprop="dateCreated datePublished" datetime="2020-01-11T13:46:14+08:00">2020-01-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:59:42" itemprop="dateModified" datetime="2020-03-23T10:59:42+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h2 id="1-函数装饰器的工作原理"><a href="#1-函数装饰器的工作原理" class="headerlink" title="1.函数装饰器的工作原理"></a>1.函数装饰器的工作原理</h2><p>函数装饰器的工作原理是怎样的呢？假设用 funA() 函数装饰器去装饰 funB() 函数，如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#funA 作为装饰器函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funA</span><span class="params">(fn)</span>:</span></span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">    fn() <span class="comment"># 执行传入的fn参数</span></span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'...'</span></span><br><span class="line"><span class="meta">@funA</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funB</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment">#...</span></span><br></pre></td></tr></table></figure>
+
+<p>实际上，上面程序完全等价于下面的程序：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funA</span><span class="params">(fn)</span>:</span></span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">    fn() <span class="comment"># 执行传入的fn参数</span></span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'...'</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funB</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">    </span><br><span class="line">funB = funA(funB)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="通过比对以上-2-段程序不难发现，使用函数装饰器-A-去装饰另一个函数-B-，其底层执行了如下-2-步操作："><a href="#通过比对以上-2-段程序不难发现，使用函数装饰器-A-去装饰另一个函数-B-，其底层执行了如下-2-步操作：" class="headerlink" title="通过比对以上 2 段程序不难发现，使用函数装饰器 A() 去装饰另一个函数 B()，其底层执行了如下 2 步操作："></a>通过比对以上 2 段程序不难发现，使用函数装饰器 A() 去装饰另一个函数 B()，其底层执行了如下 2 步操作：</h3><ol>
+<li>将 B 作为参数传给 A() 函数；</li>
+<li>将 A() 函数执行完成的返回值反馈回  B。</li>
+</ol>
+<h4 id="举个实例："><a href="#举个实例：" class="headerlink" title="举个实例："></a>举个实例：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#funA 作为装饰器函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funA</span><span class="params">(fn)</span>:</span></span><br><span class="line">    print(<span class="string">"C语言中文网"</span>)</span><br><span class="line">    fn() <span class="comment"># 执行传入的fn参数</span></span><br><span class="line">    print(<span class="string">"http://c.biancheng.net"</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"装饰器函数的返回值"</span></span><br><span class="line"><span class="meta">@funA</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funB</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"学习 Python"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">程序执行流程为：</span><br><span class="line">C语言中文网</span><br><span class="line">学习 Python</span><br><span class="line">http://c.biancheng.net</span><br></pre></td></tr></table></figure>
+
+<p>在此基础上，如果在程序末尾添加如下语句：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(funB)</span><br></pre></td></tr></table></figure>
+
+<p>其输出结果为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">装饰器函数的返回值</span><br></pre></td></tr></table></figure>
+
+<h4 id="显然，被“＠函数”修饰的函数不再是原来的函数，而是被替换成一个新的东西（取决于装饰器的返回值），即如果装饰器函数的返回值为普通变量，那么被修饰的函数名就变成了变量名；同样，如果装饰器返回的是一个函数的名称，怎么被修饰的函数名依然表示一个函数。"><a href="#显然，被“＠函数”修饰的函数不再是原来的函数，而是被替换成一个新的东西（取决于装饰器的返回值），即如果装饰器函数的返回值为普通变量，那么被修饰的函数名就变成了变量名；同样，如果装饰器返回的是一个函数的名称，怎么被修饰的函数名依然表示一个函数。" class="headerlink" title="显然，被“＠函数”修饰的函数不再是原来的函数，而是被替换成一个新的东西（取决于装饰器的返回值），即如果装饰器函数的返回值为普通变量，那么被修饰的函数名就变成了变量名；同样，如果装饰器返回的是一个函数的名称，怎么被修饰的函数名依然表示一个函数。"></a>显然，被“＠函数”修饰的函数不再是原来的函数，而是被替换成一个新的东西（取决于装饰器的返回值），即如果装饰器函数的返回值为普通变量，那么被修饰的函数名就变成了变量名；同样，如果装饰器返回的是一个函数的名称，怎么被修饰的函数名依然表示一个函数。</h4><h4 id="实际上，所谓函数装饰器，就是通过装饰器函数，在不修改原函数的前提下，来对函数的功能进行合理的扩充。"><a href="#实际上，所谓函数装饰器，就是通过装饰器函数，在不修改原函数的前提下，来对函数的功能进行合理的扩充。" class="headerlink" title="实际上，所谓函数装饰器，就是通过装饰器函数，在不修改原函数的前提下，来对函数的功能进行合理的扩充。"></a>实际上，所谓函数装饰器，就是通过装饰器函数，在不修改原函数的前提下，来对函数的功能进行合理的扩充。</h4><h2 id="2-带参数的函数装饰器"><a href="#2-带参数的函数装饰器" class="headerlink" title="2.带参数的函数装饰器"></a>2.带参数的函数装饰器</h2><p>在分析 funA() 函数装饰器和 funB() 函数的关系时，细心的读者可能会发现一个问题，即当 funB() 函数无参数时，可以直接将 funB 作为 funA() 的参数传入。但是，如果被修饰的函数本身带有参数，那应该如何传值呢？</p>
+<p>比较简单的解决方法就是在函数装饰器中嵌套一个函数，该函数带有的参数个数和被装饰器修饰的函数相同。例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funA</span><span class="params">(fn)</span>:</span></span><br><span class="line">    <span class="comment"># 定义一个嵌套函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">say</span><span class="params">(arc)</span>:</span></span><br><span class="line">        print(<span class="string">"Python教程:"</span>,arc)</span><br><span class="line">    <span class="keyword">return</span> say</span><br><span class="line"><span class="meta">@funA</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funB</span><span class="params">(arc)</span>:</span></span><br><span class="line">    print(<span class="string">"funB():"</span>, a)</span><br><span class="line">funB(<span class="string">"http://c.biancheng.net/python"</span>)</span><br><span class="line"></span><br><span class="line">程序执行结果为：</span><br><span class="line">Python教程: http://c.biancheng.net/python</span><br></pre></td></tr></table></figure>
+
+<p>这里有必要给读者分析一下这个程序，其实，它和如下程序是等价的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funA</span><span class="params">(fn)</span>:</span></span><br><span class="line">    <span class="comment"># 定义一个嵌套函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">say</span><span class="params">(arc)</span>:</span></span><br><span class="line">        print(<span class="string">"Python教程:"</span>,arc)</span><br><span class="line">    <span class="keyword">return</span> say</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funB</span><span class="params">(arc)</span>:</span></span><br><span class="line">    print(<span class="string">"funB():"</span>, a)</span><br><span class="line">   </span><br><span class="line">funB = funA(funB)</span><br><span class="line">funB(<span class="string">"http://c.biancheng.net/python"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>如果运行此程序会发现，它的输出结果和上面程序相同。</p>
+<h4 id="显然，通过-funB-函数被装饰器-funA-修饰，funB-就被赋值为-say。这意味着，虽然我们在程序显式调用的是-funB-函数，但其实执行的是装饰器嵌套的-say-函数。"><a href="#显然，通过-funB-函数被装饰器-funA-修饰，funB-就被赋值为-say。这意味着，虽然我们在程序显式调用的是-funB-函数，但其实执行的是装饰器嵌套的-say-函数。" class="headerlink" title="显然，通过 funB() 函数被装饰器 funA() 修饰，funB 就被赋值为 say。这意味着，虽然我们在程序显式调用的是 funB() 函数，但其实执行的是装饰器嵌套的 say() 函数。"></a>显然，通过 funB() 函数被装饰器 funA() 修饰，funB 就被赋值为 say。这意味着，虽然我们在程序显式调用的是 funB() 函数，但其实执行的是装饰器嵌套的 say() 函数。</h4><h4 id="但还有一个问题需要解决，即如果当前程序中，有多个（≥-2）函数被同一个装饰器函数修饰，这些函数带有的参数个数并不相等，怎么办呢？"><a href="#但还有一个问题需要解决，即如果当前程序中，有多个（≥-2）函数被同一个装饰器函数修饰，这些函数带有的参数个数并不相等，怎么办呢？" class="headerlink" title="但还有一个问题需要解决，即如果当前程序中，有多个（≥ 2）函数被同一个装饰器函数修饰，这些函数带有的参数个数并不相等，怎么办呢？"></a>但还有一个问题需要解决，即如果当前程序中，有多个（≥ 2）函数被同一个装饰器函数修饰，这些函数带有的参数个数并不相等，怎么办呢？</h4><h4 id="最简单的解决方式是用-args-和-kwargs-作为装饰器内部嵌套函数的参数，args-和-kwargs-表示接受任意数量和类型的参数。举个例子："><a href="#最简单的解决方式是用-args-和-kwargs-作为装饰器内部嵌套函数的参数，args-和-kwargs-表示接受任意数量和类型的参数。举个例子：" class="headerlink" title="最简单的解决方式是用 args 和 *kwargs 作为装饰器内部嵌套函数的参数，args 和 *kwargs 表示接受任意数量和类型的参数。举个例子："></a>最简单的解决方式是用 <em>args 和 *</em>kwargs 作为装饰器内部嵌套函数的参数，<em>args 和 *</em>kwargs 表示接受任意数量和类型的参数。举个例子：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funA</span><span class="params">(fn)</span>:</span></span><br><span class="line">    <span class="comment"># 定义一个嵌套函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">say</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">        fn(*args,**kwargs)</span><br><span class="line">    <span class="keyword">return</span> say</span><br><span class="line"><span class="meta">@funA</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">funB</span><span class="params">(arc)</span>:</span></span><br><span class="line">    print(<span class="string">"C语言中文网："</span>,arc)</span><br><span class="line"><span class="meta">@funA</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">other_funB</span><span class="params">(name,arc)</span>:</span></span><br><span class="line">    print(name,arc)</span><br><span class="line">funB(<span class="string">"http://c.biancheng.net"</span>)</span><br><span class="line">other_funB(<span class="string">"Python教程："</span>,<span class="string">"http://c.biancheng.net/python"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">运行结果为：</span><br><span class="line">C语言中文网： http://c.biancheng.net</span><br><span class="line">Python教程： http://c.biancheng.net/python</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-函数装饰器可以嵌套"><a href="#3-函数装饰器可以嵌套" class="headerlink" title="3. 函数装饰器可以嵌套"></a>3. 函数装饰器可以嵌套</h2><p>上面示例中，都是使用一个装饰器的情况，但实际上，Python 也支持多个装饰器，比如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@funA</span></span><br><span class="line"><span class="meta">@funB</span></span><br><span class="line"><span class="meta">@funC</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fun</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment">#...</span></span><br></pre></td></tr></table></figure>
+
+<p>上面程序的执行顺序是里到外，所以它等效于下面这行代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fun = funA( funB ( funC (fun) ) )</span><br></pre></td></tr></table></figure>
+<h2 id="装饰器应用场景："><a href="#装饰器应用场景：" class="headerlink" title="装饰器应用场景："></a>装饰器应用场景：</h2><ol>
+<li>比如网站很多页面需要登录后才能操作，这里就可以把这个登录判断写成一个装饰器函数；</li>
+<li>需要登录才能操作的页面直接调用上面写的函数 @装饰器函数，把当前页作为一个参数传过去；</li>
+<li>装饰器函数接收到页面后，判断当前用户是否登录，如果登录则返回2步真正的页面，否则跳转到登录页面；<br>实例参考：《Django（十六）基于模板的登录案例》</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login_required</span><span class="params">(view_func)</span>:</span></span><br><span class="line">    <span class="string">'''登录判断装饰器'''</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(request, *view_args, **view_kwargs)</span>:</span></span><br><span class="line">        <span class="comment"># 判断用户是否登录</span></span><br><span class="line">        <span class="keyword">if</span> request.session.has_key(<span class="string">'islogin'</span>):</span><br><span class="line">            <span class="comment"># 用户已登录,调用对应的视图</span></span><br><span class="line">            <span class="keyword">return</span> view_func(request, *view_args, **view_kwargs)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 用户未登录,跳转到登录页</span></span><br><span class="line">            <span class="keyword">return</span> redirect(<span class="string">'/login'</span>)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br></pre></td></tr></table></figure>
+<p>调用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /change_pwd</span></span><br><span class="line"><span class="meta">@login_required #作用：把此页面作为一个参数传到login_required里</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_pwd</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''显示修改密码页面'''</span></span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">'booktest/change_pwd.html'</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/10/Django%EF%BC%88%E5%8D%81%E4%B8%89%EF%BC%89%E7%8A%B6%E6%80%81%E4%BF%9D%E6%8C%81%20%E2%80%94%E2%80%94%20cookie%E4%B8%8Esession+ajax%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82+session%E8%AE%B0%E4%BD%8F%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81+cookie%E8%AE%B0%E4%BD%8F%E7%99%BB%E5%BD%95%E5%90%8D%E5%AF%86%E7%A0%81/" rel="prev" title="Django（十三）状态保持 —— cookie与session+ajax异步请求+session记住登录状态+cookie记住登录名密码">
+      <i class="fa fa-chevron-left"></i> Django（十三）状态保持 —— cookie与session+ajax异步请求+session记住登录状态+cookie记住登录名密码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/11/Django%EF%BC%88%E5%8D%81%E4%BA%94%EF%BC%89%E6%A8%A1%E6%9D%BF%E8%AF%A6%E8%A7%A3%EF%BC%9A%E6%A8%A1%E6%9D%BF%E6%A0%87%E7%AD%BE%E3%80%81%E8%BF%87%E6%BB%A4%E5%99%A8%E3%80%81%E6%A8%A1%E6%9D%BF%E6%B3%A8%E9%87%8A%E3%80%81%E6%A8%A1%E6%9D%BF%E7%BB%A7%E6%89%BF%E3%80%81html%E8%BD%AC%E4%B9%89/" rel="next" title="Django（十五）模板详解：模板标签、过滤器、模板注释、模板继承、html转义">
+      Django（十五）模板详解：模板标签、过滤器、模板注释、模板继承、html转义 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-函数装饰器的工作原理"><span class="nav-number">1.</span> <span class="nav-text">1.函数装饰器的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过比对以上-2-段程序不难发现，使用函数装饰器-A-去装饰另一个函数-B-，其底层执行了如下-2-步操作："><span class="nav-number">1.1.</span> <span class="nav-text">通过比对以上 2 段程序不难发现，使用函数装饰器 A() 去装饰另一个函数 B()，其底层执行了如下 2 步操作：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#举个实例："><span class="nav-number">1.1.1.</span> <span class="nav-text">举个实例：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#显然，被“＠函数”修饰的函数不再是原来的函数，而是被替换成一个新的东西（取决于装饰器的返回值），即如果装饰器函数的返回值为普通变量，那么被修饰的函数名就变成了变量名；同样，如果装饰器返回的是一个函数的名称，怎么被修饰的函数名依然表示一个函数。"><span class="nav-number">1.1.2.</span> <span class="nav-text">显然，被“＠函数”修饰的函数不再是原来的函数，而是被替换成一个新的东西（取决于装饰器的返回值），即如果装饰器函数的返回值为普通变量，那么被修饰的函数名就变成了变量名；同样，如果装饰器返回的是一个函数的名称，怎么被修饰的函数名依然表示一个函数。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际上，所谓函数装饰器，就是通过装饰器函数，在不修改原函数的前提下，来对函数的功能进行合理的扩充。"><span class="nav-number">1.1.3.</span> <span class="nav-text">实际上，所谓函数装饰器，就是通过装饰器函数，在不修改原函数的前提下，来对函数的功能进行合理的扩充。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-带参数的函数装饰器"><span class="nav-number">2.</span> <span class="nav-text">2.带参数的函数装饰器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#显然，通过-funB-函数被装饰器-funA-修饰，funB-就被赋值为-say。这意味着，虽然我们在程序显式调用的是-funB-函数，但其实执行的是装饰器嵌套的-say-函数。"><span class="nav-number">2.0.1.</span> <span class="nav-text">显然，通过 funB() 函数被装饰器 funA() 修饰，funB 就被赋值为 say。这意味着，虽然我们在程序显式调用的是 funB() 函数，但其实执行的是装饰器嵌套的 say() 函数。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#但还有一个问题需要解决，即如果当前程序中，有多个（≥-2）函数被同一个装饰器函数修饰，这些函数带有的参数个数并不相等，怎么办呢？"><span class="nav-number">2.0.2.</span> <span class="nav-text">但还有一个问题需要解决，即如果当前程序中，有多个（≥ 2）函数被同一个装饰器函数修饰，这些函数带有的参数个数并不相等，怎么办呢？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最简单的解决方式是用-args-和-kwargs-作为装饰器内部嵌套函数的参数，args-和-kwargs-表示接受任意数量和类型的参数。举个例子："><span class="nav-number">2.0.3.</span> <span class="nav-text">最简单的解决方式是用 args 和 *kwargs 作为装饰器内部嵌套函数的参数，args 和 *kwargs 表示接受任意数量和类型的参数。举个例子：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-函数装饰器可以嵌套"><span class="nav-number">3.</span> <span class="nav-text">3. 函数装饰器可以嵌套</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装饰器应用场景："><span class="nav-number">4.</span> <span class="nav-text">装饰器应用场景：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

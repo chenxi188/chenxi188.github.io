@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《机学一》特征工程1 ——文本处理：sklearn抽取、jieba中文分词、TF和IDF抽取">
+<meta property="og:url" content="http://yoursite.com/2019/11/08/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%80%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B1%20%E2%80%94%E2%80%94%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%EF%BC%9Asklearn%E6%8A%BD%E5%8F%96%E3%80%81jieba%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E3%80%81TF%E5%92%8CIDF%E6%8A%BD%E5%8F%96/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191105105200919.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191105110220782.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191105112305239.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191105151509975.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191105151900949.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-11-08T02:00:26.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.771Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191105105200919.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/08/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%80%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B1%20%E2%80%94%E2%80%94%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%EF%BC%9Asklearn%E6%8A%BD%E5%8F%96%E3%80%81jieba%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E3%80%81TF%E5%92%8CIDF%E6%8A%BD%E5%8F%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《机学一》特征工程1 ——文本处理：sklearn抽取、jieba中文分词、TF和IDF抽取 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/08/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%80%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B1%20%E2%80%94%E2%80%94%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%EF%BC%9Asklearn%E6%8A%BD%E5%8F%96%E3%80%81jieba%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E3%80%81TF%E5%92%8CIDF%E6%8A%BD%E5%8F%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《机学一》特征工程1 ——文本处理：sklearn抽取、jieba中文分词、TF和IDF抽取
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-08 10:00:26" itemprop="dateCreated datePublished" datetime="2019-11-08T10:00:26+08:00">2019-11-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="零、机器学习整个实现过程："><a href="#零、机器学习整个实现过程：" class="headerlink" title="零、机器学习整个实现过程："></a>零、机器学习整个实现过程：</h1><p><img src="https://img-blog.csdnimg.cn/20191105105200919.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="机器学习整个实现过程"></p>
+<h1 id="一、机器学习数据组成"><a href="#一、机器学习数据组成" class="headerlink" title="一、机器学习数据组成"></a>一、机器学习数据组成</h1><ol>
+<li>特征值：</li>
+<li><h1 id="目标值："><a href="#目标值：" class="headerlink" title="目标值："></a>目标值：</h1><h1 id="二、特征工程和文本特征提取"><a href="#二、特征工程和文本特征提取" class="headerlink" title="二、特征工程和文本特征提取"></a>二、特征工程和文本特征提取</h1><h2 id="1-概要："><a href="#1-概要：" class="headerlink" title="1.概要："></a>1.概要：</h2>1、特征工程是什么<br>2、特征工程的意义：直接影响预测结果<br>3、scikit-learn库 介绍<br>4、数据的特征抽取<br>5、<strong>数据的特征预处理</strong><br>6、数据的降维</li>
+</ol>
+<p>【特征工程】：特征工程是将原始数据转换为更好地代表预测模型的潜在问题的特征的过程，从而提高了对未知数据的预测准确性<br>（如图：文章转为数据即是一个特征工程）<br><img src="https://img-blog.csdnimg.cn/20191105110220782.png" alt="文章转为数据即是一个特征工程"></p>
+<h2 id="2-特征工程工具："><a href="#2-特征工程工具：" class="headerlink" title="2.特征工程工具："></a>2.特征工程工具：</h2><p>1、pandas：一个数据读取非常方便以及基本的处理格式的工具<br>2、sklearn：对于 <strong>特征的处理</strong> 提供了强大的接口，功能如下<br><img src="https://img-blog.csdnimg.cn/20191105112305239.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="2-1Python语言的机器学习工具："><a href="#2-1Python语言的机器学习工具：" class="headerlink" title="2.1Python语言的机器学习工具："></a>2.1Python语言的机器学习工具：</h3><ul>
+<li>Scikit-learn包括许多知名的【机器学习算法】的实现（使用前提：搞懂算法）</li>
+<li>Scikit-learn文档完善，容易上手，丰富的API，使其在学术界颇受欢迎。<h3 id="2-2Scikit-learn安装"><a href="#2-2Scikit-learn安装" class="headerlink" title="2.2Scikit-learn安装"></a>2.2Scikit-learn安装</h3>安装前提：要有pandas、Numpy、等库<br>中文文档：<a href="https://sklearn.apachecn.org/" target="_blank" rel="noopener">https://sklearn.apachecn.org/</a><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install Scikit-learn</span><br><span class="line"><span class="keyword">import</span> sklearn</span><br></pre></td></tr></table></figure>
+<h3 id="2-3数据的特征抽取"><a href="#2-3数据的特征抽取" class="headerlink" title="2.3数据的特征抽取"></a>2.3数据的特征抽取</h3></li>
+</ul>
+<p><strong>特征抽取</strong>：特征抽取对文本等数据进行特征值化（把一篇文章转换成数值，就是一个特征抽取）<br><strong>目的</strong>：为了计算机更好理解数据</p>
+<p>1、特征抽取实例演示：一句话转化为，二维数组<br>2、sklearn特征抽取API：<strong>sklearn.feature_extraction</strong>（feature：特征。extraction：抽取）<br>3、字典特征抽取：</p>
+<ul>
+<li>作用：对字典数据进行特征值化</li>
+<li>类：<strong>sklearn.feature_extraction.DictVectorizer</strong></li>
+</ul>
+<p>4、文本特征抽取</p>
+<h4 id="2-33DictVectorizer语法"><a href="#2-33DictVectorizer语法" class="headerlink" title="2.33DictVectorizer语法"></a>2.33DictVectorizer语法</h4><p>语法：DictVectorizer(sparse=True…) </p>
+<p>DictVectorizer.fit_transform(X)</p>
+<ul>
+<li>X:字典或者包含字典的迭代器</li>
+<li>返回值:返回sparse矩阵</li>
+</ul>
+<p>DictVectorizer.inverse_transform(X)</p>
+<ul>
+<li>X:array数 组或者sparse矩阵</li>
+<li>返回值:转换之前数据格式</li>
+</ul>
+<p>DictVectorizer.get feature_names()</p>
+<ul>
+<li>返回类别名称</li>
+</ul>
+<p>DictVectorizer.transform(X)</p>
+<ul>
+<li>按照原先的标准转换</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.feature_extraction <span class="keyword">import</span> DictVectorizer</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dictvec</span><span class="params">()</span>:</span>   </span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    功能：字典数据抽取</span></span><br><span class="line"><span class="string">    :return：None</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment">#1.实例化类DictVectorizer</span></span><br><span class="line">    dicts=DictVectorizer(sparse=<span class="literal">False</span>)</span><br><span class="line">    <span class="comment">#2.调用fit_transform方法输入数据并转换注意返回格式</span></span><br><span class="line">    data=dicts.fit_transform([&#123;<span class="string">'city'</span>: <span class="string">'北京'</span>,<span class="string">'temperature'</span>: <span class="number">100</span>&#125;, &#123;<span class="string">'city'</span>: <span class="string">'上海'</span>,<span class="string">'temperature'</span>:<span class="number">60</span>&#125;, &#123;<span class="string">'city'</span>: <span class="string">'深圳'</span>,<span class="string">'temperature'</span>: <span class="number">30</span>&#125;])</span><br><span class="line">    <span class="comment">#3.get_feature_names()用法，获取</span></span><br><span class="line">    print(dicts.get_feature_names())    </span><br><span class="line">    print(data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">"__main__"</span>:</span><br><span class="line">    dictvec()</span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">DicVecorizer不加参数结果：</span></span><br><span class="line"><span class="string">  (0, 1)	1.0</span></span><br><span class="line"><span class="string">  (0, 3)	100.0</span></span><br><span class="line"><span class="string">  (1, 0)	1.0</span></span><br><span class="line"><span class="string">  (1, 3)	60.0</span></span><br><span class="line"><span class="string">  (2, 2)	1.0</span></span><br><span class="line"><span class="string">  (2, 3)	30.0</span></span><br><span class="line"><span class="string">DicVecorizer加参数sparse=False返回：</span></span><br><span class="line"><span class="string">['city=上海', 'city=北京', 'city=深圳', 'temperature']</span></span><br><span class="line"><span class="string">[[  0.   1.   0. 100.]</span></span><br><span class="line"><span class="string"> [  1.   0.   0.  60.]</span></span><br><span class="line"><span class="string"> [  0.   0.   1.  30.]]  此处返回的叫one-hot编码</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<p><strong>【one-hot编码】：</strong><br>One-hot编码用于把类别转换为数值如下：<br><img src="https://img-blog.csdnimg.cn/20191105151509975.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>为防止编号1，2，3，4….有优先级别之分，最终对结果造成影响one-hot编号转换成如下样式：<br>我们做的是为每个类别生成一个布尔列。这些列中只有- -列可以为每个样本取值1。<br>因此，术语才叫“一个热”编码。<br><img src="https://img-blog.csdnimg.cn/20191105151900949.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="2-34文本特征抽取"><a href="#2-34文本特征抽取" class="headerlink" title="2.34文本特征抽取"></a>2.34文本特征抽取</h4><p>作用：对文本数据进行特征值化<br>类：<strong>sklearn.feature_extraction.text.CountVectorizer</strong></p>
+<h5 id="CountVectorizer语法："><a href="#CountVectorizer语法：" class="headerlink" title="CountVectorizer语法："></a>CountVectorizer语法：</h5><p>CountVectorizer(max_df=1.0,min_df=1,…)</p>
+<ul>
+<li>返回词频矩阵</li>
+</ul>
+<p>CountVectorizer.fit_transform(X,y)       </p>
+<ul>
+<li>X:文本或者包含文本字符串的可迭代对象</li>
+<li>返回值：返回sparse矩阵</li>
+</ul>
+<p>CountVectorizer.inverse_transform(X)</p>
+<ul>
+<li>X:array数组或者sparse矩阵</li>
+<li>返回值:转换之前数据格式</li>
+</ul>
+<p>CountVectorizer.get_feature_names()</p>
+<ul>
+<li>返回值:单词列表</li>
+</ul>
+<h4 id="2-35【英文处理】直接用fit-transform-统计次数-特征化："><a href="#2-35【英文处理】直接用fit-transform-统计次数-特征化：" class="headerlink" title="2.35【英文处理】直接用fit_transform() 统计次数 特征化："></a>2.35【英文处理】直接用fit_transform() 统计次数 特征化：</h4><ol>
+<li>对文章当中所有的词，重复的只看做一 次词的列表。</li>
+<li>对每篇文章，在词的列表里面进行统计每个词出现的次数</li>
+<li>单个字母不统计</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.feature_extraction <span class="keyword">import</span> DictVectorizer</span><br><span class="line"><span class="keyword">from</span> sklearn.feature_extraction.text <span class="keyword">import</span> CountVectorizer, TfidfVectorizer</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countvec</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    对文本进行特征值化</span></span><br><span class="line"><span class="string">    :return: None</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    cv = CountVectorizer()</span><br><span class="line">    data = cv.fit_transform([<span class="string">"life is short,i like python"</span>,<span class="string">"life is too long,i dislike python"</span>])</span><br><span class="line">    print(cv.get_feature_names())</span><br><span class="line">    print(data.toarray())</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    countvec()</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">['dislike', 'is', 'life', 'like', 'long', 'python', 'short', 'too']</span></span><br><span class="line"><span class="string">[[0 1 1 1 0 1 1 0]</span></span><br><span class="line"><span class="string">[1 1 1 0 1 1 0 1]]</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-36【中文处理】先jieba分词，再用fit-transform统计次数-特征化："><a href="#2-36【中文处理】先jieba分词，再用fit-transform统计次数-特征化：" class="headerlink" title="2.36【中文处理】先jieba分词，再用fit_transform统计次数 特征化："></a>2.36【中文处理】先jieba分词，再用fit_transform统计次数 特征化：</h4><p>中文抽取必须要先进行分词处理。英文每个单词间都有空格，因此不用分词处理。中文只有加了空格才能像如下进代码行分词。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.feature_extraction <span class="keyword">import</span> DictVectorizer</span><br><span class="line"><span class="keyword">from</span> sklearn.feature_extraction.text <span class="keyword">import</span> CountVectorizer, TfidfVectorizer</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countvec</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    对文本进行特征值化</span></span><br><span class="line"><span class="string">    :return: None</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    cv = CountVectorizer()</span><br><span class="line">    data = cv.fit_transform([<span class="string">"人生 苦短，我 喜欢 python"</span>, <span class="string">"人生漫长，不用 python"</span>])</span><br><span class="line">    print(cv.get_feature_names())</span><br><span class="line">    print(data.toarray())</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span>    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    countvec()</span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    结果：</span></span><br><span class="line"><span class="string">    ['python', '不用', '人生', '人生漫长', '喜欢', '苦短']</span></span><br><span class="line"><span class="string">    [[1 0 1 0 1 1]</span></span><br><span class="line"><span class="string">    [1 1 0 1 0 0]]</span></span><br><span class="line"><span class="string">    '''</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-37中文分词处理库：jieba"><a href="#2-37中文分词处理库：jieba" class="headerlink" title="2.37中文分词处理库：jieba"></a>2.37中文分词处理库：jieba</h3><p>安装：pip3 install jieba<br>返回值:词语生成器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line">con0=jieba.cut(<span class="string">'我是一个中国人'</span>)</span><br><span class="line">&lt;generator object Tokenizer.cut at <span class="number">0x00000000066219A8</span>&gt; <span class="comment">#返回值:词语生成器</span></span><br><span class="line"><span class="comment">#要想使用需要先转化成列表</span></span><br><span class="line">con1=list(con0)</span><br><span class="line"><span class="comment">#再把列表组成字符串</span></span><br><span class="line">c = <span class="string">' '</span>.join(con1)</span><br></pre></td></tr></table></figure>
+<h3 id="2-38中文特征值化（抽取）统计词出现次数"><a href="#2-38中文特征值化（抽取）统计词出现次数" class="headerlink" title="2.38中文特征值化（抽取）统计词出现次数"></a>2.38中文特征值化（抽取）统计词出现次数</h3><p>首先用cutword()进行分词，然后</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cutword</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment">#jieba分词：分成一个个用空格隔开的词语</span></span><br><span class="line">    con1 = jieba.cut(<span class="string">"今天很残酷，明天更残酷，后天很美好，但绝对大部分是死在明天晚上，所以每个人不要放弃今天。"</span>)</span><br><span class="line">    con2 = jieba.cut(<span class="string">"我们看到的从很远星系来的光是在几百万年之前发出的，这样当我们看到宇宙时，我们是在看它的过去。"</span>)</span><br><span class="line">    con3 = jieba.cut(<span class="string">"如果只用一种方式了解某样事物，你就不会真正了解它。了解事物真正含义的秘密取决于如何将其与我们所了解的事物相联系。"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 先：转换成列表</span></span><br><span class="line">    content1 = list(con1)</span><br><span class="line">    content2 = list(con2)</span><br><span class="line">    content3 = list(con3)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 再：把列表转换成字符串</span></span><br><span class="line">    c1 = <span class="string">' '</span>.join(content1)</span><br><span class="line">    c2 = <span class="string">' '</span>.join(content2)</span><br><span class="line">    c3 = <span class="string">' '</span>.join(content3)</span><br><span class="line">    <span class="keyword">return</span> c1, c2, c3</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hanzivec</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    中文特征值化</span></span><br><span class="line"><span class="string">    :return: None</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    c1, c2, c3 = cutword()</span><br><span class="line">    print(c1, c2, c3)</span><br><span class="line">    cv = CountVectorizer()</span><br><span class="line">    data = cv.fit_transform([c1, c2, c3])</span><br><span class="line">    print(cv.get_feature_names())</span><br><span class="line">    print(data.toarray())</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">"__main__"</span>:</span><br><span class="line">hanzivec()</span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">【打出分好的词看看】：</span></span><br><span class="line"><span class="string">今天 很 残酷 ， 明天 更 残酷 ， 后天 很 美好 ， 但 绝对 大部分 是 死 在 明天 晚上 ， 所以 每个 人 不要 放弃 今天 。 我们 看到 的 从 很 远 星系 来 的 光是在 几百万年 之前 发出 的 ， 这样 当 我们 看到 宇宙 时 ， 我们 是 在 看 它 的 过去 。 如果 只用 一种 方式 了解 某样 事物 ， 你 就 不会 真正 了解 它 。 了解 事物 真正 含义 的 秘密 取决于 如何 将 其 与 我们 所 了解 的 事物 相 联系 。</span></span><br><span class="line"><span class="string">【特征值化（特征抽取）】：</span></span><br><span class="line"><span class="string">['一种', '不会', '不要', '之前', '了解', '事物', '今天', '光是在', '几百万年', '发出', '取决于', '只用', '后天', '含义', '大部分', '如何', '如果', '宇宙', '我们', '所以', '放弃', '方式', '明天', '星系', '晚上', '某样', '残酷', '每个', '看到', '真正', '秘密', '绝对', '美好', '联系', '过去', '这样']</span></span><br><span class="line"><span class="string">[[0 0 1 0 0 0 2 0 0 0 0 0 1 0 1 0 0 0 0 1 1 0 2 0 1 0 2 1 0 0 0 1 1 0 0 0]</span></span><br><span class="line"><span class="string"> [0 0 0 1 0 0 0 1 1 1 0 0 0 0 0 0 0 1 3 0 0 0 0 1 0 0 0 0 2 0 0 0 0 0 1 1]</span></span><br><span class="line"><span class="string"> [1 1 0 0 4 3 0 0 0 0 1 1 0 1 0 1 1 0 1 0 0 1 0 0 0 1 0 0 0 2 1 0 0 1 0 0]]</span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
+<h3 id="3、词的重要程度：TF和IDF"><a href="#3、词的重要程度：TF和IDF" class="headerlink" title="3、词的重要程度：TF和IDF"></a>3、词的重要程度：TF和IDF</h3><p>常见文档分类原理：<strong>【朴素贝叶斯】</strong> </p>
+<ol>
+<li><font color='red'>【TF-IDF的主要思想是】：如果某个词或短语在一篇文章中出现的概率高，并且在其他文章中很少出现，则认为此词或者短语具有很好的类别区分能力，适合用来分类。</font></li>
+<li><strong>【TF-IDF作用】</strong>：用以评估一字词对于一个文件集或一个语料库中的其中一份文件的重要程度</li>
+<li><strong>【TF-term frequency:词的频率】</strong>：词在当前文档出现频率</li>
+<li><strong>【★ IDF-inverse document frequency:逆文档频率】</strong>：<br>【<strong>公式</strong>】：<font color='red'> IDF = log ( 总文档数量 / 该词出现的文档数量 )</font><br>【log(数值)】: 输入的数值越小，结果越小</li>
+<li><strong><font color='red'>★ 词在当前文档重要程度 = TF*IDF</font></strong></li>
+</ol>
+<p>【例如】：</p>
+<ol>
+<li>因为、所以、我们、等等，这些词在每一篇文档可能都会出现但它对区分这篇文档类型并无作用；</li>
+<li>可用公式计算该词在当前文档重要程度：<font color='red'>TF*IDF</font></li>
+</ol>
+<h3 id="4-词重要程度（TF-IDF）sklearn工具库："><a href="#4-词重要程度（TF-IDF）sklearn工具库：" class="headerlink" title="4.词重要程度（TF-IDF）sklearn工具库："></a>4.词重要程度（TF-IDF）sklearn工具库：</h3><h4 id="类：sklearn-feature-extraction-text-TfidfVectorizer"><a href="#类：sklearn-feature-extraction-text-TfidfVectorizer" class="headerlink" title="类：sklearn.feature_extraction.text.TfidfVectorizer"></a>类：<font color='red'>sklearn.feature_extraction.text.TfidfVectorizer</font></h4><ul>
+<li>【TfidfVectorizer作用】：分类机器学习算法的的重要依据</li>
+<li>【最新】：但目前TF-IDF已经比较过时，会有一些新的算法来代替它<h5 id="TfidfVectorizer语法："><a href="#TfidfVectorizer语法：" class="headerlink" title="TfidfVectorizer语法："></a>TfidfVectorizer语法：</h5><font color='red'> <strong>TfidfVectorizer(stop_words=None,…)</strong> </font></li>
+<li>返回词的权重矩阵</li>
+<li>stop_words：忽略哪些词</li>
+</ul>
+<ol>
+<li><font color='red'>TfidfVectorizer.fit_transform(X,y)     </font><br>X：文本或者包含文本字符串的可迭代对象<br>返回值：返回sparse矩阵</li>
+<li><font color='red'>TfidfVectorizer.inverse_transform(X) </font><br>X：array数组或者sparse矩阵<br>返回值:转换之前数据格式</li>
+<li><font color='red'>TfidfVectorizer.get_feature_names() </font><br>返回值:单词列表</li>
+</ol>
+<p><strong>汉字语句计算词重要程度示例：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.feature_extraction.text <span class="keyword">import</span> CountVectorizer, TfidfVectorizer</span><br><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cutword</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># jieba分词：分成一个个用空格隔开的词语</span></span><br><span class="line">    con1 = jieba.cut(<span class="string">"今天很残酷，明天更残酷，后天很美好，但绝对大部分是死在明天晚上，所以每个人不要放弃今天。"</span>)</span><br><span class="line">    con2 = jieba.cut(<span class="string">"我们看到的从很远星系来的光是在几百万年之前发出的，这样当我们看到宇宙时，我们是在看它的过去。"</span>)</span><br><span class="line">    con3 = jieba.cut(<span class="string">"如果只用一种方式了解某样事物，你就不会真正了解它。了解事物真正含义的秘密取决于如何将其与我们所了解的事物相联系。"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 转换成列表</span></span><br><span class="line">    content1 = list(con1)</span><br><span class="line">    content2 = list(con2)</span><br><span class="line">    content3 = list(con3)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 吧列表转换成字符串</span></span><br><span class="line">    c1 = <span class="string">' '</span>.join(content1)</span><br><span class="line">    c2 = <span class="string">' '</span>.join(content2)</span><br><span class="line">    c3 = <span class="string">' '</span>.join(content3)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> c1, c2, c3</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tfidfvec</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    中文特征值化</span></span><br><span class="line"><span class="string">    :return: None</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment">#调用汉字分词函数进行分词</span></span><br><span class="line">    c1, c2, c3 = cutword()</span><br><span class="line">    print(c1, c2, c3)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#特征化，并计算对应词重要程度</span></span><br><span class="line">    tf = TfidfVectorizer()</span><br><span class="line">    data = tf.fit_transform([c1, c2, c3])</span><br><span class="line">    print(tf.get_feature_names())</span><br><span class="line">    print(data.toarray())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">"__main__"</span>:</span><br><span class="line">    tfidfvec()</span><br><span class="line"></span><br><span class="line"><span class="string">"""结果：</span></span><br><span class="line"><span class="string">今天 很 残酷 ， 明天 更 残酷 ， 后天 很 美好 ， 但 绝对 大部分 是 死 在 明天 晚上 ， 所以 每个 人 不要 放弃 今天 。 我们 看到 的 从 很 远 星系 来 的 光是在 几百万年 之前 发出 的 ， 这样 当 我们 看到 宇宙 时 ， 我们 是 在 看 它 的 过去 。 如果 只用 一种 方式 了解 某样 事物 ， 你 就 不会 真正 了解 它 。 了解 事物 真正 含义 的 秘密 取决于 如何 将 其 与 我们 所 了解 的 事物 相 联系 。</span></span><br><span class="line"><span class="string">=============================================</span></span><br><span class="line"><span class="string">['一种', '不会', '不要', '之前', '了解', '事物', '今天', '光是在', '几百万年', '发出', '取决于', '只用', '后天', '含义', '大部分', '如何', '如果', '宇宙', '我们', '所以', '放弃', '方式', '明天', '星系', '晚上', '某样', '残酷', '每个', '看到', '真正', '秘密', '绝对', '美好', '联系', '过去', '这样']</span></span><br><span class="line"><span class="string">[[0.         0.         0.21821789 0.         0.         0.</span></span><br><span class="line"><span class="string">  0.43643578 0.         0.         0.         0.         0.</span></span><br><span class="line"><span class="string">  0.21821789 0.         0.21821789 0.         0.         0.</span></span><br><span class="line"><span class="string">  0.         0.21821789 0.21821789 0.         0.43643578 0.</span></span><br><span class="line"><span class="string">  0.21821789 0.         0.43643578 0.21821789 0.         0.</span></span><br><span class="line"><span class="string">=============================================</span></span><br><span class="line"><span class="string">返回：返回值是对应每个词的重要程度，数值越大，越重要，用的时候排个序即可</span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/07/%E5%85%AD%E3%80%81React%20%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6%20%E8%A1%A8%E5%8D%95%E4%BA%8B%E4%BB%B6%20%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1%E4%BB%A5%E5%8F%8AReact%E4%B8%AD%E7%9A%84ref%E8%8E%B7%E5%8F%96dom%E8%8A%82%E7%82%B9%20%E3%80%81React%E5%AE%9E%E7%8E%B0%E7%B1%BB%E4%BC%BCVue%E7%9A%84%E5%8F%8C%E5%90%91%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A/" rel="prev" title="六、React 键盘事件 表单事件 事件对象以及React中的ref获取dom节点 、React实现类似Vue的双向数据绑定">
+      <i class="fa fa-chevron-left"></i> 六、React 键盘事件 表单事件 事件对象以及React中的ref获取dom节点 、React实现类似Vue的双向数据绑定
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/08/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%BA%8C%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B2%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E7%89%B9%E5%BE%81%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%BC%A9%E6%94%BE%EF%BC%9A%E5%BD%92%E4%B8%80%E5%8C%96%E3%80%81%E6%A0%87%E5%87%86%E5%8C%96%EF%BC%88%E9%87%8D%E7%82%B9%E5%B8%B8%E7%94%A8%EF%BC%89%E3%80%81%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86/" rel="next" title="《机学二》特征工程2——数据特征预处理：数据缩放：归一化、标准化（重点常用）、缺失值处理">
+      《机学二》特征工程2——数据特征预处理：数据缩放：归一化、标准化（重点常用）、缺失值处理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#零、机器学习整个实现过程："><span class="nav-number">1.</span> <span class="nav-text">零、机器学习整个实现过程：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、机器学习数据组成"><span class="nav-number">2.</span> <span class="nav-text">一、机器学习数据组成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目标值："><span class="nav-number">3.</span> <span class="nav-text">目标值：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、特征工程和文本特征提取"><span class="nav-number">4.</span> <span class="nav-text">二、特征工程和文本特征提取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-概要："><span class="nav-number">4.1.</span> <span class="nav-text">1.概要：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-特征工程工具："><span class="nav-number">4.2.</span> <span class="nav-text">2.特征工程工具：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1Python语言的机器学习工具："><span class="nav-number">4.2.1.</span> <span class="nav-text">2.1Python语言的机器学习工具：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2Scikit-learn安装"><span class="nav-number">4.2.2.</span> <span class="nav-text">2.2Scikit-learn安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3数据的特征抽取"><span class="nav-number">4.2.3.</span> <span class="nav-text">2.3数据的特征抽取</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-33DictVectorizer语法"><span class="nav-number">4.2.3.1.</span> <span class="nav-text">2.33DictVectorizer语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-34文本特征抽取"><span class="nav-number">4.2.3.2.</span> <span class="nav-text">2.34文本特征抽取</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CountVectorizer语法："><span class="nav-number">4.2.3.2.1.</span> <span class="nav-text">CountVectorizer语法：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-35【英文处理】直接用fit-transform-统计次数-特征化："><span class="nav-number">4.2.3.3.</span> <span class="nav-text">2.35【英文处理】直接用fit_transform() 统计次数 特征化：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-36【中文处理】先jieba分词，再用fit-transform统计次数-特征化："><span class="nav-number">4.2.3.4.</span> <span class="nav-text">2.36【中文处理】先jieba分词，再用fit_transform统计次数 特征化：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-37中文分词处理库：jieba"><span class="nav-number">4.2.4.</span> <span class="nav-text">2.37中文分词处理库：jieba</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-38中文特征值化（抽取）统计词出现次数"><span class="nav-number">4.2.5.</span> <span class="nav-text">2.38中文特征值化（抽取）统计词出现次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、词的重要程度：TF和IDF"><span class="nav-number">4.2.6.</span> <span class="nav-text">3、词的重要程度：TF和IDF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-词重要程度（TF-IDF）sklearn工具库："><span class="nav-number">4.2.7.</span> <span class="nav-text">4.词重要程度（TF-IDF）sklearn工具库：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#类：sklearn-feature-extraction-text-TfidfVectorizer"><span class="nav-number">4.2.7.1.</span> <span class="nav-text">类：sklearn.feature_extraction.text.TfidfVectorizer</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#TfidfVectorizer语法："><span class="nav-number">4.2.7.1.1.</span> <span class="nav-text">TfidfVectorizer语法：</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

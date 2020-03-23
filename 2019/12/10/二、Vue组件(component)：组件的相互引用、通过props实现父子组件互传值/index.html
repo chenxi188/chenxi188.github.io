@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二、Vue组件(component)：组件的相互引用、通过props实现父子组件互传值">
+<meta property="og:url" content="http://yoursite.com/2019/12/10/%E4%BA%8C%E3%80%81Vue%E7%BB%84%E4%BB%B6(component)%EF%BC%9A%E7%BB%84%E4%BB%B6%E7%9A%84%E7%9B%B8%E4%BA%92%E5%BC%95%E7%94%A8%E3%80%81%E9%80%9A%E8%BF%87props%E5%AE%9E%E7%8E%B0%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E4%BA%92%E4%BC%A0%E5%80%BC/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191209115545240.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191209164511831.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191209165400240.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019121008570121.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191210091525274.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191210095306354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191210102049590.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191211164009600.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191212142847381.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-12-10T02:44:34.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:37:01.855Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191209115545240.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/10/%E4%BA%8C%E3%80%81Vue%E7%BB%84%E4%BB%B6(component)%EF%BC%9A%E7%BB%84%E4%BB%B6%E7%9A%84%E7%9B%B8%E4%BA%92%E5%BC%95%E7%94%A8%E3%80%81%E9%80%9A%E8%BF%87props%E5%AE%9E%E7%8E%B0%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E4%BA%92%E4%BC%A0%E5%80%BC/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>二、Vue组件(component)：组件的相互引用、通过props实现父子组件互传值 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/10/%E4%BA%8C%E3%80%81Vue%E7%BB%84%E4%BB%B6(component)%EF%BC%9A%E7%BB%84%E4%BB%B6%E7%9A%84%E7%9B%B8%E4%BA%92%E5%BC%95%E7%94%A8%E3%80%81%E9%80%9A%E8%BF%87props%E5%AE%9E%E7%8E%B0%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E4%BA%92%E4%BC%A0%E5%80%BC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          二、Vue组件(component)：组件的相互引用、通过props实现父子组件互传值
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-10 10:44:34" itemprop="dateCreated datePublished" datetime="2019-12-10T10:44:34+08:00">2019-12-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:37:01" itemprop="dateModified" datetime="2020-03-23T10:37:01+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、组件各部分说明及互相引用"><a href="#一、组件各部分说明及互相引用" class="headerlink" title="一、组件各部分说明及互相引用"></a>一、组件各部分说明及互相引用</h1><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>一个vue组件由三个部分组成</span><br><span class="line">	Template</span><br><span class="line">只能存在一个根元素</span><br><span class="line">	<span class="number">2.</span>Script</span><br><span class="line">	<span class="number">3.</span>Style</span><br><span class="line">scoped:样式只在当前组件内生效</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-1-组件的基本引用代码示例"><a href="#1-1-组件的基本引用代码示例" class="headerlink" title="1.1 组件的基本引用代码示例"></a>1.1 组件的基本引用代码示例</h2><p>重点：第1步，app.vue；第2步,father.vue</p>
+<h3 id="0、src-main-js"><a href="#0、src-main-js" class="headerlink" title="0、src/main.js"></a>0、src/main.js</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The Vue build version to load with the `import` command</span></span><br><span class="line"><span class="comment">// (runtime-only or standalone) has been set in webpack.base.conf with an alias.</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span><span class="comment">//【重点1】引入vue.js</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* eslint-disable no-new */</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;<span class="comment">//【重点】创建vue组件实例</span></span><br><span class="line">  el: <span class="string">'#app'</span>, <span class="comment">//[1]:在index.html里id为#app标签里写入组件内容</span></span><br><span class="line">  components: &#123; App &#125;,<span class="comment">//[2]:写入的组件</span></span><br><span class="line">  template: <span class="string">'&lt;App/&gt;'</span> <span class="comment">//[3]:写入的模板名(也可看成一个完整组件)</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="第1步，src-APP-vue引入子组件示例"><a href="#第1步，src-APP-vue引入子组件示例" class="headerlink" title="第1步，src/APP.vue引入子组件示例"></a>第1步，src/APP.vue引入子组件示例</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=<span class="string">"app"</span>&gt;</span><br><span class="line">     &lt;img src=<span class="string">"./assets/logo.png"</span>&gt;</span><br><span class="line">    &lt;Father /&gt; &lt;!-- 【<span class="number">2</span>】第<span class="number">2</span>步，调用子组件 --&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> Father <span class="keyword">from</span> <span class="string">'./components/father'</span> <span class="comment">//【1】第1步，引入子组件</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'App'</span>,</span><br><span class="line">  components: &#123;</span><br><span class="line">    Father <span class="comment">//【3】第3步，把组件写到此处，目的是把它暴露出去</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  data () &#123;<span class="comment">//【data必须是一个函数】此为标准es6写法，也可写成data:function()，这样才能对每个实例可以维护一份被返回对象的独立的拷贝</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      msg: <span class="string">'hello'</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">#app &#123;</span></span><br><span class="line"><span class="regexp">  font-family: 'Avenir', Helvetica, Arial, sans-serif;</span></span><br><span class="line"><span class="regexp">  -webkit-font-smoothing: antialiased;</span></span><br><span class="line"><span class="regexp">  -moz-osx-font-smoothing: grayscale;</span></span><br><span class="line"><span class="regexp">  text-align: center;</span></span><br><span class="line"><span class="regexp">  color: #2c3e50;</span></span><br><span class="line"><span class="regexp">  margin-top: 60px;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="第2步，src-components-father-vue"><a href="#第2步，src-components-father-vue" class="headerlink" title="第2步，src/components/father.vue"></a>第2步，src/components/father.vue</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt; &lt;!-- 第一层只能有一个根标签 --&gt;</span><br><span class="line">    父组件</span><br><span class="line">    &lt;Child /&gt; &lt;!-- 【<span class="number">2</span>】第<span class="number">2</span>步，调用子组件 --&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"> <span class="keyword">import</span> Child <span class="keyword">from</span> <span class="string">'./child'</span> <span class="comment">//【1】第1步，引入子组件</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;<span class="comment">//需要暴露出去的内容都要写在此处，这样才能被其它组件使用用</span></span><br><span class="line">    name:<span class="string">'Father'</span>,<span class="comment">//当前组件名</span></span><br><span class="line">    components:&#123;<span class="comment">//【3】第3步，把组件写到此处，目的是把它暴露出去(其对应import xxx)中的xxx</span></span><br><span class="line">      Child,</span><br><span class="line">    &#125;,</span><br><span class="line">    data()&#123;<span class="comment">//data必须是一个函数】此为标准es6写法，也可写成data:function()，这样每个实例可以维护一份被返回对象的独立的拷贝</span></span><br><span class="line">      <span class="keyword">return</span>&#123;<span class="attr">msg</span>:<span class="string">'father'</span>&#125; <span class="comment">//此处一定要记得return</span></span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt; /</span>* [<span class="number">4</span>]知识点<span class="number">4</span>,此处写的样式只对当前father.vue组件生效 *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="第3步，src-components-child-vue"><a href="#第3步，src-components-child-vue" class="headerlink" title="第3步，src/components/child.vue"></a>第3步，src/components/child.vue</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    子组件</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'child'</span>,</span><br><span class="line">    data()&#123;</span><br><span class="line"><span class="keyword">return</span>&#123; <span class="attr">tit</span>:<span class="string">'child'</span>&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：<br>父组件<br>子组件</p>
+<h1 id="二、父–-gt-子组件通信（交互）props—-父传子"><a href="#二、父–-gt-子组件通信（交互）props—-父传子" class="headerlink" title="二、父–&gt;子组件通信（交互）props—-父传子"></a>二、父–&gt;子组件通信（交互）props—-父传子</h1><h2 id="1-通过设置子组件的Props（道具）接收父组件的传值代码示例"><a href="#1-通过设置子组件的Props（道具）接收父组件的传值代码示例" class="headerlink" title="1.通过设置子组件的Props（道具）接收父组件的传值代码示例"></a>1.通过设置子组件的Props（道具）接收父组件的传值代码示例</h2><h3 id="father-vue"><a href="#father-vue" class="headerlink" title="father.vue"></a>father.vue</h3><p>1、父组件设置一个属性：（如name=xxx）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;主题：父组件向子组件传值&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;Child title='父组件的数据' /</span>&gt; &lt;!-- 【<span class="number">1</span>】第<span class="number">1</span>步，建一个属性title=xx，写入xx数据 --&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"> <span class="keyword">import</span> Child <span class="keyword">from</span> <span class="string">'./child'</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'Father'</span>,</span><br><span class="line">    components:&#123;</span><br><span class="line">      Child,</span><br><span class="line">    &#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;<span class="attr">msg</span>:<span class="string">'father'</span>&#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="child-vue"><a href="#child-vue" class="headerlink" title="child.vue"></a>child.vue</h3><p>2、子组件通过设置props接收父组件传过来的内容：props:[ ‘name’ ]或 props:{name:{type:String,default:’’}}<br>3、显示父组件传的内容：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">3</span>】显示父组件传过来的值 --&gt;</span><br><span class="line">    &lt;h2&gt;子组件:&#123;&#123;title&#125;&#125;&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'child',</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return&#123;&#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    props:["title"] #【2】通过props接收父组件传的数据</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+<p>效果：箭头部分即父组件title=xxx，传过来的值<br><img src="https://img-blog.csdnimg.cn/20191209115545240.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="2-向子组件传data里的动态数据"><a href="#2-向子组件传data里的动态数据" class="headerlink" title="2.向子组件传data里的动态数据"></a>2.向子组件传data里的动态数据</h2><h3 id="father-vue-1"><a href="#father-vue-1" class="headerlink" title="father.vue"></a>father.vue</h3><p>1、在data(){title:’title content’}<br>2、把<code>&lt;child title=xxx /&gt;</code> 中的xx换成data里的title</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;主题：父组件向子组件传data里的动态值&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;Child v-bind:title="msg" /</span>&gt; &lt;!-- 【<span class="number">1</span>】第<span class="number">1</span>步，title=xx，的内容写成data里的属性名 --&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"> <span class="keyword">import</span> Child <span class="keyword">from</span> <span class="string">'./child'</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'Father'</span>,</span><br><span class="line">    components:&#123;</span><br><span class="line">      Child,</span><br><span class="line">    &#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        msg:<span class="string">"父组件data内的动态的数据"</span>,<span class="comment">//【1】数据里写一个属性:值；</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="child-vue-1"><a href="#child-vue-1" class="headerlink" title="child.vue"></a>child.vue</h3><p>3、child里不变</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">2</span>】显示父组件传过来的值 --&gt;</span><br><span class="line">    &lt;h2&gt;子组件:&#123;&#123;title&#125;&#125;&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'child',</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return&#123;tit:'child'&#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    props:["title"]/</span><span class="regexp">/[1]接收父组件的属性名(在father.vue里的&lt;child title=xx /</span>&gt; )</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20191209164511831.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="3-改变data里的msg，将自动传给子组件示例"><a href="#3-改变data里的msg，将自动传给子组件示例" class="headerlink" title="3.改变data里的msg，将自动传给子组件示例"></a>3.改变data里的msg，将自动传给子组件示例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;主题：父组件向子组件传data里的动态值&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;Child v-bind:title="msg" /</span>&gt; &lt;!-- 【<span class="number">1</span>】第<span class="number">1</span>步，title=xx，的内容写成data里的属性名 --&gt;</span><br><span class="line">    &lt;button v-on:click=<span class="string">"change_msg"</span>&gt;改变一下&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"> import Child from './</span>child<span class="string">'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  export default&#123;</span></span><br><span class="line"><span class="string">    name:'</span>Father<span class="string">',</span></span><br><span class="line"><span class="string">    components:&#123;</span></span><br><span class="line"><span class="string">      Child,</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    data()&#123;</span></span><br><span class="line"><span class="string">      return &#123;</span></span><br><span class="line"><span class="string">        msg:"父组件data内的动态的数据",//【1】数据里写一个属性:值；</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    methods:&#123;</span></span><br><span class="line"><span class="string">      change_msg(event)&#123;//按键的处理函数</span></span><br><span class="line"><span class="string">        this.msg='</span>改变一下msg消息<span class="string">'</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;style scoped&gt;</span></span><br><span class="line"><span class="string">&lt;/style&gt;</span></span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="https://img-blog.csdnimg.cn/20191209165400240.png" alt="在这里插入图片描述"></p>
+<h2 id="4-子组件通过props，父组件的v-model-随时获取表单数据示例"><a href="#4-子组件通过props，父组件的v-model-随时获取表单数据示例" class="headerlink" title="4.子组件通过props，父组件的v-model,随时获取表单数据示例"></a>4.子组件通过props，父组件的v-model,随时获取表单数据示例</h2><h3 id="father-vue-2"><a href="#father-vue-2" class="headerlink" title="father.vue"></a>father.vue</h3><p>【1】第1步，再定义一个数据，初始数据随便设置<br>【2】第2步，再v-bind绑定第2个属性msg(此可随便设置,子组件的props对应即可)为data里的msg2<br>【3】第3步，在表单里绑定data里的msg2</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;主题：父组件通过v-model实时向子组件传data里的值&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;input v-model="msg2" /</span>&gt;         &lt;!-- 【<span class="number">3</span>】第<span class="number">3</span>步，在表单里绑定data里的msg2 --&gt;</span><br><span class="line">    &lt;Child v-bind:title=<span class="string">"msg"</span> v-bind:msg=<span class="string">'msg2'</span> /&gt; &lt;!-- 【<span class="number">2</span>】第<span class="number">2</span>步，再v-bind绑定第<span class="number">2</span>个属性msg(此可随便设置,子组件的props对应即可)为data里的msg2 --&gt;</span><br><span class="line">    &lt;button v-on:click=<span class="string">"change_msg"</span>&gt;改变一下&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"> import Child from './</span>child<span class="string">'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  export default&#123;</span></span><br><span class="line"><span class="string">    name:'</span>Father<span class="string">',</span></span><br><span class="line"><span class="string">    components:&#123;</span></span><br><span class="line"><span class="string">      Child,</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    data()&#123;</span></span><br><span class="line"><span class="string">      return &#123;</span></span><br><span class="line"><span class="string">        msg:"父组件data内的动态的数据",//数据里写一个属性:值；</span></span><br><span class="line"><span class="string">        msg2:'</span>父向子组件传递的第<span class="number">2</span>个数据<span class="string">'//【1】第1步，再定义一个数据，初始数据随便设置</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    methods:&#123;</span></span><br><span class="line"><span class="string">      change_msg(event)&#123;</span></span><br><span class="line"><span class="string">        this.msg='</span>改变一下msg消息<span class="string">'</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;style scoped&gt;</span></span><br><span class="line"><span class="string">&lt;/style&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="child-vue-2"><a href="#child-vue-2" class="headerlink" title="child.vue"></a>child.vue</h3><p>【1】接收父组件的属性1、2的名字title,msg(在father.vue里的&lt;child title= msg= /&gt;<br>【2】显示父组件传过来的属性1，属性2 </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">2</span>】显示父组件传过来的属性<span class="number">1</span>，属性<span class="number">2</span>  --&gt;</span><br><span class="line">    &lt;h2&gt;子组件:&#123;&#123;title&#125;&#125;--&#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'child',</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">     return&#123; tit:'child'&#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    props:["title","msg"]/</span><span class="regexp">/[1]接收父组件的属性1、2的名子(在father.vue里的&lt;child title=xx msg=xxx /</span>&gt; )</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：输入框值变动，子组件随时跟着变动<br><img src="https://img-blog.csdnimg.cn/2019121008570121.png" alt="在这里插入图片描述"></p>
+<h2 id="5-通过子组件的props限制父组件传过来的数据类型"><a href="#5-通过子组件的props限制父组件传过来的数据类型" class="headerlink" title="5.通过子组件的props限制父组件传过来的数据类型"></a>5.通过子组件的props限制父组件传过来的数据类型</h2><h3 id="father-vue-3"><a href="#father-vue-3" class="headerlink" title="father.vue"></a>father.vue</h3><p>【1】再定义一个数据<br>【2】第2步，对子组件，再加个v-bind绑定第2个属性age(此可随便设置,子组件的props对应即可)为data里的num</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;主题：父组件通过v-model实时向子组件传data里的值&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;input v-model="msg2" /</span>&gt;</span><br><span class="line">    &lt;Child v-bind:title=<span class="string">"msg"</span> v-bind:msg=<span class="string">'msg2'</span> :age=<span class="string">'num'</span> /&gt; &lt;!-- 【<span class="number">2</span>】第<span class="number">2</span>步，再v-bind绑定第<span class="number">2</span>个属性age(此可随便设置,子组件的props对应即可)为data里的num --&gt;</span><br><span class="line">    &lt;button v-on:click=<span class="string">"change_msg"</span>&gt;改变一下&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"> import Child from './</span>child<span class="string">'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  export default&#123;</span></span><br><span class="line"><span class="string">    name:'</span>Father<span class="string">',</span></span><br><span class="line"><span class="string">    components:&#123;</span></span><br><span class="line"><span class="string">      Child,</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    data()&#123;</span></span><br><span class="line"><span class="string">      return &#123;</span></span><br><span class="line"><span class="string">        msg:"父组件data内的动态的数据",//数据里写一个属性:值；</span></span><br><span class="line"><span class="string">        msg2:'</span>父向子组件传递的第<span class="number">2</span>个数据<span class="string">',</span></span><br><span class="line"><span class="string">        num:'</span>hello<span class="string">'//【1】再定义一个数据</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    methods:&#123;</span></span><br><span class="line"><span class="string">      change_msg(event)&#123;</span></span><br><span class="line"><span class="string">        this.msg='</span>改变一下msg消息<span class="string">'</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;style scoped&gt;</span></span><br><span class="line"><span class="string">&lt;/style&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="child-vue-3"><a href="#child-vue-3" class="headerlink" title="child.vue"></a>child.vue</h3><p>【1】把props改成字典写法，逐个对其属性的数据类型进行限定,把age的数据类型限定为数字<br>【2】显示父组件传过来的属性3:age</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">2</span>】显示父组件传过来的属性<span class="number">1</span>，属性<span class="number">2</span>，属性<span class="number">3</span>:age  --&gt;</span><br><span class="line">    &lt;h2&gt;子组件:&#123;&#123;title&#125;&#125;--&#123;&#123;msg&#125;&#125;----&#123;&#123;age*<span class="number">2</span>&#125;&#125;&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'child',</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return&#123;tit:'child'&#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    props:&#123;/</span><span class="regexp">/【1】把props改成字典写法，逐个对其属性的数据类型进行限定</span></span><br><span class="line"><span class="regexp">      title:String,</span></span><br><span class="line"><span class="regexp">      msg:String,</span></span><br><span class="line"><span class="regexp">      age:Number /</span><span class="regexp">/此处把age的数据类型限定为数字</span></span><br><span class="line"><span class="regexp">    &#125;/</span><span class="regexp">/["title","msg","age"]/</span><span class="regexp">/[1]接收父组件的属性1、2的名子(在father.vue里的&lt;child title=xx msg=xxx /</span>&gt; )</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：</p>
+<ul>
+<li>因为fahter.vue里的data的num数据类型为’hello’是字符串类型</li>
+<li>又child.vue里的props限定了num必须为数字</li>
+<li>所以控制台会报错：Invalid prop: type check failed for prop “age”. Expected Number with value NaN, got String with value “hello”.</li>
+<li>只有父组件里的数据为数字（如Num=10），此处才能正确运行显示：20（num<em>2=10</em>2）<img src="https://img-blog.csdnimg.cn/20191210091525274.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h3 id="5-2-子组件用props把父组件传过来的数据-限定为多种数据类型-、-设置为必需选项"><a href="#5-2-子组件用props把父组件传过来的数据-限定为多种数据类型-、-设置为必需选项" class="headerlink" title="5.2 子组件用props把父组件传过来的数据[限定为多种数据类型]、[设置为必需选项]"></a>5.2 子组件用props把父组件传过来的数据[限定为多种数据类型]、[设置为必需选项]</h3>【1】设置为支持多种数据类型 title:[String,Number]，父组件传的title值可以为字符串，或数字<br>【2】设置为是否必须选项，如果父组件没有传msg=xx这个属性，就报错<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">msg:&#123;<span class="comment">//【2】设置为是否必须选项</span></span><br><span class="line">        type:<span class="built_in">String</span>,</span><br><span class="line">        required:<span class="literal">true</span></span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+原码：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 显示父组件传过来的属性<span class="number">1</span>，属性<span class="number">2</span>，属性<span class="number">3</span>:age  --&gt;</span><br><span class="line">    &lt;h2&gt;子组件:&#123;&#123;title&#125;&#125;--&#123;&#123;msg&#125;&#125;----&#123;&#123;age*<span class="number">2</span>&#125;&#125;&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'child',</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return &#123;tit:'child'&#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    props:&#123;</span></span><br><span class="line"><span class="regexp">      title:[String,Number],/</span><span class="regexp">/【1】设置为支持多种数据类型</span></span><br><span class="line"><span class="regexp">      msg:&#123;/</span><span class="regexp">/【2】设置为是否必须选项</span></span><br><span class="line"><span class="regexp">        type:String,</span></span><br><span class="line"><span class="regexp">        required:true</span></span><br><span class="line"><span class="regexp">      &#125;,</span></span><br><span class="line"><span class="regexp">      age:Number, </span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+效果：父组件没传msg，警告信息<br><img src="https://img-blog.csdnimg.cn/20191210095306354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h3 id="5-3在子组件props设置默认值（如果父不传，则使用默认值）"><a href="#5-3在子组件props设置默认值（如果父不传，则使用默认值）" class="headerlink" title="5.3在子组件props设置默认值（如果父不传，则使用默认值）"></a>5.3在子组件props设置默认值（如果父不传，则使用默认值）</h3><h4 id="child-vue-4"><a href="#child-vue-4" class="headerlink" title="child.vue"></a>child.vue</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">2</span>】显示父组件传过来的属性<span class="number">1</span>，属性<span class="number">2</span>，属性<span class="number">3</span>:age  --&gt;</span><br><span class="line">    &lt;h2&gt;子组件:&#123;&#123;title&#125;&#125;--&#123;&#123;msg&#125;&#125;----&#123;&#123;age*<span class="number">2</span>&#125;&#125;&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'child',</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return &#123;tit:'child'&#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    props:&#123;</span></span><br><span class="line"><span class="regexp">      title:[String,Number],</span></span><br><span class="line"><span class="regexp">      msg:&#123;</span></span><br><span class="line"><span class="regexp">        type:String,</span></span><br><span class="line"><span class="regexp">        required:true</span></span><br><span class="line"><span class="regexp">      &#125;,</span></span><br><span class="line"><span class="regexp">      age:&#123;/</span><span class="regexp">/【1】设置默认值</span></span><br><span class="line"><span class="regexp">        type:Number,</span></span><br><span class="line"><span class="regexp">        default:5</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+结果：父组件没传num,子组件用默认值5计算出来的值5*2=10<br><img src="https://img-blog.csdnimg.cn/20191210102049590.png" alt="在这里插入图片描述"><h2 id="6-父组件data数据为字典时，向子组件props传值"><a href="#6-父组件data数据为字典时，向子组件props传值" class="headerlink" title="6.父组件data数据为字典时，向子组件props传值"></a>6.父组件data数据为字典时，向子组件props传值</h2><h3 id="father-vue-4"><a href="#father-vue-4" class="headerlink" title="father.vue"></a>father.vue</h3>【1】第1步，设置一个字典的数据<br>【2】第2步，再v-bind绑定ojbData为data里的fatherObj<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;主题：父组件通过v-model实时向子组件传data里的【对象类型数据】值&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;input v-model="msg2" /</span>&gt;</span><br><span class="line">    &lt;Child v-bind:title=<span class="string">"msg"</span> :msg=<span class="string">"msg2"</span> :objData=<span class="string">"fatherObj"</span>  /&gt; &lt;!-- 【<span class="number">2</span>】第<span class="number">2</span>步，再v-bind绑定ojbData为data里的fatherObj --&gt;</span><br><span class="line">    &lt;button v-on:click=<span class="string">"change_msg"</span>&gt;改变一下&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"> import Child from './</span>child<span class="string">'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  export default&#123;</span></span><br><span class="line"><span class="string">    name:'</span>Father<span class="string">',</span></span><br><span class="line"><span class="string">    components:&#123;</span></span><br><span class="line"><span class="string">      Child,</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    data()&#123;</span></span><br><span class="line"><span class="string">      return &#123;</span></span><br><span class="line"><span class="string">        msg:"父组件data内的动态的数据",</span></span><br><span class="line"><span class="string">        msg2:'</span>父向子组件传递的第<span class="number">2</span>个数据<span class="string">',</span></span><br><span class="line"><span class="string">        num:10,</span></span><br><span class="line"><span class="string">        fatherObj:&#123;//【1】第1步，设置一个字典的数据</span></span><br><span class="line"><span class="string">          name:'</span>flying<span class="string">',</span></span><br><span class="line"><span class="string">          age:22</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    methods:&#123;</span></span><br><span class="line"><span class="string">      change_msg(event)&#123;</span></span><br><span class="line"><span class="string">        this.msg='</span>改变一下msg消息<span class="string">'</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;style scoped&gt;</span></span><br><span class="line"><span class="string">&lt;/style&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="child-vue-5"><a href="#child-vue-5" class="headerlink" title="child.vue"></a>child.vue</h3><p>【1】父组件传值是字典时，props的特殊写法</p>
+<ul>
+<li>【1.1】此处数据类型必须设置为Object</li>
+<li>【1.2】这里返回值”未知”、0等可随意，目的是如果父组件没有传对应的值，就用此默认的值</li>
+</ul>
+<p>【2】显示父组件传过来的字典类型数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line"></span><br><span class="line">    &lt;h2&gt;子组件:&#123;&#123;title&#125;&#125;--&#123;&#123;msg&#125;&#125;----&#123;&#123;age*<span class="number">2</span>&#125;&#125;&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">    &lt;!-- 【2】显示父组件传过来的字典类型数据  --&gt;</span></span><br><span class="line"><span class="regexp">    &lt;h3&gt;子组件：父组件传的对象&#123;&#123;objData&#125;&#125;---名字是：&#123;&#123;objData.name&#125;&#125;&lt;/</span>h3&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'child'</span>,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;<span class="attr">tit</span>:<span class="string">'child'</span>&#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    props:&#123;</span><br><span class="line">      title:[<span class="built_in">String</span>,<span class="built_in">Number</span>],</span><br><span class="line">      msg:&#123;</span><br><span class="line">        type:<span class="built_in">String</span>,</span><br><span class="line">        required:<span class="literal">true</span></span><br><span class="line">      &#125;,</span><br><span class="line">      age:&#123;</span><br><span class="line">        type:<span class="built_in">Number</span>,</span><br><span class="line">        <span class="keyword">default</span>:<span class="number">5</span></span><br><span class="line">        &#125;,</span><br><span class="line">      objData:&#123;<span class="comment">//【1】父组件传值是字典时，props的特殊写法</span></span><br><span class="line">        type:<span class="built_in">Object</span>, <span class="comment">//【1.1】此处数据类型必须设置为Object</span></span><br><span class="line">        <span class="keyword">default</span>:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">          <span class="keyword">return</span>&#123;<span class="comment">//【1.2】这里返回值"未知"、0等可随意，目的是如果父组件没有传对应的值，就用此默认的值</span></span><br><span class="line">            name:<span class="string">"未知"</span>,</span><br><span class="line">            age:<span class="number">0</span>,</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：<br>子组件：父组件传的对象{ “name”: “flying”, “age”: 22 }—名字是：flying</p>
+<h1 id="三、子-gt-父组件通信——子传父"><a href="#三、子-gt-父组件通信——子传父" class="headerlink" title="三、子 -&gt; 父组件通信——子传父"></a>三、子 -&gt; 父组件通信——子传父</h1><h2 id="3-1简单的子—-gt-父通信"><a href="#3-1简单的子—-gt-父通信" class="headerlink" title="3.1简单的子—&gt;父通信"></a>3.1简单的子—&gt;父通信</h2><h3 id="第1步：child-vue"><a href="#第1步：child-vue" class="headerlink" title="第1步：child.vue"></a>第1步：child.vue</h3><p>【0】此处通过点击鼠标触发的函数向父组件发消息<br>【1】重点：传数据给父组件：this.$emit(键名,键值); 键名随便，父组件接收时要对应；键值此处用data里数据：this.msg</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">0</span>】此处通过点击鼠标触发的函数向父组件发消息 --&gt;</span><br><span class="line">    &lt;button v-on:click=<span class="string">"sendMsg"</span>&gt;点此向父组件发消息&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'child',</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return&#123;</span></span><br><span class="line"><span class="regexp">        msg:'子组件发的消息'</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    methods:&#123;</span></span><br><span class="line"><span class="regexp">      sendMsg(event)&#123;</span></span><br><span class="line"><span class="regexp">        /</span>*【<span class="number">1</span>】重点：固定写法：<span class="keyword">this</span>.$emit(键名,键值); 键名随便。键值此处用data里数据：<span class="keyword">this</span>.msg</span><br><span class="line">        父组件&lt;child @sendmsg=<span class="string">'处理函数'</span>/&gt;接收时@sendmsg处要对应；（把sendmsg当成一个自定义事件)</span><br><span class="line">        *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">        this.$emit("sendmsg",this.msg)</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="第2步，parent-vue"><a href="#第2步，parent-vue" class="headerlink" title="第2步，parent.vue"></a>第2步，parent.vue</h3><p>【1】用监听事件命令v-on(简写@sendmsg(此名随便写))，监听到之后触发一个函数getMsg,用它来测试子组件发来的消息<br>[2]定义一个空数据用来接收子组件传来的消息<br>【3】把接收到的数据传给data里的msg<br>【4】展示子组件传过来的消息</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    父组件</span><br><span class="line">    &lt;Child v-on:sendmsg=<span class="string">'getMsg'</span> /&gt;&lt;!-- 【<span class="number">1</span>】把sendmsg当自定义事件，所以要用监听事件命令v-on(简写@sendmsg(此名随便写))，监听到之后触发一个函数getMsg,用它来测试子组件发来的消息 --&gt;</span><br><span class="line">    &#123;&#123;msg&#125;&#125;&lt;!-- 【<span class="number">4</span>】展示子组件传过来的消息 --&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  <span class="keyword">import</span> Child <span class="keyword">from</span> <span class="string">'./child'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        msg:<span class="string">''</span> <span class="comment">//[2]定义一个空数据用来接收子组件传来的消息</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    components:&#123;</span><br><span class="line">      Child,</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      getMsg(data)&#123;<span class="comment">//此处data可随便写，下面和其对应即可</span></span><br><span class="line">        <span class="built_in">console</span>.log(data); <span class="comment">//测试【3】把子组件传的数据输出到控制台</span></span><br><span class="line">        <span class="keyword">this</span>.msg=data;<span class="comment">//【3】把接收到的数据传给data里的msg</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：点击按钮之后，子组件即会发一个消息过来，父组件即接收，展示。<br><img src="https://img-blog.csdnimg.cn/20191211164009600.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="3-2父–-gt-子–-gt-父：父子组件的交互通信"><a href="#3-2父–-gt-子–-gt-父：父子组件的交互通信" class="headerlink" title="3.2父–&gt;子–&gt;父：父子组件的交互通信"></a>3.2父–&gt;子–&gt;父：父子组件的交互通信</h2><h3 id="parent-vue"><a href="#parent-vue" class="headerlink" title="parent.vue"></a>parent.vue</h3><p>【2.1】绑定data里的num（输入变&lt;==&gt;data.num变）<br>【2.2】把data的数据转换为Number类型，（this.num - 0，即是把此数据转为数字类型）<br>【2.3】向子组件传送的数据变为computed的toNum()函数处理后的值，即转为数字再传送给子组件 </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    父组件</span><br><span class="line">    &lt;!-- 【<span class="number">1</span>】用监听事件命令v-on(简写@sendmsg(此名随便写))，监听到自定义事件sedmsg发生之后触发一个函数getMsg,用它来接收子组件发来的消息；</span><br><span class="line">    v-bind为向子组件发送的数据； --&gt;</span><br><span class="line">    &lt;Child v-on:sendmsg=<span class="string">'getMsg'</span> v-bind:num=<span class="string">'toNum'</span> /&gt; &lt;!-- 【<span class="number">2.3</span>】向子组件传送的数据变为computed的toNum()函数处理后的值，即转为数字再传送给子组件 --&gt;</span><br><span class="line">    &lt;input type=<span class="string">"text"</span> v-model=<span class="string">"num"</span> /&gt; &lt;!-- 【<span class="number">2.1</span>】绑定data里的num（输入变&lt;==&gt;data.num变） --&gt;</span><br><span class="line">    &#123;&#123;msg&#125;&#125;&lt;!-- 【<span class="number">5</span>】展示子组件传过来的消息 --&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  <span class="keyword">import</span> Child <span class="keyword">from</span> <span class="string">'./child'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        msg:<span class="string">''</span>, <span class="comment">//[3]定义一个空数据用来接收子组件传来的消息</span></span><br><span class="line">        num:<span class="number">5</span>,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    components:&#123;</span><br><span class="line">      Child,</span><br><span class="line">    &#125;,</span><br><span class="line">    computed:&#123;</span><br><span class="line">      toNum()&#123;<span class="comment">//【2.2】把data的数据转换为Number类型，（this.num -0，即是把此数据转为数字类型）</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.num - <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;<span class="comment">//【2】用函数来接收子组件消息输出到控制台进行测试</span></span><br><span class="line">      getMsg(data)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(data);</span><br><span class="line">        <span class="keyword">this</span>.msg=data;<span class="comment">//【4】把接收到的数据传给data里的msg</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="child-vue-6"><a href="#child-vue-6" class="headerlink" title="child.vue"></a>child.vue</h3><p>[2.1]接收父组件传来的数据num（<child v-bind:num='toNum'/>）<br>【2.2】触发发送函数，向父组件发送数据<br>【2.3】调用computed里的addNum对收到父组件的数据处理处理后，再发给父组件<br>【2.4】把props里收到的num进行处理的函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">0</span>】此处通过点击鼠标触发的函数，sendMsg通过其向父组件发消息 --&gt;</span><br><span class="line">    &lt;button v-on:click=<span class="string">"sendMsg"</span>&gt;点此向父组件发消息&lt;<span class="regexp">/button&gt; 【2.2】触发</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'child',</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return&#123;</span></span><br><span class="line"><span class="regexp">        msg:'子组件发的消息'</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    props:&#123;/</span><span class="regexp">/接收父组件数据道具</span></span><br><span class="line"><span class="regexp">      num:&#123;/</span><span class="regexp">/[2.1]接收父组件传来的数据num（&lt;child v-bind:num='toNum'/</span>&gt;）</span><br><span class="line">        type:<span class="built_in">Number</span>,</span><br><span class="line">        <span class="keyword">default</span>:<span class="number">8</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    computed:&#123;</span><br><span class="line">      addNum()&#123;<span class="comment">//【2.4】把props里收到的num进行处理的函数</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.num*<span class="number">10</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      sendMsg(event)&#123;</span><br><span class="line">        <span class="comment">//【1】重点：固定写法：this.$emit(键名,键值); 键名随便，父组件接收时要对应；键值此处用data里数据：this.msg</span></span><br><span class="line">        <span class="keyword">this</span>.$emit(<span class="string">"sendmsg"</span>,<span class="keyword">this</span>.addNum) <span class="comment">//【2.3】调用computed里的addNum对收到父组件的数据处理处理后，再发给父组件</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：在输入框输入数字，子组件接收，处理后，发回父组件显示<br><img src="https://img-blog.csdnimg.cn/20191212142847381.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/07/%E4%B8%80%E3%80%81Vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E5%8F%8A%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/" rel="prev" title="一、Vue环境搭建及基础用法">
+      <i class="fa fa-chevron-left"></i> 一、Vue环境搭建及基础用法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/18/%E5%9B%9B%E3%80%81Vue%E8%BF%87%E6%B8%A1%E4%B8%8E%E5%8A%A8%E7%94%BB%E3%80%81%E8%BF%87%E6%B8%A1css%E7%B1%BB%E5%90%8D%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E5%AE%9A%E3%80%81%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="next" title="四、Vue过渡与动画、过渡css类名、自定义指定、过滤器">
+      四、Vue过渡与动画、过渡css类名、自定义指定、过滤器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、组件各部分说明及互相引用"><span class="nav-number">1.</span> <span class="nav-text">一、组件各部分说明及互相引用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-组件的基本引用代码示例"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 组件的基本引用代码示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0、src-main-js"><span class="nav-number">1.1.1.</span> <span class="nav-text">0、src&#x2F;main.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第1步，src-APP-vue引入子组件示例"><span class="nav-number">1.1.2.</span> <span class="nav-text">第1步，src&#x2F;APP.vue引入子组件示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第2步，src-components-father-vue"><span class="nav-number">1.1.3.</span> <span class="nav-text">第2步，src&#x2F;components&#x2F;father.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第3步，src-components-child-vue"><span class="nav-number">1.1.4.</span> <span class="nav-text">第3步，src&#x2F;components&#x2F;child.vue</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、父–-gt-子组件通信（交互）props—-父传子"><span class="nav-number">2.</span> <span class="nav-text">二、父–&gt;子组件通信（交互）props—-父传子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-通过设置子组件的Props（道具）接收父组件的传值代码示例"><span class="nav-number">2.1.</span> <span class="nav-text">1.通过设置子组件的Props（道具）接收父组件的传值代码示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#father-vue"><span class="nav-number">2.1.1.</span> <span class="nav-text">father.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#child-vue"><span class="nav-number">2.1.2.</span> <span class="nav-text">child.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-向子组件传data里的动态数据"><span class="nav-number">2.2.</span> <span class="nav-text">2.向子组件传data里的动态数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#father-vue-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">father.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#child-vue-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">child.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-改变data里的msg，将自动传给子组件示例"><span class="nav-number">2.3.</span> <span class="nav-text">3.改变data里的msg，将自动传给子组件示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-子组件通过props，父组件的v-model-随时获取表单数据示例"><span class="nav-number">2.4.</span> <span class="nav-text">4.子组件通过props，父组件的v-model,随时获取表单数据示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#father-vue-2"><span class="nav-number">2.4.1.</span> <span class="nav-text">father.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#child-vue-2"><span class="nav-number">2.4.2.</span> <span class="nav-text">child.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-通过子组件的props限制父组件传过来的数据类型"><span class="nav-number">2.5.</span> <span class="nav-text">5.通过子组件的props限制父组件传过来的数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#father-vue-3"><span class="nav-number">2.5.1.</span> <span class="nav-text">father.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#child-vue-3"><span class="nav-number">2.5.2.</span> <span class="nav-text">child.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-子组件用props把父组件传过来的数据-限定为多种数据类型-、-设置为必需选项"><span class="nav-number">2.5.3.</span> <span class="nav-text">5.2 子组件用props把父组件传过来的数据[限定为多种数据类型]、[设置为必需选项]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3在子组件props设置默认值（如果父不传，则使用默认值）"><span class="nav-number">2.5.4.</span> <span class="nav-text">5.3在子组件props设置默认值（如果父不传，则使用默认值）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#child-vue-4"><span class="nav-number">2.5.4.1.</span> <span class="nav-text">child.vue</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-父组件data数据为字典时，向子组件props传值"><span class="nav-number">2.6.</span> <span class="nav-text">6.父组件data数据为字典时，向子组件props传值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#father-vue-4"><span class="nav-number">2.6.1.</span> <span class="nav-text">father.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#child-vue-5"><span class="nav-number">2.6.2.</span> <span class="nav-text">child.vue</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、子-gt-父组件通信——子传父"><span class="nav-number">3.</span> <span class="nav-text">三、子 -&gt; 父组件通信——子传父</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1简单的子—-gt-父通信"><span class="nav-number">3.1.</span> <span class="nav-text">3.1简单的子—&gt;父通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第1步：child-vue"><span class="nav-number">3.1.1.</span> <span class="nav-text">第1步：child.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第2步，parent-vue"><span class="nav-number">3.1.2.</span> <span class="nav-text">第2步，parent.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2父–-gt-子–-gt-父：父子组件的交互通信"><span class="nav-number">3.2.</span> <span class="nav-text">3.2父–&gt;子–&gt;父：父子组件的交互通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#parent-vue"><span class="nav-number">3.2.1.</span> <span class="nav-text">parent.vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#child-vue-6"><span class="nav-number">3.2.2.</span> <span class="nav-text">child.vue</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

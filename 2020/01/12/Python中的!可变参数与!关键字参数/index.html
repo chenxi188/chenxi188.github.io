@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python中的*可变参数与**关键字参数">
+<meta property="og:url" content="http://yoursite.com/2020/01/12/Python%E4%B8%AD%E7%9A%84!%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E4%B8%8E!%E5%85%B3%E9%94%AE%E5%AD%97%E5%8F%82%E6%95%B0/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-12T01:02:56.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:59:42.618Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/12/Python%E4%B8%AD%E7%9A%84!%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E4%B8%8E!%E5%85%B3%E9%94%AE%E5%AD%97%E5%8F%82%E6%95%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Python中的*可变参数与**关键字参数 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/12/Python%E4%B8%AD%E7%9A%84!%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E4%B8%8E!%E5%85%B3%E9%94%AE%E5%AD%97%E5%8F%82%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python中的*可变参数与**关键字参数
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-12 09:02:56" itemprop="dateCreated datePublished" datetime="2020-01-12T09:02:56+08:00">2020-01-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:59:42" itemprop="dateModified" datetime="2020-03-23T10:59:42+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h2 id="1、定义了一个需要两个参数的函数"><a href="#1、定义了一个需要两个参数的函数" class="headerlink" title="1、定义了一个需要两个参数的函数"></a>1、定义了一个需要两个参数的函数</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_str</span><span class="params">(first, second)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> first</span><br><span class="line">    <span class="keyword">print</span> second</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    print_str(<span class="string">"hello"</span>, <span class="string">"world"</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果传一个参数调用，print_str(“hello”)，那么一定会抛出异常的：<br>明确告诉你需要准确的两个参数，现在只确定给了一个参数<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TypeError: print_str() takes exactly <span class="number">2</span> arguments (<span class="number">1</span> given)</span><br></pre></td></tr></table></figure>
+<h2 id="2、传一个参数行，两个参数行，多个参数也行的函数"><a href="#2、传一个参数行，两个参数行，多个参数也行的函数" class="headerlink" title="2、传一个参数行，两个参数行，多个参数也行的函数"></a>2、传一个参数行，两个参数行，多个参数也行的函数</h2>上面的问题，我们有个需求，就是我想传一个参数也行（还有种办法是用到默认参数），传两个参数或多个参数也行的函数有没有？像java一样，必须的有，让我们改造一下最后参数为可变参数（也就是说可变参数，你可以不传）</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_str</span><span class="params">(first, *second)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> first</span><br><span class="line">    <span class="keyword">print</span> second</span><br></pre></td></tr></table></figure>
+
+<p>此时调用：<code>print_str(&quot;hello&quot;)</code></p>
+<p>输出结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hello</span><br><span class="line">()</span><br></pre></td></tr></table></figure>
+<p>可以看到字符串”hello”打印出来了，而没有传参的*second，打印出的是一个元组tuple，0个元素的元组，因为我就传了一个参数</p>
+<h3 id="如果我们多传几个参数呢"><a href="#如果我们多传几个参数呢" class="headerlink" title="如果我们多传几个参数呢"></a>如果我们多传几个参数呢</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">print_str(<span class="string">"hello"</span>,<span class="string">"one"</span>,<span class="string">"two"</span>,<span class="string">"three"</span>)</span><br><span class="line"></span><br><span class="line">输出结果：</span><br><span class="line">hello</span><br><span class="line">(<span class="string">'one'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>果然从可变参数开始起，即第二个参数”one”开始，会作为元组的第一个元素，后面的参数也会相继成为元组的元素</li>
+</ul>
+<h2 id="3、总结一下-参数"><a href="#3、总结一下-参数" class="headerlink" title="3、总结一下 *参数"></a>3、总结一下 *参数</h2><p>在调用时，从<code>*参数</code> 起，对传入的参数，自动组成tuple</p>
+<h2 id="4、函数调用时，传入-参数，会对传入的元组参数进行一个解包功能，每一个元素自动作为函数的位置参数"><a href="#4、函数调用时，传入-参数，会对传入的元组参数进行一个解包功能，每一个元素自动作为函数的位置参数" class="headerlink" title="4、函数调用时，传入*参数，会对传入的元组参数进行一个解包功能，每一个元素自动作为函数的位置参数"></a>4、函数调用时，传入<code>*参数</code>，会对传入的元组参数进行一个解包功能，每一个元素自动作为函数的位置参数</h2><p><code>print_str(*numbers_strings)</code>，传入<code>*元组</code>，看看是怎么解包的，元组的第一个元素，仍然是代表位置参数first</p>
+<p>等同于<code>print_str(&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">numbers_strings = (<span class="string">"1"</span>,<span class="string">"2"</span>,<span class="string">"3"</span>,<span class="string">"4"</span>,<span class="string">"5"</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_str</span><span class="params">(first, *second)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> first</span><br><span class="line">    <span class="keyword">print</span> second</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    print_str(*numbers_strings)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">输出结果：</span><br><span class="line"><span class="number">1</span></span><br><span class="line">(<span class="string">'2'</span>, <span class="string">'3'</span>, <span class="string">'4'</span>, <span class="string">'5'</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5、一个没有可变参数的函数，可用解包功能一次性传入多个参数"><a href="#5、一个没有可变参数的函数，可用解包功能一次性传入多个参数" class="headerlink" title="5、一个没有可变参数的函数，可用解包功能一次性传入多个参数"></a>5、一个没有可变参数的函数，可用解包功能一次性传入多个参数</h2><p>看下例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">numbers_strings = (<span class="string">"1"</span>,<span class="string">"2"</span>)</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_str</span><span class="params">(first, second)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> first</span><br><span class="line">    <span class="keyword">print</span> second</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    print_str(*numbers_strings)</span><br><span class="line">    </span><br><span class="line">输出结果：</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6、-参数，参数名称前两个-，代表的是关键字参数，也叫做字典参数，看下例子"><a href="#6、-参数，参数名称前两个-，代表的是关键字参数，也叫做字典参数，看下例子" class="headerlink" title="6、**参数，参数名称前两个**，代表的是关键字参数，也叫做字典参数，看下例子"></a>6、<code>**参数</code>，参数名称前两个<code>**</code>，代表的是关键字参数，也叫做字典参数，看下例子</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printStr</span><span class="params">(**anything)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> anything</span><br><span class="line"> </span><br><span class="line">printStr(first = <span class="number">5</span>, second = <span class="number">100</span>)</span><br><span class="line">&#123;<span class="string">'second'</span>: <span class="number">100</span>, <span class="string">'first'</span>: <span class="number">5</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>关键字参数允许你传入0个或任意个含参数名的参数,这些关键字参数在函数内部自动组装为一个dict</p>
+<h3 id="6-1、函数调用时，也可以传入一个字典（需要前面加两个-），这样函数那块就会解包，它会把dictionary中所有键值对转换为一个一个的关键字参数传进去"><a href="#6-1、函数调用时，也可以传入一个字典（需要前面加两个-），这样函数那块就会解包，它会把dictionary中所有键值对转换为一个一个的关键字参数传进去" class="headerlink" title="6.1、函数调用时，也可以传入一个字典（需要前面加两个*），这样函数那块就会解包，它会把dictionary中所有键值对转换为一个一个的关键字参数传进去"></a>6.1、函数调用时，也可以传入一个字典（需要前面加两个*），这样函数那块就会解包，它会把dictionary中所有键值对转换为一个一个的关键字参数传进去</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printStr</span><span class="params">(first, **dict)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> str(first) + <span class="string">"\n"</span></span><br><span class="line">    <span class="keyword">print</span> dict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">printDic = &#123;<span class="string">"name"</span>: <span class="string">"tyson"</span>, <span class="string">"age"</span>:<span class="string">"99"</span>&#125;</span><br><span class="line">printStr(<span class="number">100</span>, **printDic)</span><br><span class="line">printStr(<span class="number">100</span>, name = <span class="string">"tyson"</span>, age = <span class="string">"99"</span>) <span class="comment">#等同于上面**printDic</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="7、总结"><a href="#7、总结" class="headerlink" title="7、总结"></a>7、总结</h2><p>在python中，当<code>*</code>和<code>**</code>符号同时出现在函数定义的参数中时，都表示参数列表可接受任意数量的参数，它们均称为可变参数：</p>
+<ol>
+<li><p><code>*second</code>表示任意多个（包含0个）无名参数，又称为元组参数，最终的类型为tuple（注意：就算传递一个元素，也会最终变为tuple）</p>
+</li>
+<li><p><code>**anything</code>表示任意多个关键字参数，又称为字典参数，最终的类型为dictionary</p>
+</li>
+</ol>
+<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h3><ol>
+<li>二者同时存在时，一定需要将<code>*second</code>放在<code>**anything</code>之前 （重要的事情说三遍）</li>
+<li>二者同时存在时，一定需要将<code>*second</code>放在<code>**anything</code>之前</li>
+<li>二者同时存在时，一定需要将<code>*second</code>放在<code>**anything</code>之前</li>
+</ol>
+<h2 id="8、注意事项，再提一次"><a href="#8、注意事项，再提一次" class="headerlink" title="8、注意事项，再提一次"></a>8、注意事项，再提一次</h2><p>a、首先只要是可变参数（无名参数或者关键字参数），可以传0个参数，也可以传1个，同样也可以传多个</p>
+<p>b、只要是可变参数（元组参数或者字典参数），一定要在普通参数（也称位置参数）的后面</p>
+<p>c、<code>*参数</code>一定必须在<code>**参数</code>的前面（元组参数与字典参数同时存在时，元组参数一定在前）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printStr</span><span class="params">(参数，*参数，**参数)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>d、<code>*参数</code>，虽然叫元组参数，你可别传个完整的元组对象进来哈（只算一个参数而已，它还是会作为tuple的一个元素），如果是个元组，记得做解封，不然就要背锅了，就是要这样<code>*turple</code>传进去</p>
+<p>e、<code>**参数</code>，虽然叫字典参数，你可别传个完整的字典对象进来哈（只算一个参数而已，应该会报错，因为不符合关键字参数的规范），如果是个字典，记得也是做解包，对，就是要这样 **dict传进去</p>
+<p>f、<code>*参数</code>，叫元组参数，如果传一个参数进去，它也会最终组成turple，这点要注意了 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">jsonify</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">    indent = <span class="literal">None</span></span><br><span class="line">    separators = (<span class="string">','</span>, <span class="string">':'</span>)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> current_app.config[<span class="string">'JSONIFY_PRETTYPRINT_REGULAR'</span>] <span class="keyword">or</span> current_app.debug:</span><br><span class="line">        indent = <span class="number">2</span></span><br><span class="line">        separators = (<span class="string">', '</span>, <span class="string">': '</span>)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> args <span class="keyword">and</span> kwargs:</span><br><span class="line">        <span class="keyword">raise</span> TypeError(<span class="string">'jsonify() behavior undefined when passed both args and kwargs'</span>)</span><br><span class="line">    <span class="keyword">elif</span> len(args) == <span class="number">1</span>:  <span class="comment"># single args are passed directly to dumps() </span></span><br><span class="line">        data = args[<span class="number">0</span>]    <span class="comment">#注意看这里</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        data = args <span class="keyword">or</span> kwargs</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> current_app.response_class(</span><br><span class="line">        dumps(data, indent=indent, separators=separators) + <span class="string">'\n'</span>,</span><br><span class="line">        mimetype=current_app.config[<span class="string">'JSONIFY_MIMETYPE'</span>]</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>g、**参数，我相信字典参数也一样，传一个进去的时候，同样最终也会转换为dict</p>
+<p>h、还有一个big bang，还是和上面f条的那个例子有关，就是为元组参数，那我就传一个dict参数，这时候特别容易混淆，跟e条的关系很大，注意了</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/11/Django%EF%BC%88%E5%8D%81%E4%BA%94%EF%BC%89%E6%A8%A1%E6%9D%BF%E8%AF%A6%E8%A7%A3%EF%BC%9A%E6%A8%A1%E6%9D%BF%E6%A0%87%E7%AD%BE%E3%80%81%E8%BF%87%E6%BB%A4%E5%99%A8%E3%80%81%E6%A8%A1%E6%9D%BF%E6%B3%A8%E9%87%8A%E3%80%81%E6%A8%A1%E6%9D%BF%E7%BB%A7%E6%89%BF%E3%80%81html%E8%BD%AC%E4%B9%89/" rel="prev" title="Django（十五）模板详解：模板标签、过滤器、模板注释、模板继承、html转义">
+      <i class="fa fa-chevron-left"></i> Django（十五）模板详解：模板标签、过滤器、模板注释、模板继承、html转义
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/13/Django%EF%BC%88%E5%8D%81%E5%85%AD%EF%BC%89%E5%9F%BA%E4%BA%8E%E6%A8%A1%E6%9D%BF%E7%9A%84%E7%99%BB%E5%BD%95%E6%A1%88%E4%BE%8B%EF%BC%9A%E7%99%BB%E5%BD%95%E8%A3%85%E9%A5%B0%E5%99%A8%E3%80%81csrf%E6%94%BB%E5%87%BB%E6%96%B9%E5%BC%8F%E5%8F%8A%E9%98%B2%E6%8A%A4%E3%80%81ajax%E7%9A%84Post%20%E7%9A%84csrf%E5%BC%80%E5%90%AF%E5%86%99%E6%B3%95%E3%80%81%E7%94%9F%E6%88%90%E9%AA%8C%E8%AF%81%E7%A0%81%E3%80%81%E5%8A%A0%E9%AA%8C%E8%AF%81%E7%A0%81%E7%99%BB%E5%BD%95%E3%80%81%E5%8F%8D%E5%90%91%E8%A7%A3%E6%9E%90+%E4%BC%A0%E5%8F%82/" rel="next" title="Django（十六）基于模板的登录案例：登录装饰器、csrf攻击方式及防护、ajax的Post 的csrf开启写法、生成验证码、加验证码登录、反向解析+传参">
+      Django（十六）基于模板的登录案例：登录装饰器、csrf攻击方式及防护、ajax的Post 的csrf开启写法、生成验证码、加验证码登录、反向解析+传参 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、定义了一个需要两个参数的函数"><span class="nav-number">1.</span> <span class="nav-text">1、定义了一个需要两个参数的函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、传一个参数行，两个参数行，多个参数也行的函数"><span class="nav-number">2.</span> <span class="nav-text">2、传一个参数行，两个参数行，多个参数也行的函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如果我们多传几个参数呢"><span class="nav-number">2.1.</span> <span class="nav-text">如果我们多传几个参数呢</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、总结一下-参数"><span class="nav-number">3.</span> <span class="nav-text">3、总结一下 *参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、函数调用时，传入-参数，会对传入的元组参数进行一个解包功能，每一个元素自动作为函数的位置参数"><span class="nav-number">4.</span> <span class="nav-text">4、函数调用时，传入*参数，会对传入的元组参数进行一个解包功能，每一个元素自动作为函数的位置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、一个没有可变参数的函数，可用解包功能一次性传入多个参数"><span class="nav-number">5.</span> <span class="nav-text">5、一个没有可变参数的函数，可用解包功能一次性传入多个参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、-参数，参数名称前两个-，代表的是关键字参数，也叫做字典参数，看下例子"><span class="nav-number">6.</span> <span class="nav-text">6、**参数，参数名称前两个**，代表的是关键字参数，也叫做字典参数，看下例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1、函数调用时，也可以传入一个字典（需要前面加两个-），这样函数那块就会解包，它会把dictionary中所有键值对转换为一个一个的关键字参数传进去"><span class="nav-number">6.1.</span> <span class="nav-text">6.1、函数调用时，也可以传入一个字典（需要前面加两个*），这样函数那块就会解包，它会把dictionary中所有键值对转换为一个一个的关键字参数传进去</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、总结"><span class="nav-number">7.</span> <span class="nav-text">7、总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注意："><span class="nav-number">7.1.</span> <span class="nav-text">注意：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8、注意事项，再提一次"><span class="nav-number">8.</span> <span class="nav-text">8、注意事项，再提一次</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

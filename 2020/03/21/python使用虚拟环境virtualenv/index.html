@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python使用虚拟环境virtualenv">
+<meta property="og:url" content="http://yoursite.com/2020/03/21/python%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83virtualenv/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200321105019193.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-03-21T03:40:40.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:59:42.648Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200321105019193.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/21/python%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83virtualenv/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>python使用虚拟环境virtualenv | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/python%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83virtualenv/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python使用虚拟环境virtualenv
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-21 11:40:40" itemprop="dateCreated datePublished" datetime="2020-03-21T11:40:40+08:00">2020-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:59:42" itemprop="dateModified" datetime="2020-03-23T10:59:42+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、virtualenv的使用"><a href="#一、virtualenv的使用" class="headerlink" title="一、virtualenv的使用"></a>一、virtualenv的使用</h1><h2 id="1-安装virtualenv"><a href="#1-安装virtualenv" class="headerlink" title="1.安装virtualenv"></a>1.安装virtualenv</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install virtualenv</span><br></pre></td></tr></table></figure>
+<h2 id="2-创建pthon2的虚拟环境"><a href="#2-创建pthon2的虚拟环境" class="headerlink" title="2.创建pthon2的虚拟环境"></a>2.创建pthon2的虚拟环境</h2><p><strong>创建需要的python版本[系统默认是3.7,则创建2.7版]-p 表示环境名称</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">virtualenv scrapypy2 <span class="comment">#使用默认python版本创建虚拟环境，此处是py3</span></span><br><span class="line"></span><br><span class="line">virtualenv -p C:\Python\python27\python.exe scrapypy2</span><br><span class="line"></span><br><span class="line"><span class="comment">#Installing setuptools, pip, wheel...</span></span><br><span class="line"><span class="comment">#done.</span></span><br></pre></td></tr></table></figure>
+<p>完成后会在运行目录下建立一个文件夹：scrapypy2</p>
+<h2 id="3-进入pyhton2-7的虚拟环境"><a href="#3-进入pyhton2-7的虚拟环境" class="headerlink" title="3.进入pyhton2.7的虚拟环境"></a>3.进入pyhton2.7的虚拟环境</h2><p>进入<code>E:\a\web\blog\csdn-blog-export\scrapypy2\scripts</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd scrapypy2</span><br><span class="line">cd scripts</span><br><span class="line">activate.bat  <span class="comment">#即可进入pyhton2.7的虚拟环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#linux下直接: activate</span></span><br><span class="line">activate</span><br></pre></td></tr></table></figure>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">E:\a\web\blog\csdn-blog-export&gt;virtualenv -p C:\Python\python27\python.exe csdn</span><br><span class="line">Running virtualenv with interpreter C:\Python\python27\python.exe</span><br><span class="line">New python executable in E:\a\web\blog\csdn-blog-export\csdn\Scripts\python.exe</span><br><span class="line">Installing setuptools, pip, wheel...</span><br><span class="line">done.</span><br><span class="line"></span><br><span class="line">E:\a\web\blog\csdn-blog-export&gt;cd csdn</span><br><span class="line">E:\a\web\blog\csdn-blog-export\csdn&gt;cd scripts</span><br><span class="line"></span><br><span class="line">E:\a\web\blog\csdn-blog-export\csdn\Scripts&gt;activate.bat</span><br><span class="line"><span class="meta">#</span><span class="bash"> 成功进入显示如下，接下来即可像正常系统一样操作安装一个包</span></span><br><span class="line">(csdn) E:\a\web\blog\csdn-blog-export\csdn\Scripts&gt;pip install beautifulsoup4</span><br><span class="line"></span><br><span class="line">DEPRECATION: Python 2.7 reached the end of its life on January 1st, 2020. Please</span><br><span class="line"> upgrade your Python as Python 2.7 is no longer maintained. A future version of</span><br><span class="line">pip will drop support for Python 2.7. More details about Python 2 support in pip</span><br><span class="line">, can be found at https://pip.pypa.io/en/latest/development/release-process/#pyt</span><br><span class="line">hon-2-support</span><br><span class="line">Collecting beautifulsoup4</span><br><span class="line">  Downloading beautifulsoup4-4.8.2-py2-none-any.whl (106 kB)</span><br><span class="line">     |███████████████                 | 51 kB 28 kB/s eta 0:00:02</span><br><span class="line">     |██████████████████▌             | 61 kB 33 kB/s eta 0:0</span><br><span class="line">     |█████████████████████▌          | 71 kB 30 kB/s eta</span><br><span class="line">     |████████████████████████▌       | 81 kB 34 kB/s e</span><br><span class="line">     |███████████████████████████▌    | 92 kB 33 kB/</span><br><span class="line">     |██████████████████████████████▌ | 102 kB 35</span><br><span class="line">     |████████████████████████████████| 106 kB 3</span><br><span class="line">5 kB/s</span><br><span class="line">Collecting soupsieve&gt;=1.2</span><br><span class="line">  Downloading soupsieve-1.9.5-py2.py3-none-any.whl (33 kB)</span><br><span class="line">Collecting backports.functools-lru-cache; python_version &lt; "3"</span><br><span class="line">  Downloading backports.functools_lru_cache-1.6.1-py2.py3-none-any.whl (5.7 kB)</span><br><span class="line">Installing collected packages: backports.functools-lru-cache, soupsieve, beautif</span><br><span class="line">ulsoup4</span><br><span class="line">Successfully installed backports.functools-lru-cache-1.6.1 beautifulsoup4-4.8.2</span><br><span class="line">soupsieve-1.9.5</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="二、进阶virtualenvwrapper使用"><a href="#二、进阶virtualenvwrapper使用" class="headerlink" title="二、进阶virtualenvwrapper使用"></a>二、进阶virtualenvwrapper使用</h1><h2 id="1-安装virtualenvwrapper"><a href="#1-安装virtualenvwrapper" class="headerlink" title="1.安装virtualenvwrapper"></a>1.安装virtualenvwrapper</h2><p>每次进入目录下才能进入虚拟环境,太麻烦,此时可安装virtualenvwrapper来解决<br>#注意:python2和3安装命令不同,如用workon命令测试时,提示不是内部或外部命令,可用python3安装命令</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#python2安装命令:</span></span><br><span class="line">pip install virtualenvwrapper</span><br><span class="line"></span><br><span class="line"><span class="comment">#python3安装命令:</span></span><br><span class="line">pip install virtualenvwrapper-win</span><br><span class="line"></span><br><span class="line"><span class="comment">#再执行显示拥有的虚拟环境[此时因为没创建,提示没找到文件]:</span></span><br><span class="line">workon</span><br></pre></td></tr></table></figure>
+<h2 id="2-创建一个可管理的虚拟环境"><a href="#2-创建一个可管理的虚拟环境" class="headerlink" title="2.创建一个可管理的虚拟环境"></a>2.创建一个可管理的虚拟环境</h2><p><strong>注意:此新建的虚拟环境在此目录下:C:\Users\Administrator\Envs</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#创建名为py2的环境，常用第2个</span></span><br><span class="line"><span class="comment">#mkvirtualenv py2 </span></span><br><span class="line"><span class="comment">#不加-p参数会创建在环境变量中的python版本（现在3环境变量中要建2因此要用-p参数+2的路径）</span></span><br><span class="line">mkvirtualenv -p C:\Python\python27\python.exe py2</span><br><span class="line"></span><br><span class="line"><span class="comment">#再输入workon即可自动进入新建好的虚拟环境(此时在:(py3scrapy) C:\Users\Administrator\scrapytest\Scripts&gt;之下)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#此时退出虚拟环境命令变为:</span></span><br><span class="line">deactivate</span><br><span class="line"></span><br><span class="line"><span class="comment">#进入虚拟环境命令变为:</span></span><br><span class="line">activate</span><br><span class="line"></span><br><span class="line"><span class="comment">#在此环境下就可以向在真正环境里操作一样安装想要的包了;</span></span><br></pre></td></tr></table></figure>
+<h3 id="小技巧-更改默认虚拟环境存储目录不在C-Users-Administrator-Envs里的方法"><a href="#小技巧-更改默认虚拟环境存储目录不在C-Users-Administrator-Envs里的方法" class="headerlink" title="[小技巧]:更改默认虚拟环境存储目录不在C:\Users\Administrator\Envs里的方法:"></a>[小技巧]:更改默认虚拟环境存储目录不在C:\Users\Administrator\Envs里的方法:</h3><p>计算机—-属性—–高级系统设置—-环境变量—–新建名为workon_home的条目,值为新目录如:E:\Envs(提前建好此目录)<br><img src="https://img-blog.csdnimg.cn/20200321105019193.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>重启cmd,再运行workon即可看到效果,可以把在其它盘建的虚拟环境剪切到新建的e:\envs下,即可正常显示</p>
+<h3 id="第十二步-建立一个python2的可管理虚拟环境"><a href="#第十二步-建立一个python2的可管理虚拟环境" class="headerlink" title="第十二步:建立一个python2的可管理虚拟环境,"></a>第十二步:建立一个python2的可管理虚拟环境,</h3><p>(首先到之前安装的python2目录下:C:\Users\Administrator\scrapytest\Scripts\scrapypy2\Scripts)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#按住shift,同时,右键:在此处打开命令窗口输入:</span></span><br><span class="line">mkvirtualenv py2scrapy</span><br><span class="line"></span><br><span class="line"><span class="comment">#之后即可自动进入python2环境下进行想做的操作吧</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/21/%E7%94%A8hexo%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BAgit%E5%8D%9A%E5%AE%A2/" rel="prev" title="用hexo快速搭建github博客">
+      <i class="fa fa-chevron-left"></i> 用hexo快速搭建github博客
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/21/Github+Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="next" title="Github+Hexo搭建个人博客">
+      Github+Hexo搭建个人博客 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、virtualenv的使用"><span class="nav-number">1.</span> <span class="nav-text">一、virtualenv的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-安装virtualenv"><span class="nav-number">1.1.</span> <span class="nav-text">1.安装virtualenv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-创建pthon2的虚拟环境"><span class="nav-number">1.2.</span> <span class="nav-text">2.创建pthon2的虚拟环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-进入pyhton2-7的虚拟环境"><span class="nav-number">1.3.</span> <span class="nav-text">3.进入pyhton2.7的虚拟环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例"><span class="nav-number">1.3.1.</span> <span class="nav-text">实例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、进阶virtualenvwrapper使用"><span class="nav-number">2.</span> <span class="nav-text">二、进阶virtualenvwrapper使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-安装virtualenvwrapper"><span class="nav-number">2.1.</span> <span class="nav-text">1.安装virtualenvwrapper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-创建一个可管理的虚拟环境"><span class="nav-number">2.2.</span> <span class="nav-text">2.创建一个可管理的虚拟环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小技巧-更改默认虚拟环境存储目录不在C-Users-Administrator-Envs里的方法"><span class="nav-number">2.2.1.</span> <span class="nav-text">[小技巧]:更改默认虚拟环境存储目录不在C:\Users\Administrator\Envs里的方法:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十二步-建立一个python2的可管理虚拟环境"><span class="nav-number">2.2.2.</span> <span class="nav-text">第十二步:建立一个python2的可管理虚拟环境,</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

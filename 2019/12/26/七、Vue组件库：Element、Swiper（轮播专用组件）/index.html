@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="七、Vue组件库：Element、Swiper（轮播专用组件）">
+<meta property="og:url" content="http://yoursite.com/2019/12/26/%E4%B8%83%E3%80%81Vue%E7%BB%84%E4%BB%B6%E5%BA%93%EF%BC%9AElement%E3%80%81Swiper%EF%BC%88%E8%BD%AE%E6%92%AD%E4%B8%93%E7%94%A8%E7%BB%84%E4%BB%B6%EF%BC%89/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191226103341381.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191226103457121.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191226111909185.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191226145025900.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-12-26T06:57:27.000Z">
+<meta property="article:modified_time" content="2020-03-23T02:37:01.776Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191226103341381.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/26/%E4%B8%83%E3%80%81Vue%E7%BB%84%E4%BB%B6%E5%BA%93%EF%BC%9AElement%E3%80%81Swiper%EF%BC%88%E8%BD%AE%E6%92%AD%E4%B8%93%E7%94%A8%E7%BB%84%E4%BB%B6%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>七、Vue组件库：Element、Swiper（轮播专用组件） | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/26/%E4%B8%83%E3%80%81Vue%E7%BB%84%E4%BB%B6%E5%BA%93%EF%BC%9AElement%E3%80%81Swiper%EF%BC%88%E8%BD%AE%E6%92%AD%E4%B8%93%E7%94%A8%E7%BB%84%E4%BB%B6%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          七、Vue组件库：Element、Swiper（轮播专用组件）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-26 14:57:27" itemprop="dateCreated datePublished" datetime="2019-12-26T14:57:27+08:00">2019-12-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 10:37:01" itemprop="dateModified" datetime="2020-03-23T10:37:01+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、vue的Element组件库"><a href="#一、vue的Element组件库" class="headerlink" title="一、vue的Element组件库"></a>一、vue的Element组件库</h1><p>官网：<a href="https://element.eleme.cn/#/zh-CN" target="_blank" rel="noopener">https://element.eleme.cn/#/zh-CN</a></p>
+<h2 id="1-1安装"><a href="#1-1安装" class="headerlink" title="1.1安装"></a>1.1安装</h2><p>推荐安装方法：<br>首先要进入项目目录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cnpm i element-ui -S</span><br><span class="line">	或</span><br><span class="line">npm i element-ui -S</span><br></pre></td></tr></table></figure>
+<h3 id="1-1-2-CDN安装"><a href="#1-1-2-CDN安装" class="headerlink" title="1.1.2 CDN安装"></a>1.1.2 CDN安装</h3><p>直接引入无需安装：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 引入样式 --&gt;</span><br><span class="line">&lt;link rel=<span class="string">"stylesheet"</span> href=<span class="string">"https://unpkg.com/element-ui/lib/theme-chalk/index.css"</span>&gt;</span><br><span class="line">&lt;!-- 引入组件库 --&gt;</span><br><span class="line">&lt;script src=<span class="string">"https://unpkg.com/element-ui/lib/index.js"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2引入所有"><a href="#1-2引入所有" class="headerlink" title="1.2引入所有"></a>1.2引入所有</h2><p>官方：<a href="https://element.eleme.cn/2.13/#/zh-CN/component/quickstart" target="_blank" rel="noopener">https://element.eleme.cn/2.13/#/zh-CN/component/quickstart</a><br>在src/main.js里引入</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> ElementUI <span class="keyword">from</span> <span class="string">'element-ui'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'element-ui/lib/theme-chalk/index.css'</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.vue'</span>;</span><br><span class="line"></span><br><span class="line">Vue.use(ElementUI);</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="二、按需引入"><a href="#二、按需引入" class="headerlink" title="二、按需引入"></a>二、按需引入</h1><h2 id="第1步，安装-babel-plugin-component："><a href="#第1步，安装-babel-plugin-component：" class="headerlink" title="第1步，安装 babel-plugin-component："></a>第1步，安装 babel-plugin-component：</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install babel-plugin-component -D</span><br></pre></td></tr></table></figure>
+<h2 id="第2步，配置src-babelrc文件"><a href="#第2步，配置src-babelrc文件" class="headerlink" title="第2步，配置src/.babelrc文件"></a>第2步，配置src/.babelrc文件</h2><p>【1】配置部分</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"presets"</span>: [</span><br><span class="line">    [<span class="string">"env"</span>, &#123;</span><br><span class="line">      <span class="string">"modules"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="string">"targets"</span>: &#123;</span><br><span class="line">        <span class="string">"browsers"</span>: [<span class="string">"&gt; 1%"</span>, <span class="string">"last 2 versions"</span>, <span class="string">"not ie &lt;= 8"</span>]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;],</span><br><span class="line">    <span class="string">"stage-2"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"plugins"</span>: [</span><br><span class="line">    <span class="string">"transform-vue-jsx"</span>, <span class="string">"transform-runtime"</span>,</span><br><span class="line">    [<span class="comment">//【1】配置部分</span></span><br><span class="line">          <span class="string">"component"</span>,</span><br><span class="line">          &#123;</span><br><span class="line">            <span class="string">"libraryName"</span>: <span class="string">"element-ui"</span>,</span><br><span class="line">            <span class="string">"styleLibraryName"</span>: <span class="string">"theme-chalk"</span></span><br><span class="line">          &#125;</span><br><span class="line">    ]<span class="comment">//配置结尾</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="第3步，引入部分组件，比如-Button-和-Select"><a href="#第3步，引入部分组件，比如-Button-和-Select" class="headerlink" title="第3步，引入部分组件，比如 Button 和 Select"></a>第3步，引入部分组件，比如 Button 和 Select</h2><p><strong>那么需要在 main.js 中写入以下内容（全局引入）：</strong><br>【1】引入所需组件<br>【2】使用对应组件（以下2个）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; Button, Select &#125; <span class="keyword">from</span> <span class="string">'element-ui'</span>; <span class="comment">//【1】引入所需组件</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.vue'</span>;</span><br><span class="line"></span><br><span class="line">Vue.use(Button) <span class="comment">//【2】使用对应组件（以下2个）</span></span><br><span class="line">Vue.use(Select) </span><br><span class="line"></span><br><span class="line"><span class="comment">/* 或写为</span></span><br><span class="line"><span class="comment"> * Vue.component(Button.name, Button); </span></span><br><span class="line"><span class="comment"> * Vue.component(Select.name, Select);</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="完整组件列表和引入方式详见："><a href="#完整组件列表和引入方式详见：" class="headerlink" title="完整组件列表和引入方式详见："></a>完整组件列表和引入方式详见：</h3><p>（完整组件列表以 components.json 为准）<br><a href="https://element.eleme.cn/2.13/#/zh-CN/component/quickstart" target="_blank" rel="noopener">https://element.eleme.cn/2.13/#/zh-CN/component/quickstart</a></p>
+<h2 id="第4步，全局配置（可选步骤）"><a href="#第4步，全局配置（可选步骤）" class="headerlink" title="第4步，全局配置（可选步骤）"></a>第4步，全局配置（可选步骤）</h2><p>在引入 Element 时，可以传入一个全局配置对象。该对象目前支持 size 与 zIndex 字段。size 用于改变组件的默认尺寸，zIndex 设置弹框的初始 z-index（默认值：2000）。按照引入 Element 的方式，具体操作如下：</p>
+<p><strong>完整引入 Element：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> Element <span class="keyword">from</span> <span class="string">'element-ui'</span>;</span><br><span class="line">Vue.use(Element, &#123; <span class="attr">size</span>: <span class="string">'small'</span>, <span class="attr">zIndex</span>: <span class="number">3000</span> &#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>按需引入 Element：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; Button &#125; <span class="keyword">from</span> <span class="string">'element-ui'</span>;</span><br><span class="line"></span><br><span class="line">Vue.prototype.$ELEMENT = &#123; <span class="attr">size</span>: <span class="string">'small'</span>, <span class="attr">zIndex</span>: <span class="number">3000</span> &#125;;</span><br><span class="line">Vue.use(Button);</span><br></pre></td></tr></table></figure>
+
+<p>按照以上设置，项目中所有拥有 size 属性的组件的默认尺寸均为 ‘small’，弹框的初始 z-index 为 3000。</p>
+<h2 id="第5步，开始使用"><a href="#第5步，开始使用" class="headerlink" title="第5步，开始使用"></a>第5步，开始使用</h2><p>至此，一个基于 Vue 和 Element 的开发环境已经搭建完毕，现在就可以编写代码了。<br><strong>官方使用文档：</strong> <a href="https://element.eleme.cn/2.13/#/zh-CN/component/button" target="_blank" rel="noopener">https://element.eleme.cn/2.13/#/zh-CN/component/button</a><br>在文档中找到button组件使用方法，把想要的样式复制到想要的地方即可<br><img src="https://img-blog.csdnimg.cn/20191226103341381.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="src-parent-vue"><a href="#src-parent-vue" class="headerlink" title="src/parent.vue"></a>src/parent.vue</h3><p>【1】使用Element的组件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line">    &lt;h1&gt;路由实例parent&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;!-- 【1】使用Element的组件 --&gt;</span></span><br><span class="line"><span class="regexp">    &lt;el-button&gt;默认按钮&lt;/</span>el-button&gt;</span><br><span class="line">    &lt;el-button type=<span class="string">"primary"</span>&gt;主要按钮&lt;<span class="regexp">/el-button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;el-button type="success"&gt;成功按钮&lt;/</span>el-button&gt;</span><br><span class="line">    &lt;el-button type=<span class="string">"info"</span>&gt;信息按钮&lt;<span class="regexp">/el-button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;el-button type="warning"&gt;警告按钮&lt;/</span>el-button&gt;</span><br><span class="line">    &lt;el-button type=<span class="string">"danger"</span>&gt;危险按钮&lt;<span class="regexp">/el-button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;hr/</span>&gt;</span><br><span class="line">    &lt;el-button plain&gt;朴素按钮&lt;<span class="regexp">/el-button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;el-button type="primary" plain&gt;主要按钮&lt;/</span>el-button&gt;</span><br><span class="line">    &lt;el-button type=<span class="string">"success"</span> plain&gt;成功按钮&lt;<span class="regexp">/el-button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;el-button type="info" plain&gt;信息按钮&lt;/</span>el-button&gt;</span><br><span class="line">    &lt;el-button type=<span class="string">"warning"</span> plain&gt;警告按钮&lt;<span class="regexp">/el-button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;el-button type="danger" plain&gt;危险按钮&lt;/</span>el-button&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    components:&#123;&#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        list:[] </span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    filters:&#123;&#125;,</span><br><span class="line">    directives:&#123;&#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="https://img-blog.csdnimg.cn/20191226103457121.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="2-2-走马灯（轮播）图片展示组件使用示例"><a href="#2-2-走马灯（轮播）图片展示组件使用示例" class="headerlink" title="2.2 走马灯（轮播）图片展示组件使用示例"></a>2.2 走马灯（轮播）图片展示组件使用示例</h2><h3 id="src-main-js"><a href="#src-main-js" class="headerlink" title="src/main.js"></a>src/main.js</h3><p>【1】以下2个为引入走马灯必须组件<br>【2】以下2个为使用走马灯组件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"><span class="keyword">import</span> router <span class="keyword">from</span> <span class="string">'@/router.js'</span><span class="comment">//先引入自定义路由</span></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  Button,</span><br><span class="line">  Select,</span><br><span class="line">  Carousel,<span class="comment">//【1】以下2个为引入走马灯必须组件</span></span><br><span class="line">  CarouselItem,</span><br><span class="line">   &#125; <span class="keyword">from</span> <span class="string">'element-ui'</span>;</span><br><span class="line"></span><br><span class="line">Vue.use(Button)</span><br><span class="line">Vue.use(Select)</span><br><span class="line">Vue.use(Carousel)<span class="comment">//【2】以下2个为使用走马灯必须组件</span></span><br><span class="line">Vue.use(CarouselItem)</span><br><span class="line"></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  template: <span class="string">'&lt;App/&gt;'</span>,</span><br><span class="line">  router,<span class="comment">//把路由投到vue实例</span></span><br><span class="line">  components: &#123;</span><br><span class="line">    App</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="src-components-parent-vue"><a href="#src-components-parent-vue" class="headerlink" title="src/components/parent.vue"></a>src/components/parent.vue</h3><p>【0】定义一些图片<br>【1】使用Element的走马灯组件<br>【2】控制走马灯图片样式</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line">    &lt;h1&gt;路由实例parent&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;hr/</span>&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">1</span>】使用Element的走马灯组件 --&gt;</span><br><span class="line">    &lt;el-carousel height=<span class="string">"550px"</span>&gt;</span><br><span class="line">        &lt;el-carousel-item v-<span class="keyword">for</span>=<span class="string">"(img,index) in imgs"</span> :key=<span class="string">"index"</span>&gt;</span><br><span class="line">          &lt;img :src=<span class="string">"img"</span> /&gt; &lt;!-- 循环图片 --&gt;</span><br><span class="line">        &lt;<span class="regexp">/el-carousel-item&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>el-carousel&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    name:<span class="string">'parent'</span>,</span><br><span class="line">    components:&#123;&#125;,</span><br><span class="line">    data()&#123;</span><br><span class="line">      <span class="keyword">return</span>&#123;</span><br><span class="line">        imgs:[<span class="comment">//【0】定义一些图片</span></span><br><span class="line">          <span class="string">"http://www.wallcoo.com/nature/2010_Landscape_1920_Desktop_11/wallpapers/1600x1200/Moose%20Pond%20and%20Mount%20Pleasant%20in%20Autumn%2C%20Maine.jpg"</span>,</span><br><span class="line">          <span class="string">"https://cli.clewm.net/file/2015/01/20/81b71bc509d09368d4602a4b5b05d093.jpg"</span>,</span><br><span class="line">          <span class="string">"https://hbimg.huabanimg.com/a84ec58661bc95efb974e2eebea2b3fd880a8fb12870a-ksYmbV_fw658"</span>,</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    filters:&#123;&#125;,</span><br><span class="line">    directives:&#123;&#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">  /</span>* 【<span class="number">2</span>】控制走马灯图片样式 *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">    .el-carousel__item h3 &#123;</span></span><br><span class="line"><span class="regexp">      color: #475669;</span></span><br><span class="line"><span class="regexp">      font-size: 14px;</span></span><br><span class="line"><span class="regexp">      opacity: 0.75;</span></span><br><span class="line"><span class="regexp">      line-height: 150px;</span></span><br><span class="line"><span class="regexp">      margin: 0;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    .el-carousel__item:nth-child(2n) &#123;</span></span><br><span class="line"><span class="regexp">       background-color: #99a9bf;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    .el-carousel__item:nth-child(2n+1) &#123;</span></span><br><span class="line"><span class="regexp">       background-color: #d3dce6;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">    img &#123;</span></span><br><span class="line"><span class="regexp">      width:100%;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="https://img-blog.csdnimg.cn/20191226111909185.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="三、Swiper（轮播专用组件）"><a href="#三、Swiper（轮播专用组件）" class="headerlink" title="三、Swiper（轮播专用组件）"></a>三、Swiper（轮播专用组件）</h1><p>官网：<a href="https://www.swiper.com.cn" target="_blank" rel="noopener">https://www.swiper.com.cn</a><br>Vue中使用：<a href="https://github.com/surmon-china/vue-awesome-swiper" target="_blank" rel="noopener">https://github.com/surmon-china/vue-awesome-swiper</a><br>官方API文档：<a href="https://www.swiper.com.cn/api/index.html" target="_blank" rel="noopener">https://www.swiper.com.cn/api/index.html</a></p>
+<h2 id="1-1-概述"><a href="#1-1-概述" class="headerlink" title="1.1 概述"></a>1.1 概述</h2><ol>
+<li>Swiper常用于移动端网站的内容触摸滑动</li>
+<li>Swiper是纯javascript打造的滑动特效插件，面向手机、平板电脑等移动终端。</li>
+<li>Swiper能实现触屏焦点图、触屏Tab切换、触屏多图切换等常用效果。</li>
+<li>Swiper开源、免费、稳定、使用简单、功能强大，是架构移动终端网站的重要选择！</li>
+</ol>
+<h2 id="1-2-安装Swiper"><a href="#1-2-安装Swiper" class="headerlink" title="1.2 安装Swiper"></a>1.2 安装Swiper</h2><h3 id="CDN"><a href="#CDN" class="headerlink" title="CDN"></a>CDN</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;link rel=<span class="string">"stylesheet"</span> href=<span class="string">"path/to/swiper/dist/css/swiper.css"</span>/&gt;</span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"path/to/swiper.js"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;script type="text/</span>javascript<span class="string">" src="</span>path/to/vue.min.js<span class="string">"&gt;&lt;/script&gt;</span></span><br><span class="line"><span class="string">&lt;script type="</span>text/javascript<span class="string">" src="</span>path/to/dist/vue-awesome-swiper.js<span class="string">"&gt;&lt;/script&gt;</span></span><br><span class="line"><span class="string">&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">  Vue.use(window.VueAwesomeSwiper)</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="NPM"><a href="#NPM" class="headerlink" title="NPM"></a>NPM</h3><p>首先要进入项目目录。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cnpm install vue-awesome-swiper --save</span><br><span class="line">或</span><br><span class="line">npm install vue-awesome-swiper --save</span><br></pre></td></tr></table></figure>
+<h2 id="1-3-引入"><a href="#1-3-引入" class="headerlink" title="1.3 引入"></a>1.3 引入</h2><h3 id="1-3-1全局引入-（mount-with-global）"><a href="#1-3-1全局引入-（mount-with-global）" class="headerlink" title="1.3.1全局引入 （mount with global）"></a><font color='red'>1.3.1全局引入 （mount with global）</font></h3><h4 id="src-main-js-1"><a href="#src-main-js-1" class="headerlink" title="src/main.js"></a>src/main.js</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> VueAwesomeSwiper <span class="keyword">from</span> <span class="string">'vue-awesome-swiper'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// require styles</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'swiper/dist/css/swiper.css'</span></span><br><span class="line"></span><br><span class="line">Vue.use(VueAwesomeSwiper, <span class="comment">/* &#123; default global options &#125; */</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-2组件内安装（局部引入）（mount-with-component）"><a href="#1-3-2组件内安装（局部引入）（mount-with-component）" class="headerlink" title="1.3.2组件内安装（局部引入）（mount with component）"></a>1.3.2组件内安装（局部引入）（mount with component）</h3><h4 id="src-components-parent-vue-1"><a href="#src-components-parent-vue-1" class="headerlink" title="src/components/parent.vue"></a>src/components/parent.vue</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// require styles</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'swiper/dist/css/swiper.css'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; swiper, swiperSlide &#125; <span class="keyword">from</span> <span class="string">'vue-awesome-swiper'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  components: &#123;</span><br><span class="line">    swiper,</span><br><span class="line">    swiperSlide</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-3-ssr安装（mount-with-ssr）"><a href="#1-3-3-ssr安装（mount-with-ssr）" class="headerlink" title="1.3.3 ssr安装（mount with ssr）"></a>1.3.3 ssr安装（mount with ssr）</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// If used in nuxt.js/ssr, you should keep it only in browser build environment</span></span><br><span class="line"><span class="keyword">if</span> (process.browser) &#123;</span><br><span class="line">  <span class="keyword">const</span> VueAwesomeSwiper = <span class="built_in">require</span>(<span class="string">'vue-awesome-swiper/dist/ssr'</span>)</span><br><span class="line">  Vue.use(VueAwesomeSwiper)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="1-4-定义插件相关参数（custom-swiper-plugin）"><a href="#1-4-定义插件相关参数（custom-swiper-plugin）" class="headerlink" title="1.4 定义插件相关参数（custom swiper plugin）"></a>1.4 定义插件相关参数（custom swiper plugin）</h2><h3 id="src-main-js-2"><a href="#src-main-js-2" class="headerlink" title="src/main.js"></a>src/main.js</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Swiper <span class="keyword">from</span> <span class="string">'swiper'</span></span><br><span class="line">Swiper.use(&#123;</span><br><span class="line">  name: <span class="string">'pluginName'</span>,</span><br><span class="line">  params: &#123;</span><br><span class="line">    pluginSwitch: <span class="literal">false</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  on: &#123;</span><br><span class="line">    init() &#123;</span><br><span class="line">      <span class="keyword">if</span> (!<span class="keyword">this</span>.params.pluginSwitch) <span class="keyword">return</span></span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'init'</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// swiper callback...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="1-5-使用swiper"><a href="#1-5-使用swiper" class="headerlink" title="1.5 使用swiper"></a>1.5 使用swiper</h2><p>参数配置相关详见官方API文档：<a href="https://www.swiper.com.cn/api/index.html" target="_blank" rel="noopener">https://www.swiper.com.cn/api/index.html</a></p>
+<h3 id="src-main-js-3"><a href="#src-main-js-3" class="headerlink" title="src/main.js"></a>src/main.js</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"><span class="keyword">import</span> router <span class="keyword">from</span> <span class="string">'@/router.js'</span><span class="comment">//先引入自定义路由</span></span><br><span class="line"><span class="comment">//[1]引入swiper</span></span><br><span class="line"><span class="keyword">import</span> VueAwesomeSwiper <span class="keyword">from</span> <span class="string">'vue-awesome-swiper'</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'swiper/dist/css/swiper.css'</span></span><br><span class="line"></span><br><span class="line">Vue.use(VueAwesomeSwiper)<span class="comment">//[2]使用swiper</span></span><br><span class="line"></span><br><span class="line">Vue.use(Carousel)<span class="comment">//以下2个为使用走马灯必须组件</span></span><br><span class="line">Vue.use(CarouselItem)</span><br><span class="line"></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  template: <span class="string">'&lt;App/&gt;'</span>,</span><br><span class="line">  router,<span class="comment">//把路由投到vue实例</span></span><br><span class="line">  components: &#123;</span><br><span class="line">    App</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="parent-vue"><a href="#parent-vue" class="headerlink" title="parent.vue"></a>parent.vue</h3><p>【0】-【3】</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line">    &lt;h1&gt;路由实例parent&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;hr/</span>&gt;</span><br><span class="line">    &lt;!-- 【<span class="number">1</span>】使用swiper的轮播组件 --&gt;</span><br><span class="line">    &lt;swiper :options=<span class="string">"swiperOption"</span> ref=<span class="string">"mySwiper"</span> @someSwiperEvent=<span class="string">"callback"</span>&gt;</span><br><span class="line">        &lt;!-- slides --&gt;</span><br><span class="line">        &lt;swiper-slide v-<span class="keyword">for</span>=<span class="string">"(img,i) in imgs"</span> :key=<span class="string">"i"</span>&gt;</span><br><span class="line">          &lt;img :src=<span class="string">"img"</span>/&gt;</span><br><span class="line">        &lt;<span class="regexp">/swiper-slide&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">        &lt;!-- Optional controls --&gt;</span></span><br><span class="line"><span class="regexp">        &lt;div class="swiper-pagination"  slot="pagination"&gt;&lt;/</span>div&gt;&lt;!--分页器。如果放置在swiper-container外面，需要自定义样式。--&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- <span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"swiper-button-prev"</span> <span class="attr">slot</span>=<span class="string">"button-prev"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">        &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"swiper-button-next"</span> slot=<span class="string">"button-next"</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">        &lt;div class="swiper-scrollbar"   slot="scrollbar"&gt;&lt;/</span>div&gt; --&gt;</span><br><span class="line">      &lt;<span class="regexp">/swiper&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  export default&#123;</span></span><br><span class="line"><span class="regexp">    name:'parent',</span></span><br><span class="line"><span class="regexp">    components:&#123;&#125;,</span></span><br><span class="line"><span class="regexp">    data()&#123;</span></span><br><span class="line"><span class="regexp">      return&#123;</span></span><br><span class="line"><span class="regexp">        /</span><span class="regexp">/【2】配置轮播相关参数都写在此对象内部</span></span><br><span class="line"><span class="regexp">        swiperOption: &#123;</span></span><br><span class="line"><span class="regexp">                  pagination: &#123;</span></span><br><span class="line"><span class="regexp">                      el: '.swiper-pagination',</span></span><br><span class="line"><span class="regexp">                    &#125;,</span></span><br><span class="line"><span class="regexp">                &#125;,</span></span><br><span class="line"><span class="regexp">        imgs:[//【0】定义一些图片</span></span><br><span class="line"><span class="regexp">          "https://hbimg.huabanimg.com/a84ec58661bc95efb974e2eebea2b3fd880a8fb12870a-ksYmbV_fw658",</span></span><br><span class="line"><span class="regexp">          "https://cli.clewm.net/file/2015/01/20/81b71bc509d09368d4602a4b5b05d093.jpg",</span></span><br><span class="line"><span class="regexp">          "https://hbimg.huabanimg.com/a84ec58661bc95efb974e2eebea2b3fd880a8fb12870a-ksYmbV_fw658",</span></span><br><span class="line"><span class="regexp">        ]</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    filters:&#123;&#125;,</span></span><br><span class="line"><span class="regexp">    directives:&#123;&#125;,</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">  <span class="comment">/* 【3】控制轮播图样式 */</span></span><br><span class="line">.swiper-container&#123;</span><br><span class="line">    --swiper-theme-color: #ff6600;</span><br><span class="line">    --swiper-pagination-color: #00ff33;/* 两种都可以 */</span><br><span class="line">  &#125;</span><br><span class="line">img &#123;</span><br><span class="line">width:<span class="number">800</span>px;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="https://img-blog.csdnimg.cn/20191226145025900.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/25/%E5%85%AD%E3%80%81Vue-Router%EF%BC%9A%E5%9F%BA%E7%A1%80%E8%B7%AF%E7%94%B1%E5%A4%84%E7%90%86%E3%80%81%E8%B7%AF%E7%94%B1%E6%8F%90%E5%8F%96%E6%88%90%E5%8D%95%E7%8B%AC%E6%96%87%E4%BB%B6%E3%80%81%E8%B7%AF%E7%94%B1%E5%B5%8C%E5%A5%97%E3%80%81%E8%B7%AF%E7%94%B1%E4%BC%A0%E5%8F%82%E6%95%B0%E3%80%81%E8%B7%AF%E7%94%B1%E9%AB%98%E4%BA%AE%E3%80%81html5%E7%9A%84history%E4%BD%BF%E7%94%A8/" rel="prev" title="六、Vue-Router：基础路由处理、路由提取成单独文件、路由嵌套、路由传参数、路由高亮、html5的history使用">
+      <i class="fa fa-chevron-left"></i> 六、Vue-Router：基础路由处理、路由提取成单独文件、路由嵌套、路由传参数、路由高亮、html5的history使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/26/%E5%85%AB%E3%80%81Vue-lazyload/" rel="next" title="八、Vue-lazyload">
+      八、Vue-lazyload <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、vue的Element组件库"><span class="nav-number">1.</span> <span class="nav-text">一、vue的Element组件库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1安装"><span class="nav-number">1.1.</span> <span class="nav-text">1.1安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-CDN安装"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.2 CDN安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2引入所有"><span class="nav-number">1.2.</span> <span class="nav-text">1.2引入所有</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、按需引入"><span class="nav-number">2.</span> <span class="nav-text">二、按需引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第1步，安装-babel-plugin-component："><span class="nav-number">2.1.</span> <span class="nav-text">第1步，安装 babel-plugin-component：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第2步，配置src-babelrc文件"><span class="nav-number">2.2.</span> <span class="nav-text">第2步，配置src&#x2F;.babelrc文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第3步，引入部分组件，比如-Button-和-Select"><span class="nav-number">2.3.</span> <span class="nav-text">第3步，引入部分组件，比如 Button 和 Select</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#完整组件列表和引入方式详见："><span class="nav-number">2.3.1.</span> <span class="nav-text">完整组件列表和引入方式详见：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第4步，全局配置（可选步骤）"><span class="nav-number">2.4.</span> <span class="nav-text">第4步，全局配置（可选步骤）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第5步，开始使用"><span class="nav-number">2.5.</span> <span class="nav-text">第5步，开始使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-parent-vue"><span class="nav-number">2.5.1.</span> <span class="nav-text">src&#x2F;parent.vue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-走马灯（轮播）图片展示组件使用示例"><span class="nav-number">2.6.</span> <span class="nav-text">2.2 走马灯（轮播）图片展示组件使用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-main-js"><span class="nav-number">2.6.1.</span> <span class="nav-text">src&#x2F;main.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-components-parent-vue"><span class="nav-number">2.6.2.</span> <span class="nav-text">src&#x2F;components&#x2F;parent.vue</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、Swiper（轮播专用组件）"><span class="nav-number">3.</span> <span class="nav-text">三、Swiper（轮播专用组件）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-概述"><span class="nav-number">3.1.</span> <span class="nav-text">1.1 概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-安装Swiper"><span class="nav-number">3.2.</span> <span class="nav-text">1.2 安装Swiper</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CDN"><span class="nav-number">3.2.1.</span> <span class="nav-text">CDN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NPM"><span class="nav-number">3.2.2.</span> <span class="nav-text">NPM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-引入"><span class="nav-number">3.3.</span> <span class="nav-text">1.3 引入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1全局引入-（mount-with-global）"><span class="nav-number">3.3.1.</span> <span class="nav-text">1.3.1全局引入 （mount with global）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#src-main-js-1"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">src&#x2F;main.js</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2组件内安装（局部引入）（mount-with-component）"><span class="nav-number">3.3.2.</span> <span class="nav-text">1.3.2组件内安装（局部引入）（mount with component）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#src-components-parent-vue-1"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">src&#x2F;components&#x2F;parent.vue</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-3-ssr安装（mount-with-ssr）"><span class="nav-number">3.3.3.</span> <span class="nav-text">1.3.3 ssr安装（mount with ssr）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-定义插件相关参数（custom-swiper-plugin）"><span class="nav-number">3.4.</span> <span class="nav-text">1.4 定义插件相关参数（custom swiper plugin）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-main-js-2"><span class="nav-number">3.4.1.</span> <span class="nav-text">src&#x2F;main.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-使用swiper"><span class="nav-number">3.5.</span> <span class="nav-text">1.5 使用swiper</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-main-js-3"><span class="nav-number">3.5.1.</span> <span class="nav-text">src&#x2F;main.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parent-vue"><span class="nav-number">3.5.2.</span> <span class="nav-text">parent.vue</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>

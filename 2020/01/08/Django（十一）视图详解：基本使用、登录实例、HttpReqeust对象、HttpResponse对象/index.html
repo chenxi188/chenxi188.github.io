@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="详情请点阅读全文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django（十一）视图详解：基本使用、登录实例、HttpReqeust对象、HttpResponse对象">
+<meta property="og:url" content="http://yoursite.com/2020/01/08/Django%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89%E8%A7%86%E5%9B%BE%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E3%80%81%E7%99%BB%E5%BD%95%E5%AE%9E%E4%BE%8B%E3%80%81HttpReqeust%E5%AF%B9%E8%B1%A1%E3%80%81HttpResponse%E5%AF%B9%E8%B1%A1/index.html">
+<meta property="og:site_name" content="晨曦的博客">
+<meta property="og:description" content="详情请点阅读全文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200107155941573.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020010811140783.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020010811381417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114547809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114612487.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114719774.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114738611.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114800609.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114811531.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114837162.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108113940634.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114148831.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114303926.png">
+<meta property="article:published_time" content="2020-01-08T06:31:21.000Z">
+<meta property="article:modified_time" content="2020-03-23T03:01:39.300Z">
+<meta property="article:author" content="晨曦">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="大数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200107155941573.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/01/08/Django%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89%E8%A7%86%E5%9B%BE%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E3%80%81%E7%99%BB%E5%BD%95%E5%AE%9E%E4%BE%8B%E3%80%81HttpReqeust%E5%AF%B9%E8%B1%A1%E3%80%81HttpResponse%E5%AF%B9%E8%B1%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Django（十一）视图详解：基本使用、登录实例、HttpReqeust对象、HttpResponse对象 | 晨曦的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">晨曦的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/08/Django%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89%E8%A7%86%E5%9B%BE%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E3%80%81%E7%99%BB%E5%BD%95%E5%AE%9E%E4%BE%8B%E3%80%81HttpReqeust%E5%AF%B9%E8%B1%A1%E3%80%81HttpResponse%E5%AF%B9%E8%B1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+      <meta itemprop="name" content="晨曦">
+      <meta itemprop="description" content="晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Django（十一）视图详解：基本使用、登录实例、HttpReqeust对象、HttpResponse对象
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-08 14:31:21" itemprop="dateCreated datePublished" datetime="2020-01-08T14:31:21+08:00">2020-01-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 11:01:39" itemprop="dateModified" datetime="2020-03-23T11:01:39+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>详情请点阅读全文 </p>
+<a id="more"></a>
+
+<h1 id="一、视图（基于类的视图）"><a href="#一、视图（基于类的视图）" class="headerlink" title="一、视图（基于类的视图）"></a>一、视图（基于类的视图）</h1><p>【参考】<a href="https://docs.djangoproject.com/zh-hans/3.0/topics/class-based-views/intro/" target="_blank" rel="noopener">https://docs.djangoproject.com/zh-hans/3.0/topics/class-based-views/intro/</a></p>
+<h2 id="1）视图的功能"><a href="#1）视图的功能" class="headerlink" title="1）视图的功能"></a>1）视图的功能</h2><ol>
+<li>接收请求，进行处理，与M和T进行交互，返回应答。</li>
+<li>返回html内容 HttpResponse，也可能重定向 redirect,还可以返回json数据。<h2 id="2）视图函数使用"><a href="#2）视图函数使用" class="headerlink" title="2）视图函数使用"></a>2）视图函数使用</h2><h1 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h1><h2 id="1-定义视图函数"><a href="#1-定义视图函数" class="headerlink" title="1. 定义视图函数"></a>1. 定义视图函数</h2></li>
+</ol>
+<ul>
+<li>request参数必须有。</li>
+<li>是一个HttpRequest类型的对象。</li>
+<li>参数名可以变化，但不要更改。<h2 id="2-配置url"><a href="#2-配置url" class="headerlink" title="2. 配置url"></a>2. 配置url</h2></li>
+<li>建立url和视图函数之间的对应关系。</li>
+</ul>
+<h3 id="2-2-url配置的过程"><a href="#2-2-url配置的过程" class="headerlink" title="2.2 url配置的过程"></a>2.2 url配置的过程</h3><p>1) 在项目的urls文件中包含具体应用的urls文件，在具体应用的urls文件中包含具体url和视图的对应关系。<br>2) url配置项是定义在一个名叫urlpatterns的列表中，其中的每一个元素就是一个配置项，每一个配置项都调用url函数。</p>
+<h2 id="3-url匹配的过程"><a href="#3-url匹配的过程" class="headerlink" title="3. url匹配的过程"></a>3. url匹配的过程</h2><p><img src="https://img-blog.csdnimg.cn/20200107155941573.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>url:<a href="http://127.0.0.1:8000/aindex?a=1" target="_blank" rel="noopener">http://127.0.0.1:8000/aindex?a=1</a></strong></p>
+<p>1)  去除域名和后面的参数，剩下/aindex,再把前面的/去掉，剩下aindex<br>2) 拿aindex先到项目的url.py文件中进行从上到下的匹配，匹配成功之后执行后面对应的处理动作，就是把匹配成功的部分a字符去除，然后拿剩下的部分index到应用的urls.py文件中再进行从上到下的匹配。<br>3) 如果匹配成功则调用相应的视图产生内容返回给客户端。如果匹配失败则产生404错误。</p>
+<h2 id="4-错误视图"><a href="#4-错误视图" class="headerlink" title="4.错误视图"></a>4.错误视图</h2><ol>
+<li>404：找不到页面，关闭调试模式之后，默认会显示一个标准的错误页面，如果要显示自定义的页面，则需要的templates目录下面自定义一个404.html文件。<ul>
+<li>a)url没有配置</li>
+<li>b)url配置错误</li>
+</ul>
+</li>
+<li>500: 服务器端的错误。<ul>
+<li>a)视图出错，即views.py页面的对应函数内部出错会显示500错误。</li>
+</ul>
+</li>
+<li>网站开发完成需要关闭调试模式，在settings.py文件中：    <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DEBUG=<span class="literal">False</span></span><br><span class="line">ALLOWED_HOST=[<span class="string">'*'</span>]</span><br></pre></td></tr></table></figure></li>
+<li>显示效果：Not Found<br>The requested resource was not found on this server.</li>
+<li>自定义错误页面：建立【templates/404.html】 即可，django会自动调用此页面，不需自己调用<br>系统提供： 用于返回用户请求的path<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;404错误页面&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h1&gt;页面找不到：--&#123;&#123; request_path &#125;&#125;&lt;/h1&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></li>
+<li>自定义500错误页：建立【templates/500.html】 即可</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;500错误页面&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h1&gt;服务器错误&lt;/h1&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-捕获url参数"><a href="#5-捕获url参数" class="headerlink" title="5.捕获url参数"></a>5.捕获url参数</h2><ul>
+<li>进行url匹配时，把所需要的捕获的部分设置成一个正则表达式组，这样django框架就会自动把匹配成功后相应组的内容作为参数传递给视图函数。<ul>
+<li>1)位置参数：参数名可以随意指定</li>
+<li>2)关键字参数：在位置参数的基础上给正则表达式组命名即可。<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?P&lt;组名&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>关键字参数，视图中参数名必须和正则表达式组名一致.</li>
+<li>【实例】：<br><a href="https://blog.csdn.net/u010132177/article/details/103831173" target="_blank" rel="noopener">https://blog.csdn.net/u010132177/article/details/103831173</a><br>的第 二、通过url传参，访问书英雄详情<h4 id="1-加带参数的链接-templates-app1-book-html"><a href="#1-加带参数的链接-templates-app1-book-html" class="headerlink" title="1)加带参数的链接/templates/app1/book.html"></a>1)加带参数的链接/templates/app1/book.html</h4>【1】通过href属性，把book的id做为参数传给详情页，进而查询对应英雄信息<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;书籍页面&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">本站的图书有：</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">    &#123;% <span class="keyword">for</span> book <span class="keyword">in</span> books %&#125;</span><br><span class="line">		&lt;!--【1】通过href属性，把book的id做为参数传给详情页，进而查询对应英雄信息--&gt;</span><br><span class="line">   		&lt;li&gt;&lt;a href="/detail/&#123;&#123;book.id&#125;&#125;"&gt; &#123;&#123;book.btitle&#125;&#125;&lt;/a&gt;：&#123;&#123;book.bpub_date&#125;&#125;&lt;/li&gt;</span><br><span class="line">    &#123;%empty%&#125;</span><br><span class="line">    	暂时没有图书！！！</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="2-接收参数，渲染到模板app1-views-py"><a href="#2-接收参数，渲染到模板app1-views-py" class="headerlink" title="2)接收参数，渲染到模板app1/views.py"></a>2)接收参数，渲染到模板app1/views.py</h4>【00】bookId为接收urls.py必须中指定的参数，来源页templates/app1/book.html<br>【1】查询主键为url中传过来的参数Id。或写成：id=bookId<br>【2】关联查询：查询对应书的所有英雄信息<br>【3】把参数渲染到detail页面去</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"><span class="keyword">from</span> app1.models <span class="keyword">import</span> BookInfo <span class="comment">#【0】从模型下导入bookinfo数据模型</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''app1应用：首页'''</span></span><br><span class="line">    context=&#123;&#125; <span class="comment">#定义1个字典</span></span><br><span class="line">    context[<span class="string">'hello'</span>]=<span class="string">'hello world!!!'</span> <span class="comment">#向字典写一个键：值（hello:'hello world!!'）</span></span><br><span class="line">    context[<span class="string">'wa'</span>]=<span class="string">'wawawawawahahahaha!'</span></span><br><span class="line">    context[<span class="string">'list'</span>]=list(range(<span class="number">1</span>,<span class="number">10</span>)) <span class="comment">#定义一个字典值为一个列表,list为把内容转换为列表</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/index.html'</span>,context) <span class="comment">#返回：把context渲染到app1/index.html的模板文件</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">books</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''app1应用：图书列表页'''</span></span><br><span class="line">    books=BookInfo.objects.all()<span class="comment">#从数据库获取图书对象列表</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/book.html'</span>,&#123;<span class="string">'books'</span>:books&#125;)<span class="comment">#把获取到的图书对象赋值给books键。【注意】键'books'必须要加引号</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">detail</span><span class="params">(request,bookId)</span>:</span><span class="comment"># 【00】bookId为接收urls.py必须中指定的参数，来源页templates/app1/book.html</span></span><br><span class="line">    <span class="string">'''app1应用：图书详情页，显示英雄信息'''</span></span><br><span class="line">    book=BookInfo.objects.get(pk=bookId) <span class="comment">#【1】查询主键为url中传过来的参数Id。或写成：id=bookId</span></span><br><span class="line">    heros=book.heroinfo_set.all() <span class="comment">#【2】关联查询：查询对应书的所有英雄信息</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/detail.html'</span>,&#123;<span class="string">'book'</span>:book,<span class="string">'heros'</span>:heros&#125;) <span class="comment">#【3】把参数渲染到detail页面去</span></span><br></pre></td></tr></table></figure>
+<h4 id="3）app1-urls-py配置"><a href="#3）app1-urls-py配置" class="headerlink" title="3）app1/urls.py配置"></a>3）app1/urls.py配置</h4><p>【书详情页】通过url接收参数2种写法以下两种都可：<br>【1.关键字参数】参数用尖括号包起来&lt;&gt;<code>path(r&quot;detail/&lt;int:bookId&gt;&quot;,views.detail)</code>（视图接收参数必须与此处保持一致，即 bookId）<br>【2.正则参数】参数必须要带括号<code>re_path(r&quot;^detail/(\d+)&quot;,views.detail)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path</span><br><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns=[</span><br><span class="line">    path(<span class="string">'app1/'</span>,views.index),</span><br><span class="line">    path(<span class="string">'books/'</span>,views.books),</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 【书详情页】，通过url接收参数2种写法以下两种都可：</span></span><br><span class="line">    <span class="comment"># path(r"detail/&lt;int:bookId&gt;",views.detail), #【尖括号】参数用尖括号包起来&lt;&gt;</span></span><br><span class="line">    re_path(<span class="string">r"^detail/(\d+)"</span>,views.detail), <span class="comment">#【正则】参数必须要带括号</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-普通登录案例（-HttpRequest和-HttpResponse对象的API-django-http）"><a href="#6-普通登录案例（-HttpRequest和-HttpResponse对象的API-django-http）" class="headerlink" title="6.普通登录案例（ HttpRequest和 HttpResponse对象的API django.http）"></a>6.普通登录案例（ HttpRequest和 HttpResponse对象的API django.http）</h2><p>【参考】<a href="https://docs.djangoproject.com/zh-hans/3.0/ref/request-response/" target="_blank" rel="noopener">https://docs.djangoproject.com/zh-hans/3.0/ref/request-response/</a></p>
+<h3 id="0）知识点：views-py视图函数的request-POST、request-GET"><a href="#0）知识点：views-py视图函数的request-POST、request-GET" class="headerlink" title="0）知识点：views.py视图函数的request.POST、request.GET"></a>0）知识点：views.py视图函数的request.POST、request.GET</h3><ol>
+<li>request.POST 保存的是post方式提交的参数 QueryDict</li>
+<li>request.GET 保存是get方式提交的参数</li>
+<li>它俩的类型 print(request.POST/GET) 返回 QueryDict类型</li>
+<li>QueryDict的传参数方式、调用方式1、调用方式2、</li>
+<li>调用不存在的值、传入类似列表值、类似列表值调用。<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> django.http.request <span class="keyword">import</span> QueryDict <span class="comment">#引入模块</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q=QueryDict(<span class="string">'a=1&amp;b=2&amp;c=3'</span>) <span class="comment">#传参形式</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q[<span class="string">'a'</span>] <span class="comment">#调用方式1</span></span><br><span class="line"><span class="string">'1'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.get(<span class="string">'a'</span>) <span class="comment">#调用方式2</span></span><br><span class="line"><span class="string">'1'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.get(<span class="string">'d'</span>) <span class="comment">#调用不存在的值，什么都不返回</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.get(<span class="string">'d'</span>,<span class="string">'default'</span>) <span class="comment">#设置调用不存在的值，返回一个默认的值</span></span><br><span class="line"><span class="string">'default'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q[<span class="string">'d'</span>] <span class="comment">#调用方式1调用不存在的值，会直接报错，因此，使用调用方式一get会比较好</span></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">Traceback (most recent call last):</span></span><br><span class="line"><span class="string">  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-p</span></span><br><span class="line"><span class="string">ackages\django\utils\datastructures.py", line 76, in __getitem__</span></span><br><span class="line"><span class="string">    list_ = super().__getitem__(key)</span></span><br><span class="line"><span class="string">KeyError: 'd'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">During handling of the above exception, another exception occurred:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Traceback (most recent call last):</span></span><br><span class="line"><span class="string">  File "&lt;console&gt;", line 1, in &lt;module&gt;</span></span><br><span class="line"><span class="string">  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-p</span></span><br><span class="line"><span class="string">ackages\django\utils\datastructures.py", line 78, in __getitem__</span></span><br><span class="line"><span class="string">    raise MultiValueDictKeyError(key)</span></span><br><span class="line"><span class="string">django.utils.datastructures.MultiValueDictKeyError: 'd'</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q2=QueryDict(<span class="string">'a=1&amp;a=2&amp;a=3'</span>) <span class="comment">#传入类似列表值、及调用</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q2[<span class="string">'a'</span>]</span><br><span class="line"><span class="string">'3'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q2.get(<span class="string">'a'</span>)</span><br><span class="line"><span class="string">'3'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q2.getlist(<span class="string">'a'</span>)</span><br><span class="line">[<span class="string">'1'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>]</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="1-显示出登录页面"><a href="#1-显示出登录页面" class="headerlink" title="1)显示出登录页面"></a>1)显示出登录页面</h3><p>参考：<a href="https://docs.djangoproject.com/zh-hans/3.0/topics/forms/" target="_blank" rel="noopener">https://docs.djangoproject.com/zh-hans/3.0/topics/forms/</a></p>
+<p>1) 设计url，通过浏览器访问 <a href="http://127.0.0.1:8000/login" target="_blank" rel="noopener">http://127.0.0.1:8000/login</a> 时显示登录页面。<br>2) 设计url对应的视图函数login。<br>3) 编写模板文件login.html。</p>
+<p>url |    视图 |    模板文件<br>|—|—|—|<br>/login |    login |    login.html</p>
+<h3 id="2-登录校验功能"><a href="#2-登录校验功能" class="headerlink" title="2)登录校验功能"></a>2)登录校验功能</h3><p>1) 设计url,点击登录页的登录按钮发起请求<a href="http://127.0.0.1:8000/login_check时进行登录校验。" target="_blank" rel="noopener">http://127.0.0.1:8000/login_check时进行登录校验。</a><br>2) 设计url对应的视图函数login_check：<br>    - 接收表单提交过来的数据。<br>    - 进行登录校验，若用户名密码正确则跳转到登录成功页。若失败在跳转到登录页面。<br>3) 登录成功后跳转到首页。</p>
+<p>url |    视图|    模板文件<br>|—|—|—|<br>/login_check |    login_check |    无</p>
+<h4 id="第1步，app1-views-py编写登陆函数、校验函数"><a href="#第1步，app1-views-py编写登陆函数、校验函数" class="headerlink" title="第1步，app1/views.py编写登陆函数、校验函数"></a>第1步，app1/views.py编写登陆函数、校验函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render,redirect <span class="comment">#引入重定向简写模块</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''登录页'''</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'app1/login.html'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login_check</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">'''登录校验'''</span></span><br><span class="line">    username=request.POST.get(<span class="string">'username'</span>) <span class="comment">#对应模板的input的name选项</span></span><br><span class="line">    password=request.POST.get(<span class="string">'password'</span>)</span><br><span class="line">    <span class="keyword">if</span> username==<span class="string">'jim'</span> <span class="keyword">and</span> password==<span class="string">'123'</span>:</span><br><span class="line">        <span class="keyword">return</span> redirect(<span class="string">'/books'</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> redirect(<span class="string">'/login'</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="第2步，登录页面模板templates-app1-login-html"><a href="#第2步，登录页面模板templates-app1-login-html" class="headerlink" title="第2步，登录页面模板templates/app1/login.html"></a>第2步，登录页面模板templates/app1/login.html</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;登录页面&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">POST:提交的参数请求头。数据安全性要求比较高的时候使用post.&lt;br/&gt;</span><br><span class="line">GET:提交的参数在url中。&lt;br/&gt;</span><br><span class="line">&lt;form method="post" action="/login_check"&gt; &lt;!--action提交页面--&gt;</span><br><span class="line">    用户名:&lt;input type=<span class="string">"text"</span> name=<span class="string">"username"</span> value=<span class="string">"&#123;&#123; username &#125;&#125;"</span>&gt;&lt;br/&gt;</span><br><span class="line">    密码:&lt;input type=<span class="string">"password"</span> name=<span class="string">"password"</span>&gt;&lt;br/&gt;</span><br><span class="line">    &lt;input type=<span class="string">"submit"</span> value=<span class="string">"登录"</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="第3步，app1-urls-py设置"><a href="#第3步，app1-urls-py设置" class="headerlink" title="第3步，app1/urls.py设置"></a>第3步，app1/urls.py设置</h4><p>【登录页】<br>【登录检测】</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path</span><br><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns=[</span><br><span class="line">    path(<span class="string">'login/'</span>,views.login),<span class="comment">#【登录页】</span></span><br><span class="line">    path(<span class="string">'login_check'</span>,views.login_check),<span class="comment">#【登录检测】</span></span><br><span class="line"></span><br><span class="line">    path(<span class="string">'app1/'</span>,views.index),</span><br><span class="line">    path(<span class="string">'books/'</span>,views.books),</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 书详情页，通过url接收参数2种写法以下两种都可：</span></span><br><span class="line">    <span class="comment"># path(r"detail/&lt;int:bookId&gt;",views.detail), #参数用尖括号包起来&lt;&gt;</span></span><br><span class="line">    re_path(<span class="string">r"^detail/(\d+)"</span>,views.detail), <span class="comment">#参数必须要带括号</span></span><br><span class="line"></span><br><span class="line">    path(<span class="string">'addInfo/'</span>,views.addInfo), <span class="comment">#添加三国书</span></span><br><span class="line"></span><br><span class="line">    path(<span class="string">r'delete/&lt;int:bid&gt;'</span>,views.deleteInfo), <span class="comment">#删除对应图书</span></span><br><span class="line"></span><br><span class="line">    path(<span class="string">r'areas/'</span>,views.areas), <span class="comment">#展示对应省市区信息</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h4 id="第4步，把project1-settings-py"><a href="#第4步，把project1-settings-py" class="headerlink" title="第4步，把project1/settings.py"></a>第4步，把project1/settings.py</h4><p>把MIDDLEWARE 的 csrf注释掉，否则将无法实现登录。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">'django.middleware.security.SecurityMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions.middleware.SessionMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.middleware.common.CommonMiddleware'</span>,</span><br><span class="line">    <span class="comment">#'django.middleware.csrf.CsrfViewMiddleware',</span></span><br><span class="line">    <span class="string">'django.contrib.auth.middleware.AuthenticationMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.contrib.messages.middleware.MessageMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.middleware.clickjacking.XFrameOptionsMiddleware'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h4 id="第5步，启动项目进入项目目录"><a href="#第5步，启动项目进入项目目录" class="headerlink" title="第5步，启动项目进入项目目录"></a>第5步，启动项目进入项目目录</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">py manage.py runserver</span><br></pre></td></tr></table></figure>
+<h4 id="效果-http-127-0-0-1-8000-login"><a href="#效果-http-127-0-0-1-8000-login" class="headerlink" title="效果 http://127.0.0.1:8000/login/"></a>效果 <a href="http://127.0.0.1:8000/login/" target="_blank" rel="noopener">http://127.0.0.1:8000/login/</a></h4><p>输入jim 123即跳转到 books/页面，否则跳转回登录页面。<br><img src="https://img-blog.csdnimg.cn/2020010811140783.png" alt="在这里插入图片描述"></p>
+<h4 id="扩展：获取请求的方式是get还是post，-app1-views-py"><a href="#扩展：获取请求的方式是get还是post，-app1-views-py" class="headerlink" title="扩展：获取请求的方式是get还是post，/app1/views.py"></a>扩展：获取请求的方式是get还是post，/app1/views.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(request.method)</span><br></pre></td></tr></table></figure>
+<h1 id="HttpReqeust对象"><a href="#HttpReqeust对象" class="headerlink" title="HttpReqeust对象"></a>HttpReqeust对象</h1><ul>
+<li>服务器接收到http协议的请求后，会根据报文创建HttpRequest对象，这个对象不需要我们创建，直接使用服务器构造好的对象就可以。视图的第一个参数必须是HttpRequest对象，在django.http模块中定义了HttpRequest对象的API。</li>
+</ul>
+<h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><p><strong>下面除非特别说明，属性都是只读的。</strong></p>
+<ul>
+<li>path：一个字符串，表示请求的页面的完整路径，不包含域名和参数部分。</li>
+<li>method：一个字符串，表示请求使用的HTTP方法，常用值包括：’GET’、’POST’。<br>在浏览器中给出地址发出请求采用get方式，如超链接。<br>在浏览器中点击表单的提交按钮发起请求，如果表单的method设置为post则为post请求。</li>
+<li>encoding：一个字符串，表示提交的数据的编码方式。<br>如果为None则表示使用浏览器的默认设置，一般为utf-8。<br>这个属性是可写的，可以通过修改它来修改访问表单数据使用的编码，接下来对属性的任何访问将使用新的encoding值。</li>
+<li>GET：QueryDict类型对象，类似于字典，包含get请求方式的所有参数。</li>
+<li>POST：QueryDict类型对象，类似于字典，包含post请求方式的所有参数。</li>
+<li>FILES：一个类似于字典的对象，包含所有的上传文件。</li>
+<li>COOKIES：一个标准的Python字典，包含所有的cookie，键和值都为字符串。</li>
+<li>session：一个既可读又可写的类似于字典的对象，表示当前的会话，只有当Django 启用会话的支持时才可用，详细内容见”状态保持”。</li>
+</ul>
+<p><strong>运行服务器，在浏览器中浏览首页，可以在浏览器“开发者工具”中看到请求信息如下图：</strong><br><img src="https://img-blog.csdnimg.cn/2020010811381417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><ul>
+<li><p>接下来演示属性path、method、encoding，对于GET、POST、FILES、COOKIES、session后面会有详细讲解。</p>
+</li>
+<li><p>path、encoding</p>
+</li>
+</ul>
+<p>1）打开booktest/views.py文件，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">    str=<span class="string">'%s,%s'</span>%(request.path,request.encoding)</span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">'booktest/index.html'</span>, &#123;<span class="string">'str'</span>:str&#125;)</span><br></pre></td></tr></table></figure>
+
+
+<p>2）在templates/booktest/下创建index.html文件，代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;首页&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"><span class="number">1.</span> request对象的path,encoding属性：&lt;br/&gt;</span><br><span class="line">&#123;&#123; str &#125;&#125;</span><br><span class="line">&lt;br/&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2）打开浏览器请求，运行效果如下图：<br><img src="https://img-blog.csdnimg.cn/20200108114547809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>3）以chrome浏览器为例，设置编码如下图，默认为utf-8编码。<br><img src="https://img-blog.csdnimg.cn/20200108114612487.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="method"><a href="#method" class="headerlink" title="method"></a>method</h3><p>1）打开booktest/views.py文件，编写视图method_show，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">method_show</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> HttpResponse(request.method)</span><br></pre></td></tr></table></figure>
+
+<p>2）打开booktest/urls.py文件，新增配置如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'^method_show/$'</span>, views.method_show),</span><br></pre></td></tr></table></figure>
+
+<p>3）修改templates/booktest/下创建index.html文件，添加代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;首页&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="number">2.</span>request对象的method属性：&lt;br/&gt;</span><br><span class="line">&lt;a href='/method_show/'&gt;get方式&lt;/a&gt;&lt;br/&gt;</span><br><span class="line">&lt;form method=<span class="string">"post"</span> action=<span class="string">"/method_show/"</span>&gt;</span><br><span class="line">    &lt;input type=<span class="string">"submit"</span> value=<span class="string">"post方式"</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;br/&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4）打开浏览器，输入如下网址：<br><a href="http://127.0.0.1:8000/" target="_blank" rel="noopener">http://127.0.0.1:8000/</a><br>5）浏览效果如下图：<br><img src="https://img-blog.csdnimg.cn/20200108114719774.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>6）点击链接，转到method_show，浏览效果如下图:<br><img src="https://img-blog.csdnimg.cn/20200108114738611.png" alt="在这里插入图片描述"><br>7) 回到method_test页面，点击按钮，转到method_post，浏览效果如下图，报错了。<br><img src="https://img-blog.csdnimg.cn/20200108114800609.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>9）回到浏览器中刷新，浏览效果如下图，点击“继续”按钮。<br><img src="https://img-blog.csdnimg.cn/20200108114811531.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>10）最终浏览效果如下图：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200108114837162.png" alt="在这里插入图片描述"></p>
+<h1 id="HttpResponse对象"><a href="#HttpResponse对象" class="headerlink" title="HttpResponse对象"></a>HttpResponse对象</h1><p>视图在接收请求并处理后，必须返回HttpResponse对象或子对象。在django.http模块中定义了HttpResponse对象的API。HttpRequest对象由Django创建，HttpResponse对象由开发人员创建。</p>
+<p>运行服务器，在浏览器中浏览首页，可以在浏览器“开发者工具”中看到响应信息如下图：<br><img src="https://img-blog.csdnimg.cn/20200108113940634.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h2><ul>
+<li>content：表示返回的内容。</li>
+<li>charset：表示response采用的编码字符集，默认为utf-8。</li>
+<li>status_code：返回的HTTP响应状态码。</li>
+<li>content-type：指定返回数据的的MIME类型，默认为’text/html’。</li>
+</ul>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><ul>
+<li><code>_init_</code>：创建HttpResponse对象后完成返回内容的初始化。</li>
+<li>set_cookie：设置Cookie信息。</li>
+<li>set_cookie(key, value=’’, max_age=None, expires=None)</li>
+<li>cookie是网站以键值对格式存储在浏览器中的一段纯文本信息，用于实现用户跟踪。</li>
+<li>max_age是一个整数，表示在指定秒数后过期。</li>
+<li>expires是一个datetime或timedelta对象，会话将在这个指定的日期/时间过期。</li>
+<li>max_age与expires二选一。<br>如果不指定过期时间，在关闭浏览器时cookie会过期。</li>
+<li>delete_cookie(key)：删除指定的key的Cookie，如果key不存在则什么也不发生。</li>
+<li>write：向响应体中写数据。</li>
+</ul>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>直接返回数据</p>
+<p>1）打开booktest/views.py文件，定义视图index2如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index2</span><span class="params">(request)</span>:</span></span><br><span class="line">    str=<span class="string">'&lt;h1&gt;hello world&lt;/h1&gt;'</span></span><br><span class="line">    <span class="keyword">return</span> HttpResponse(str)</span><br></pre></td></tr></table></figure>
+
+<p>2）打开booktest/urls.py文件，配置url。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'^index2/$'</span>,views.index2),</span><br></pre></td></tr></table></figure>
+
+<p>3）运行服务器，在浏览器中打开如下网址。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8000</span>/index2/</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200108114148831.png" alt="在这里插入图片描述"><br>如果使用这种方式构造一个漂亮丰富的页面，对于开发人员真是会发疯，于是就有了下面的方式：</p>
+<h3 id="调用模板"><a href="#调用模板" class="headerlink" title="调用模板"></a>调用模板</h3><p>可以将html、css、js定义到一个html文件中，然后由视图来调用。</p>
+<p>1）打开booktest/views.py文件，定义视图index3如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.template <span class="keyword">import</span> RequestContext, loader</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index3</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="comment">#加载模板</span></span><br><span class="line">    t1=loader.get_template(<span class="string">'booktest/index3.html'</span>)</span><br><span class="line">    <span class="comment">#构造上下文</span></span><br><span class="line">    context=RequestContext(request,&#123;<span class="string">'h1'</span>:<span class="string">'hello'</span>&#125;)</span><br><span class="line">    <span class="comment">#使用上下文渲染模板，生成字符串后返回响应对象</span></span><br><span class="line">    <span class="keyword">return</span> HttpResponse(t1.render(context))</span><br></pre></td></tr></table></figure>
+
+<p>2）打开booktest/urls.py文件，配置url。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'^index3/$'</span>,views.index3),</span><br></pre></td></tr></table></figure>
+
+<p>3）在templates/booktest/目录下创建index3.html，代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;使用模板&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h1&gt;&#123;&#123;h1&#125;&#125;&lt;/h1&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4）运行服务器，在浏览器中打开如下网址。</p>
+<p><a href="http://127.0.0.1:8000/index3/" target="_blank" rel="noopener">http://127.0.0.1:8000/index3/</a><br>运行效果如下图：<br><img src="https://img-blog.csdnimg.cn/20200108114303926.png" alt="在这里插入图片描述"></p>
+<h3 id="调用模板简写函数render"><a href="#调用模板简写函数render" class="headerlink" title="调用模板简写函数render"></a>调用模板简写函数render</h3><p>每次调用模板时都要执行加载、上下文、渲染三个步骤，为了简化操作，Django定义了render()函数封装了以上三个步骤的代码，定义在django.shortcuts模块中。</p>
+<p>1）打开booktest/views.py文件，定义视图index3如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index3</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">'booktest/index3.html'</span>, &#123;<span class="string">'h1'</span>: <span class="string">'hello'</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>是不是用render()函数调用模板比上面简单多了？</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/07/Django%EF%BC%88%E5%8D%81%EF%BC%89%E6%A8%A1%E5%9E%8B%EF%BC%9Adjango%E6%A8%A1%E5%9E%8B%E7%B1%BB%E5%AF%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%EF%BC%9A%E5%A2%9E!%E5%88%A0!%E6%94%B9!%E6%9F%A5%E3%80%81%E8%87%AA%E5%85%B3%E8%81%94%E3%80%81%E7%AE%A1%E7%90%86%E5%99%A8%E3%80%81%E5%85%83%E9%80%89%E9%A1%B9%EF%BC%88%E6%8C%87%E5%AE%9A%E8%A1%A8%E5%90%8D%EF%BC%89/" rel="prev" title="Django（十）模型：django模型类对数据库的：增/删/改/查、自关联、管理器、元选项（指定表名）">
+      <i class="fa fa-chevron-left"></i> Django（十）模型：django模型类对数据库的：增/删/改/查、自关联、管理器、元选项（指定表名）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/08/Django%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E8%A7%86%E5%9B%BE--%E5%88%A9%E7%94%A8jquery%E4%BB%8E%E5%90%8E%E5%8F%B0%E5%8F%91%E9%80%81ajax%E8%AF%B7%E6%B1%82%E5%B9%B6%E5%A4%84%E7%90%86%E3%80%81ajax%E7%99%BB%E5%BD%95%E6%A1%88%E4%BE%8B/" rel="next" title="Django（十二）视图--利用jquery从后台发送ajax请求并处理、ajax登录案例">
+      Django（十二）视图--利用jquery从后台发送ajax请求并处理、ajax登录案例 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、视图（基于类的视图）"><span class="nav-number">1.</span> <span class="nav-text">一、视图（基于类的视图）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1）视图的功能"><span class="nav-number">1.1.</span> <span class="nav-text">1）视图的功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2）视图函数使用"><span class="nav-number">1.2.</span> <span class="nav-text">2）视图函数使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、使用"><span class="nav-number">2.</span> <span class="nav-text">二、使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-定义视图函数"><span class="nav-number">2.1.</span> <span class="nav-text">1. 定义视图函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-配置url"><span class="nav-number">2.2.</span> <span class="nav-text">2. 配置url</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-url配置的过程"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2 url配置的过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-url匹配的过程"><span class="nav-number">2.3.</span> <span class="nav-text">3. url匹配的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-错误视图"><span class="nav-number">2.4.</span> <span class="nav-text">4.错误视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-捕获url参数"><span class="nav-number">2.5.</span> <span class="nav-text">5.捕获url参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-加带参数的链接-templates-app1-book-html"><span class="nav-number">2.5.0.1.</span> <span class="nav-text">1)加带参数的链接&#x2F;templates&#x2F;app1&#x2F;book.html</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-接收参数，渲染到模板app1-views-py"><span class="nav-number">2.5.0.2.</span> <span class="nav-text">2)接收参数，渲染到模板app1&#x2F;views.py</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3）app1-urls-py配置"><span class="nav-number">2.5.0.3.</span> <span class="nav-text">3）app1&#x2F;urls.py配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-普通登录案例（-HttpRequest和-HttpResponse对象的API-django-http）"><span class="nav-number">2.6.</span> <span class="nav-text">6.普通登录案例（ HttpRequest和 HttpResponse对象的API django.http）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0）知识点：views-py视图函数的request-POST、request-GET"><span class="nav-number">2.6.1.</span> <span class="nav-text">0）知识点：views.py视图函数的request.POST、request.GET</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-显示出登录页面"><span class="nav-number">2.6.2.</span> <span class="nav-text">1)显示出登录页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-登录校验功能"><span class="nav-number">2.6.3.</span> <span class="nav-text">2)登录校验功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第1步，app1-views-py编写登陆函数、校验函数"><span class="nav-number">2.6.3.1.</span> <span class="nav-text">第1步，app1&#x2F;views.py编写登陆函数、校验函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第2步，登录页面模板templates-app1-login-html"><span class="nav-number">2.6.3.2.</span> <span class="nav-text">第2步，登录页面模板templates&#x2F;app1&#x2F;login.html</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第3步，app1-urls-py设置"><span class="nav-number">2.6.3.3.</span> <span class="nav-text">第3步，app1&#x2F;urls.py设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第4步，把project1-settings-py"><span class="nav-number">2.6.3.4.</span> <span class="nav-text">第4步，把project1&#x2F;settings.py</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第5步，启动项目进入项目目录"><span class="nav-number">2.6.3.5.</span> <span class="nav-text">第5步，启动项目进入项目目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#效果-http-127-0-0-1-8000-login"><span class="nav-number">2.6.3.6.</span> <span class="nav-text">效果 http:&#x2F;&#x2F;127.0.0.1:8000&#x2F;login&#x2F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展：获取请求的方式是get还是post，-app1-views-py"><span class="nav-number">2.6.3.7.</span> <span class="nav-text">扩展：获取请求的方式是get还是post，&#x2F;app1&#x2F;views.py</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HttpReqeust对象"><span class="nav-number">3.</span> <span class="nav-text">HttpReqeust对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#属性"><span class="nav-number">3.1.</span> <span class="nav-text">属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">3.1.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#method"><span class="nav-number">3.1.2.</span> <span class="nav-text">method</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HttpResponse对象"><span class="nav-number">4.</span> <span class="nav-text">HttpResponse对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#属性-1"><span class="nav-number">4.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法"><span class="nav-number">4.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">4.3.</span> <span class="nav-text">实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#调用模板"><span class="nav-number">4.3.1.</span> <span class="nav-text">调用模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用模板简写函数render"><span class="nav-number">4.3.2.</span> <span class="nav-text">调用模板简写函数render</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="晨曦"
+      src="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
+  <p class="site-author-name" itemprop="name">晨曦</p>
+  <div class="site-description" itemprop="description">晨曦的技术博客，专注于python、vue、react、人工智能、爬虫、大数据分析</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+ 
+</body>
+</html>
