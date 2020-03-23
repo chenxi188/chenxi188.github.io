@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 4.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/myblog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/myblog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/myblog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/myblog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/myblog/css/main.css">
+<link rel="stylesheet" href="/blog/css/main.css">
 
 
-<link rel="stylesheet" href="/myblog/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"pasaulis.gitee.io","root":"/myblog/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"pasaulis.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="详情请点阅读全文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《机学三》特征工程3 —— 特征选择：特征选择、数据降维">
-<meta property="og:url" content="https://pasaulis.gitee.io/myblog/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/index.html">
+<meta property="og:url" content="https://pasaulis.gitee.io/blog/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/index.html">
 <meta property="og:site_name" content="晨曦的博客">
 <meta property="og:description" content="详情请点阅读全文">
 <meta property="og:locale" content="zh_CN">
@@ -45,7 +45,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191120082724711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
 
-<link rel="canonical" href="https://pasaulis.gitee.io/myblog/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/">
+<link rel="canonical" href="https://pasaulis.gitee.io/blog/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/">
 
 
 <script id="page-configurations">
@@ -107,7 +107,7 @@
 
   <div class="site-meta">
 
-    <a href="/myblog/" class="brand" rel="start">
+    <a href="/blog/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">晨曦的博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -128,27 +128,27 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/myblog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-about">
 
-    <a href="/myblog/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+    <a href="/blog/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/myblog/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+    <a href="/blog/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/myblog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+    <a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/myblog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
   </ul>
@@ -180,7 +180,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://pasaulis.gitee.io/myblog/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/">
+    <link itemprop="mainEntityOfPage" href="https://pasaulis.gitee.io/blog/2019/11/20/%E3%80%8A%E6%9C%BA%E5%AD%A6%E4%B8%89%E3%80%8B%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B3%20%E2%80%94%E2%80%94%20%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E6%95%B0%E6%8D%AE%E9%99%8D%E7%BB%B4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
@@ -218,11 +218,11 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/myblog/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                  <a href="/blog/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/myblog/categories/python/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                  <a href="/blog/categories/python/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
                 </span>
             </span>
 
@@ -794,11 +794,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/myblog/2019/11/19/%E5%8D%81%E5%9B%9B%E3%80%81%20React%E8%B7%AF%E7%94%B1%EF%BC%88react-router4.x%EF%BC%89%EF%BC%9A%20%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E3%80%81get%E4%BC%A0%E5%80%BC%E3%80%81React%E4%B9%8B%E4%B8%AD%E4%BD%BF%E7%94%A8url%E6%A8%A1%E5%9D%97/" rel="prev" title="十四、 React路由（react-router4.x）： 动态路由、get传值、React之中使用url模块">
+    <a href="/blog/2019/11/19/%E5%8D%81%E5%9B%9B%E3%80%81%20React%E8%B7%AF%E7%94%B1%EF%BC%88react-router4.x%EF%BC%89%EF%BC%9A%20%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E3%80%81get%E4%BC%A0%E5%80%BC%E3%80%81React%E4%B9%8B%E4%B8%AD%E4%BD%BF%E7%94%A8url%E6%A8%A1%E5%9D%97/" rel="prev" title="十四、 React路由（react-router4.x）： 动态路由、get传值、React之中使用url模块">
       <i class="fa fa-chevron-left"></i> 十四、 React路由（react-router4.x）： 动态路由、get传值、React之中使用url模块
     </a></div>
       <div class="post-nav-item">
-    <a href="/myblog/2019/11/21/%E5%8D%81%E4%BA%94%E3%80%81React%EF%BC%9A%E7%AE%80%E5%8D%95%E7%82%B9%E9%A4%90%E5%AE%9E%E4%BE%8B%EF%BC%9A%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%8Chtml%E8%A7%A3%E6%9E%90%E5%86%99%E6%B3%95/" rel="next" title="十五、React：简单点餐实例：知识点，html解析写法">
+    <a href="/blog/2019/11/21/%E5%8D%81%E4%BA%94%E3%80%81React%EF%BC%9A%E7%AE%80%E5%8D%95%E7%82%B9%E9%A4%90%E5%AE%9E%E4%BE%8B%EF%BC%9A%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%8Chtml%E8%A7%A3%E6%9E%90%E5%86%99%E6%B3%95/" rel="next" title="十五、React：简单点餐实例：知识点，html解析写法">
       十五、React：简单点餐实例：知识点，html解析写法 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -874,20 +874,20 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/myblog/archives/">
+          <a href="/blog/archives/">
         
           <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/myblog/categories/">
+            <a href="/blog/categories/">
           
         <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/myblog/tags/">
+            <a href="/blog/tags/">
           
         <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">标签</span></a>
@@ -937,19 +937,19 @@
   </div>
 
   
-  <script src="/myblog/lib/anime.min.js"></script>
-  <script src="/myblog/lib/velocity/velocity.min.js"></script>
-  <script src="/myblog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/myblog/js/utils.js"></script>
+<script src="/blog/js/utils.js"></script>
 
-<script src="/myblog/js/motion.js"></script>
-
-
-<script src="/myblog/js/schemes/pisces.js"></script>
+<script src="/blog/js/motion.js"></script>
 
 
-<script src="/myblog/js/next-boot.js"></script>
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
 
 
 
