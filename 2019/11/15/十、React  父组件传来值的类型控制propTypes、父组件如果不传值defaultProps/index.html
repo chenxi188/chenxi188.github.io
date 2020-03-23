@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"xiuxiuing.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"pasaulis.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="详情请点阅读全文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="十、React  父组件传来值的类型控制propTypes、父组件如果不传值defaultProps">
-<meta property="og:url" content="https://xiuxiuing.gitee.io/blog/2019/11/15/%E5%8D%81%E3%80%81React%20%20%E7%88%B6%E7%BB%84%E4%BB%B6%E4%BC%A0%E6%9D%A5%E5%80%BC%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%8E%A7%E5%88%B6propTypes%E3%80%81%E7%88%B6%E7%BB%84%E4%BB%B6%E5%A6%82%E6%9E%9C%E4%B8%8D%E4%BC%A0%E5%80%BCdefaultProps/index.html">
+<meta property="og:url" content="https://pasaulis.gitee.io/myblog/2019/11/15/%E5%8D%81%E3%80%81React%20%20%E7%88%B6%E7%BB%84%E4%BB%B6%E4%BC%A0%E6%9D%A5%E5%80%BC%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%8E%A7%E5%88%B6propTypes%E3%80%81%E7%88%B6%E7%BB%84%E4%BB%B6%E5%A6%82%E6%9E%9C%E4%B8%8D%E4%BC%A0%E5%80%BCdefaultProps/index.html">
 <meta property="og:site_name" content="晨曦的博客">
 <meta property="og:description" content="详情请点阅读全文">
 <meta property="og:locale" content="zh_CN">
@@ -43,7 +43,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191115102843745.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
 
-<link rel="canonical" href="https://xiuxiuing.gitee.io/blog/2019/11/15/%E5%8D%81%E3%80%81React%20%20%E7%88%B6%E7%BB%84%E4%BB%B6%E4%BC%A0%E6%9D%A5%E5%80%BC%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%8E%A7%E5%88%B6propTypes%E3%80%81%E7%88%B6%E7%BB%84%E4%BB%B6%E5%A6%82%E6%9E%9C%E4%B8%8D%E4%BC%A0%E5%80%BCdefaultProps/">
+<link rel="canonical" href="https://pasaulis.gitee.io/myblog/2019/11/15/%E5%8D%81%E3%80%81React%20%20%E7%88%B6%E7%BB%84%E4%BB%B6%E4%BC%A0%E6%9D%A5%E5%80%BC%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%8E%A7%E5%88%B6propTypes%E3%80%81%E7%88%B6%E7%BB%84%E4%BB%B6%E5%A6%82%E6%9E%9C%E4%B8%8D%E4%BC%A0%E5%80%BCdefaultProps/">
 
 
 <script id="page-configurations">
@@ -178,7 +178,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiuxiuing.gitee.io/blog/2019/11/15/%E5%8D%81%E3%80%81React%20%20%E7%88%B6%E7%BB%84%E4%BB%B6%E4%BC%A0%E6%9D%A5%E5%80%BC%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%8E%A7%E5%88%B6propTypes%E3%80%81%E7%88%B6%E7%BB%84%E4%BB%B6%E5%A6%82%E6%9E%9C%E4%B8%8D%E4%BC%A0%E5%80%BCdefaultProps/">
+    <link itemprop="mainEntityOfPage" href="https://pasaulis.gitee.io/myblog/2019/11/15/%E5%8D%81%E3%80%81React%20%20%E7%88%B6%E7%BB%84%E4%BB%B6%E4%BC%A0%E6%9D%A5%E5%80%BC%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%8E%A7%E5%88%B6propTypes%E3%80%81%E7%88%B6%E7%BB%84%E4%BB%B6%E5%A6%82%E6%9E%9C%E4%B8%8D%E4%BC%A0%E5%80%BCdefaultProps/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
