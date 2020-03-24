@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 4.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/blog/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"chenxi188.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"pasaulis.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="1.抓包首先用CDlinux系统进行抓包，CDlinux抓包我就不详细说明了  到这里可以查看如何安装CDlinux http:&#x2F;&#x2F;jingyan.baidu.com&#x2F;article&#x2F;7f766daf5173a94101e1d0fa.html 到这里可以查看如何使用CDlinux http:&#x2F;&#x2F;jingyan.baidu.com&#x2F;article&#x2F;1e5468f9293d07484961b7d4.h">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hashcat使用说明">
-<meta property="og:url" content="https://chenxi188.github.io/2020/03/24/hashcat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/index.html">
+<meta property="og:url" content="https://pasaulis.gitee.io/blog/2020/03/24/hashcat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/index.html">
 <meta property="og:site_name" content="晨曦的博客">
 <meta property="og:description" content="1.抓包首先用CDlinux系统进行抓包，CDlinux抓包我就不详细说明了  到这里可以查看如何安装CDlinux http:&#x2F;&#x2F;jingyan.baidu.com&#x2F;article&#x2F;7f766daf5173a94101e1d0fa.html 到这里可以查看如何使用CDlinux http:&#x2F;&#x2F;jingyan.baidu.com&#x2F;article&#x2F;1e5468f9293d07484961b7d4.h">
 <meta property="og:locale" content="zh_CN">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="wifi破解">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://chenxi188.github.io/2020/03/24/hashcat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">
+<link rel="canonical" href="https://pasaulis.gitee.io/blog/2020/03/24/hashcat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">
 
 
 <script id="page-configurations">
@@ -96,7 +96,7 @@
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/blog/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">晨曦的博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -117,27 +117,27 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-about">
 
-    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+    <a href="/blog/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+    <a href="/blog/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+    <a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
   </ul>
@@ -169,7 +169,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://chenxi188.github.io/2020/03/24/hashcat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">
+    <link itemprop="mainEntityOfPage" href="https://pasaulis.gitee.io/blog/2020/03/24/hashcat%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
@@ -201,11 +201,11 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                  <a href="/blog/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7/%E7%A0%B4%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">破解</span></a>
+                  <a href="/blog/categories/%E5%B7%A5%E5%85%B7/%E7%A0%B4%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">破解</span></a>
                 </span>
             </span>
 
@@ -258,8 +258,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/hashcat/" rel="tag"># hashcat</a>
-              <a href="/tags/wifi%E7%A0%B4%E8%A7%A3/" rel="tag"># wifi破解</a>
+              <a href="/blog/tags/hashcat/" rel="tag"># hashcat</a>
+              <a href="/blog/tags/wifi%E7%A0%B4%E8%A7%A3/" rel="tag"># wifi破解</a>
           </div>
 
         
@@ -268,11 +268,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/21/Github+Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="Github+Hexo搭建个人博客">
+    <a href="/blog/2020/03/21/Github+Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="Github+Hexo搭建个人博客">
       <i class="fa fa-chevron-left"></i> Github+Hexo搭建个人博客
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/24/React%E8%BF%9B%E9%98%B6%EF%BC%9AsetState-%E7%9A%84%E5%90%8C%E6%AD%A5%E3%80%81%E5%BC%82%E6%AD%A5%E3%80%81%E5%A4%9A%E6%AC%A1%E8%B0%83%E7%94%A8/" rel="next" title="'React进阶：setState()的同步、异步、多次调用'">
+    <a href="/blog/2020/03/24/React%E8%BF%9B%E9%98%B6%EF%BC%9AsetState-%E7%9A%84%E5%90%8C%E6%AD%A5%E3%80%81%E5%BC%82%E6%AD%A5%E3%80%81%E5%A4%9A%E6%AC%A1%E8%B0%83%E7%94%A8/" rel="next" title="'React进阶：setState()的同步、异步、多次调用'">
       'React进阶：setState()的同步、异步、多次调用' <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -348,20 +348,20 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+          <a href="/blog/archives/">
         
           <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
+            <a href="/blog/categories/">
           
         <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="/blog/tags/">
           
         <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
@@ -411,19 +411,19 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/js/utils.js"></script>
+<script src="/blog/js/utils.js"></script>
 
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
+<script src="/blog/js/motion.js"></script>
 
 
-<script src="/js/next-boot.js"></script>
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
 
 
 
