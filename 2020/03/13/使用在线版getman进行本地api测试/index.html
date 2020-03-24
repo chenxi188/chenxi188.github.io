@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 4.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/blog/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"chenxi188.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"pasaulis.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="1.网址：https:&#x2F;&#x2F;getman.cn&#x2F;A5laV 2.浏览器设置（本地跨域） 关闭谷歌浏览器 在浏览器快捷方式上右键——属性——目标里填写如下">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用在线版getman进行本地api测试">
-<meta property="og:url" content="https://chenxi188.github.io/2020/03/13/%E4%BD%BF%E7%94%A8%E5%9C%A8%E7%BA%BF%E7%89%88getman%E8%BF%9B%E8%A1%8C%E6%9C%AC%E5%9C%B0api%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:url" content="https://pasaulis.gitee.io/blog/2020/03/13/%E4%BD%BF%E7%94%A8%E5%9C%A8%E7%BA%BF%E7%89%88getman%E8%BF%9B%E8%A1%8C%E6%9C%AC%E5%9C%B0api%E6%B5%8B%E8%AF%95/index.html">
 <meta property="og:site_name" content="晨曦的博客">
 <meta property="og:description" content="1.网址：https:&#x2F;&#x2F;getman.cn&#x2F;A5laV 2.浏览器设置（本地跨域） 关闭谷歌浏览器 在浏览器快捷方式上右键——属性——目标里填写如下">
 <meta property="og:locale" content="zh_CN">
@@ -42,7 +42,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200313131830598.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxMzIxNzc=,size_16,color_FFFFFF,t_70">
 
-<link rel="canonical" href="https://chenxi188.github.io/2020/03/13/%E4%BD%BF%E7%94%A8%E5%9C%A8%E7%BA%BF%E7%89%88getman%E8%BF%9B%E8%A1%8C%E6%9C%AC%E5%9C%B0api%E6%B5%8B%E8%AF%95/">
+<link rel="canonical" href="https://pasaulis.gitee.io/blog/2020/03/13/%E4%BD%BF%E7%94%A8%E5%9C%A8%E7%BA%BF%E7%89%88getman%E8%BF%9B%E8%A1%8C%E6%9C%AC%E5%9C%B0api%E6%B5%8B%E8%AF%95/">
 
 
 <script id="page-configurations">
@@ -104,7 +104,7 @@
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/blog/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">晨曦的博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -125,27 +125,27 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-about">
 
-    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+    <a href="/blog/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+    <a href="/blog/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+    <a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
   </ul>
@@ -177,7 +177,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://chenxi188.github.io/2020/03/13/%E4%BD%BF%E7%94%A8%E5%9C%A8%E7%BA%BF%E7%89%88getman%E8%BF%9B%E8%A1%8C%E6%9C%AC%E5%9C%B0api%E6%B5%8B%E8%AF%95/">
+    <link itemprop="mainEntityOfPage" href="https://pasaulis.gitee.io/blog/2020/03/13/%E4%BD%BF%E7%94%A8%E5%9C%A8%E7%BA%BF%E7%89%88getman%E8%BF%9B%E8%A1%8C%E6%9C%AC%E5%9C%B0api%E6%B5%8B%E8%AF%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
@@ -215,11 +215,11 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                  <a href="/blog/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                  <a href="/blog/categories/%E5%B7%A5%E5%85%B7/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
                 </span>
             </span>
 
@@ -258,11 +258,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/13/git%20%E8%AE%BE%E7%BD%AE%E5%AE%8Cgitignore%E4%B8%8D%E8%B5%B7%E4%BD%9C%E7%94%A8%E8%A7%A3%E5%86%B3/" rel="prev" title="git 设置完gitignore不起作用解决">
+    <a href="/blog/2020/03/13/git%20%E8%AE%BE%E7%BD%AE%E5%AE%8Cgitignore%E4%B8%8D%E8%B5%B7%E4%BD%9C%E7%94%A8%E8%A7%A3%E5%86%B3/" rel="prev" title="git 设置完gitignore不起作用解决">
       <i class="fa fa-chevron-left"></i> git 设置完gitignore不起作用解决
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/18/js%20reduce%E7%94%A8%E6%B3%95/" rel="next" title="js reduce用法">
+    <a href="/blog/2020/03/18/js%20reduce%E7%94%A8%E6%B3%95/" rel="next" title="js reduce用法">
       js reduce用法 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -338,20 +338,20 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+          <a href="/blog/archives/">
         
-          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-count">96</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
+            <a href="/blog/categories/">
           
         <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="/blog/tags/">
           
         <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
@@ -401,19 +401,19 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/js/utils.js"></script>
+<script src="/blog/js/utils.js"></script>
 
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
+<script src="/blog/js/motion.js"></script>
 
 
-<script src="/js/next-boot.js"></script>
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
 
 
 
