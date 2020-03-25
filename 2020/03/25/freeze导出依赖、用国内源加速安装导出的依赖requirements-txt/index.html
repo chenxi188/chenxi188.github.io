@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 4.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"pasaulis.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"chenxi188.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="1.生成一个虚拟环境并运行12345678virtualenv blog-env # 会在工作目录生成一个blog-env的文件夹版本为当前默认python##或 如果要生成一个非默认版本可运行下一句virtualenv -p C:\Python\python27\python.exe blog-envcd blog-env #进入cd scripts activate.bat #运行虚拟环境">
 <meta property="og:type" content="article">
 <meta property="og:title" content="virtualenv生成虚拟环境、pip freeze导出依赖、用国内源加速安装导出的依赖requirements.txt">
-<meta property="og:url" content="https://pasaulis.gitee.io/blog/2020/03/25/freeze%E5%AF%BC%E5%87%BA%E4%BE%9D%E8%B5%96%E3%80%81%E7%94%A8%E5%9B%BD%E5%86%85%E6%BA%90%E5%8A%A0%E9%80%9F%E5%AE%89%E8%A3%85%E5%AF%BC%E5%87%BA%E7%9A%84%E4%BE%9D%E8%B5%96requirements-txt/index.html">
+<meta property="og:url" content="https://chenxi188.github.io/2020/03/25/freeze%E5%AF%BC%E5%87%BA%E4%BE%9D%E8%B5%96%E3%80%81%E7%94%A8%E5%9B%BD%E5%86%85%E6%BA%90%E5%8A%A0%E9%80%9F%E5%AE%89%E8%A3%85%E5%AF%BC%E5%87%BA%E7%9A%84%E4%BE%9D%E8%B5%96requirements-txt/index.html">
 <meta property="og:site_name" content="晨曦的博客">
 <meta property="og:description" content="1.生成一个虚拟环境并运行12345678virtualenv blog-env # 会在工作目录生成一个blog-env的文件夹版本为当前默认python##或 如果要生成一个非默认版本可运行下一句virtualenv -p C:\Python\python27\python.exe blog-envcd blog-env #进入cd scripts activate.bat #运行虚拟环境">
 <meta property="og:locale" content="zh_CN">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="pip freeze">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://pasaulis.gitee.io/blog/2020/03/25/freeze%E5%AF%BC%E5%87%BA%E4%BE%9D%E8%B5%96%E3%80%81%E7%94%A8%E5%9B%BD%E5%86%85%E6%BA%90%E5%8A%A0%E9%80%9F%E5%AE%89%E8%A3%85%E5%AF%BC%E5%87%BA%E7%9A%84%E4%BE%9D%E8%B5%96requirements-txt/">
+<link rel="canonical" href="https://chenxi188.github.io/2020/03/25/freeze%E5%AF%BC%E5%87%BA%E4%BE%9D%E8%B5%96%E3%80%81%E7%94%A8%E5%9B%BD%E5%86%85%E6%BA%90%E5%8A%A0%E9%80%9F%E5%AE%89%E8%A3%85%E5%AF%BC%E5%87%BA%E7%9A%84%E4%BE%9D%E8%B5%96requirements-txt/">
 
 
 <script id="page-configurations">
@@ -96,7 +96,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">晨曦的博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -117,27 +117,27 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-about">
 
-    <a href="/blog/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/blog/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
   </ul>
@@ -169,7 +169,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://pasaulis.gitee.io/blog/2020/03/25/freeze%E5%AF%BC%E5%87%BA%E4%BE%9D%E8%B5%96%E3%80%81%E7%94%A8%E5%9B%BD%E5%86%85%E6%BA%90%E5%8A%A0%E9%80%9F%E5%AE%89%E8%A3%85%E5%AF%BC%E5%87%BA%E7%9A%84%E4%BE%9D%E8%B5%96requirements-txt/">
+    <link itemprop="mainEntityOfPage" href="https://chenxi188.github.io/2020/03/25/freeze%E5%AF%BC%E5%87%BA%E4%BE%9D%E8%B5%96%E3%80%81%E7%94%A8%E5%9B%BD%E5%86%85%E6%BA%90%E5%8A%A0%E9%80%9F%E5%AE%89%E8%A3%85%E5%AF%BC%E5%87%BA%E7%9A%84%E4%BE%9D%E8%B5%96requirements-txt/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://www.zeyajt.com/u/40b74ddb-a87b-41cd-821b-3f6eeb544661/image/637203952121373129.jpg">
@@ -201,11 +201,11 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/python/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
+                  <a href="/categories/python/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
                 </span>
             </span>
 
@@ -234,8 +234,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/blog/tags/virtualenv/" rel="tag"># virtualenv</a>
-              <a href="/blog/tags/pip-freeze/" rel="tag"># pip freeze</a>
+              <a href="/tags/virtualenv/" rel="tag"># virtualenv</a>
+              <a href="/tags/pip-freeze/" rel="tag"># pip freeze</a>
           </div>
 
         
@@ -244,7 +244,7 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2020/03/24/componentShouldUpdate-%E3%80%81PureComponent/" rel="prev" title="React的 Component存在的问题、及解决（PureComponent）">
+    <a href="/2020/03/24/componentShouldUpdate-%E3%80%81PureComponent/" rel="prev" title="React的 Component存在的问题、及解决（PureComponent）">
       <i class="fa fa-chevron-left"></i> React的 Component存在的问题、及解决（PureComponent）
     </a></div>
       <div class="post-nav-item"></div>
@@ -321,20 +321,20 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/blog/tags/">
+            <a href="/tags/">
           
         <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
@@ -384,19 +384,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 
